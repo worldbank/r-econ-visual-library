@@ -98,7 +98,7 @@ passwords/
 /Library/Data/ReplicationDataGhanaJDE.dta
 !/docs/*.html
 !/docs/figure/**/*
-!/docs/site_libs/*
+!/docs/site_libs/**/*
 
 
 .Rproj.user
