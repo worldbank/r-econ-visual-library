@@ -1,0 +1,53 @@
+---
+title: "Box Plots"
+author: ""
+date: ""
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r BoxPlot, fig.path = 'figure/BoxPlots/'}
+
+# Install and load packages ---------------
+packages <- c(
+  "tidyverse",
+  "ggplot2",
+  "readstata13",
+  "forcats"
+)
+
+# Change to install = TRUE to install the required packages
+pacman::p_load(packages, character.only = TRUE, install = FALSE)
+
+# Load an example dataset ---------------
+# data <- read.dta13("https://github.com/mizuhirosuzuki/R_econ_figures/tree/master/Library/Data/BoxPlot.dta")
+data <- read.dta13("Data/BoxPlot.dta")
+data_varlabel <- varlabel(data)
+
+data$country = fct_rev(as.factor(data$country))
+data$provider_cadre = fct_rev(as.factor(data$provider_cadre))
+xlab = levels(data$country)
+for (i in seq_along(xlab)){
+  xlab[i] = str_interp("${xlab[i]} (N = ${sum(data$country == xlab[i])})")
+}
+
+med_competence_mle = median(data$competence_mle)
+
+ggplot(data, aes(x = country, y = competence_mle, fill = provider_cadre)) +
+  geom_boxplot(outlier.shape = NA) +
+  coord_flip(ylim = c(-2.5, 3.5)) +
+  scale_x_discrete(labels = xlab) +
+  geom_hline(yintercept = med_competence_mle, linetype = "dashed", size = 0.3) +
+  scale_fill_discrete(name = 'Provider Cadre', breaks = rev(levels(data$provider_cadre))) +
+  scale_y_continuous(breaks = c(-2, -1, 0, 1, 2, 3),
+                     labels = c("-2 SD", "-1 SD", "Mean", "1 SD", "2 SD", "3 SD")) +
+  theme_classic() +
+  theme(
+        axis.line.y = element_blank(),
+        axis.title = element_blank(),
+        legend.position = "bottom"
+  )
+
+```

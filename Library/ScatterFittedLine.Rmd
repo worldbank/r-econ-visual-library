@@ -1,0 +1,43 @@
+---
+title: "Scatter Plots: With Fitted Line"
+author: ""
+date: ""
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r ScatterFittedLine, fig.path = 'figure/ScatterPlots/', warning = FALSE}
+# Install and load packages ---------------
+packages <- c(
+  "tidyverse",
+  "haven",
+  "forcats",
+  "sciplot"
+)
+
+# Change to install = TRUE to install the required packages
+pacman::p_load(packages, character.only = TRUE, install = FALSE)
+
+# Load an example dataset ---------------
+# data <- read_dta("https://github.com/mizuhirosuzuki/R_econ_figures/tree/master/Library/Data/ScatterFittedLine.dta")
+data <- read_dta("Data/ScatterFittedLine.dta")
+
+data <- data %>% mutate(post = as.factor(post))
+
+ggplot(data, aes(x = area_cult, y = revenue, colour = post)) +
+  geom_point(aes(alpha = 0.2), show.legend = FALSE) +
+  geom_smooth(aes(group = post, colour = post), method = "lm", se = FALSE) +
+  theme_classic() +
+  ylab("Agriculture revenue (BRL thousands)") +
+  xlab("Cultivated area (ha)") +
+  scale_color_discrete(name = "", labels = c("Pre-treatment", "Post-treatment")) +
+  theme(
+    axis.text = element_text(size = 12),
+    axis.title = element_text(size = 14),
+    legend.text = element_text(size = 12),
+    legend.position = "bottom"
+  )
+
+```

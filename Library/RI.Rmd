@@ -1,0 +1,19 @@
+---
+title: "Randomization Inference"
+author: ""
+date: ""
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+```
+
+[<img src="./figure/RandomizationInference/RandomizationInference-1.png" width="400"/>](./RandomizationInference.html)
+
+
+
+
+
+
+

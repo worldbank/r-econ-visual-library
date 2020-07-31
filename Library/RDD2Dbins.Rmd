@@ -1,0 +1,121 @@
+---
+title: "Regression Discontinuity: Figure with 2D bins"
+author: ""
+date: ""
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r RDD2Dbins, fig.path = 'figure/RDD/', warning = FALSE}
+# Install and load packages ---------------
+packages <- c(
+  "tidyverse",
+  "haven",
+  "rdd",
+  "splines"
+)
+
+# Change to install = TRUE to install the required packages
+pacman::p_load(packages, character.only = TRUE, install = FALSE)
+
+# Load an example dataset ---------------
+# https://openknowledge.worldbank.org/handle/10986/25030
+# data <- read_dta("https://github.com/mizuhirosuzuki/R_econ_figures/blob/master/Library/HISP/evaluation.dta")
+data <- read_dta("HISP/evaluation.dta")
+
+cutoff <- 58
+
+# Functions to find endpoints of intervals
+left_endpoint <- function(x){
+  return(max(hor_bin_breaks[hor_bin_breaks <= x]))
+}
+
+right_endpoint <- function(x){
+  return(min(hor_bin_breaks[hor_bin_breaks > x]))
+}
+
+bottom_endpoint <- function(x){
+  return(max(var_bin_breaks[var_bin_breaks <= x]))
+}
+
+top_endpoint <- function(x){
+  return(min(var_bin_breaks[var_bin_breaks > x]))
+}
+
+# Bins for histogram
+hor_bin_width = 2.5
+hor_bin_breaks = with(
+  data, c(
+    seq(
+      cutoff, 
+      min(poverty_index) - hor_bin_width, 
+      -hor_bin_width
+      ), 
+    seq(cutoff + hor_bin_width, 
+        max(poverty_index) + hor_bin_width, 
+        hor_bin_width
+        )
+    )
+  )
+
+var_bin_width = 2.5
+var_bin_breaks = with(data, seq(0, max(health_expenditures) + var_bin_width, var_bin_width))
+
+fig_data <- data %>%
+  filter(treatment_locality == 1) %>%
+  mutate(
+    treatment = (poverty_index <= cutoff),
+    poverty_index_bin = cut(poverty_index, sort(hor_bin_breaks)),
+    health_exp_bin = cut(health_expenditures, sort(var_bin_breaks))
+    ) %>%
+  group_by(treatment, poverty_index_bin, health_exp_bin) %>%
+  mutate(n_bin = n()) %>%
+  mutate(
+    xmin = sapply(poverty_index, left_endpoint),
+    xmax = sapply(poverty_index, right_endpoint),
+    ymin = sapply(health_expenditures, bottom_endpoint),
+    ymax = sapply(health_expenditures, top_endpoint)
+    ) %>%
+  ungroup()
+
+ggplot(fig_data, aes(x = poverty_index, y = health_expenditures, color = treatment)) +
+  geom_rect(
+    aes(xmin = xmin, xmax = xmax, 
+        ymin = ymin, ymax = ymax,
+        fill = n_bin),
+    color = NA, alpha = 0.05) +
+  geom_smooth(method = lm, formula = y ~ bs(x, 3), size = 1.0, se = FALSE) +
+  geom_vline(xintercept = cutoff, linetype = "longdash") +
+  ylim(c(0, 45)) +
+  xlab("Baseline Poverty Index") +
+  ylab("Health Expenditures ($)") +
+#  scale_color_brewer(name = "Eligibility",
+#                     palette = "Set2", 
+#                     labels = c("Not eligible", "Eligible")) +
+#  scale_color_manual(name = "Eligibility",
+#                     values = c("#56B4E9", "#E69F00"),
+#                     labels = c("Not eligible", "Eligible")) +
+#  scale_fill_gradient(name = "Counts",
+#                      low = "gray50", high = "gray30") +
+  scale_color_manual(
+    name = "Eligibility",
+    values = c("#F0E442", "#CC79A7"),
+    labels = c("Not eligible", "Eligible")
+    ) +
+  scale_fill_gradient(
+    name = "Counts",
+    low = "#56B4E9", high = "#0072B2"
+    ) +
+  guides(color = guide_legend(override.aes = list(fill = NA))) +
+  theme_classic() +
+  theme(
+    axis.text = element_text(size = 12),
+    axis.title = element_text(size = 14),
+    legend.title = element_text(size = 13),
+    legend.text = element_text(size = 11),
+    legend.background = element_rect(color = NA)
+  )
+
+```

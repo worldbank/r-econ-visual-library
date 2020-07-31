@@ -1,0 +1,88 @@
+---
+title: "Bar Plots: Stacked Bar Graphs"
+author: ""
+date: ""
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r StackBarGraphs, fig.path = 'figure/BarPlots/', warning = FALSE}
+# Install and load packages ---------------
+packages <- c(
+  "tidyverse",
+  "haven",
+  "labelled",
+  "gridExtra",
+  "lemon",
+  "sciplot",
+  "scales"
+)
+
+# Change to install = TRUE to install the required packages
+pacman::p_load(packages, character.only = TRUE, install = FALSE)
+
+# Load an example dataset ---------------
+# data <- read_dta("https://github.com/mizuhirosuzuki/R_econ_figures/tree/master/Library/Data/StackBarGraphs.dta")
+data <- read_dta("Data/StackBarGraphs.dta")
+data_varlabel <- unlist(var_label(data))
+data <- data %>% mutate(case = ifelse(case == 5, "Case 1", "Case 2"))
+
+var_list <- colnames(data)[grepl("^med_b2_antister_cat.{2}$", colnames(data))]
+# Function to make a bar graph, with referral label as an argument
+make_bar <- function(idx){
+  
+  value_labels <- val_labels(data$dr_3)
+  referral_label <- names(value_labels)[idx]
+  
+  sub_data <- data %>% 
+    filter(dr_3 == value_labels[idx])
+  
+  x_label <- c("Case 1", "Case 2")
+  for (i in seq_along(x_label)){
+    x_label[i] <- str_interp(
+    "${x_label[i]}\n(${sum(sub_data$case == x_label[i])}/${sum(data$case == x_label[i])})"
+    )
+  }
+  
+  collapsed_data <- sub_data %>%
+    group_by(case) %>%
+    summarise_at(var_list, list(~ mean(., na.rm = T))) %>%
+    ungroup()
+  
+  reshaped_data <- collapsed_data %>%
+    pivot_longer(all_of(var_list), names_to = "key", values_to = "value") %>%
+    mutate(
+      num = as.numeric(str_extract(str_extract(.$key, "_\\d"), "\\d")),
+      key = data_varlabel[.$key],
+      key = fct_reorder(key, desc(num))
+      )
+
+  p <- ggplot(reshaped_data, aes(x = case, y = value, fill = key)) + 
+    geom_bar(position = "fill", stat = "identity", width = 0.4) +
+    scale_x_discrete(labels = x_label) +
+    ggtitle(referral_label) +
+    theme_classic() +
+    scale_y_continuous(labels = percent, expand = c(0, 0)) +
+    scale_fill_viridis_d(labels = c("No Medication", levels(reshaped_data$key)[2:5])) +
+    theme(
+      axis.line.y = element_blank(),
+      axis.title = element_blank(),
+      axis.text.y = element_text(size = 10),
+      axis.text.x = element_text(size = 12),
+      legend.title = element_blank(),
+      legend.text = element_text(size = 10),
+      legend.position = "bottom"
+      )
+    
+  return(p)
+}
+
+p1 <- make_bar(1)
+p2 <- make_bar(2)
+
+grid_arrange_shared_legend(p1, p2, position = "right")
+
+
+```

@@ -1,0 +1,22 @@
+---
+title: "Bar Plots: Horizontal Stack Bar"
+author: ""
+date: ""
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# Install and load packages ---------------
+packages <- c(
+  "tidyverse",
+  "haven"
+)
+
+not_installed <- !packages %in% installed.packages()
+if (any(not_installed)) install.packages(packages[not_installed])
+lapply(packages,require,character.only=TRUE)
+
+```
+
+Under construction

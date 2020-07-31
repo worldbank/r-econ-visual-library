@@ -1,0 +1,63 @@
+---
+title: "Regression Discontinuity: Figure with Point Estimate"
+author: ""
+date: ""
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r RDDEstimate, fig.path = 'figure/RDD/', warning = FALSE}
+# Install and load packages ---------------
+packages <- c(
+  "tidyverse",
+  "haven",
+  "pBrackets",
+  "rdd",
+  "splines"
+)
+
+# Change to install = TRUE to install the required packages
+pacman::p_load(packages, character.only = TRUE, install = FALSE)
+
+# Load an example dataset ---------------
+# https://openknowledge.worldbank.org/handle/10986/25030
+# data <- read_dta("https://github.com/mizuhirosuzuki/R_econ_figures/blob/master/Library/HISP/evaluation.dta")
+data <- read_dta("HISP/evaluation.dta")
+
+cutoff <- 58
+
+data <- data %>%
+  filter(treatment_locality == 1) %>%
+  mutate(treatment = (poverty_index <= cutoff))
+
+p <- ggplot(data, aes(x = poverty_index, y = health_expenditures, color = treatment)) +
+  geom_smooth(method = lm, formula = y ~ bs(x, 3), size = 1.0, se = FALSE)
+
+right_y = (ggplot_build(p)$data[[1]] %>% filter(x >= cutoff) %>% arrange(x) %>% slice(1))$y
+left_y = (ggplot_build(p)$data[[1]] %>% filter(x <= cutoff) %>% arrange(desc(x)) %>% slice(1))$y
+diff_y = right_y - left_y
+
+ggplot(data, aes(x = poverty_index, y = health_expenditures, color = treatment)) +
+  geom_smooth(method = lm, formula = y ~ bs(x, 3), size = 1.0, se = FALSE) +
+  geom_segment(
+    x = cutoff + 1, xend = cutoff + 1, y = left_y, yend = right_y - 1.5, color = "black",
+    linetype = 1, size = 0.02, arrow = arrow(length = unit(0.1, "cm"), ends = "both")
+    ) +
+  annotate("text", x = cutoff + 4, y = (right_y + left_y) / 2, label = format(round(diff_y, 2), 2)) + 
+  geom_vline(xintercept = cutoff, linetype = "longdash") +
+  ylim(c(0, 30)) +
+  xlab("Baseline Poverty Index") +
+  ylab("Health Expenditures ($)") +
+  scale_color_brewer(palette = "Set2", labels = c("Not eligible", "Eligible")) +
+  theme_classic() +
+  theme(
+    axis.text = element_text(size = 12),
+    axis.title = element_text(size = 14),
+    legend.title = element_blank(),
+    legend.text = element_text(size = 11)
+    )
+
+
+```

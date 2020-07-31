@@ -1,0 +1,53 @@
+---
+title: "Difference-in-Differences: 2 by 2"
+author: ""
+date: ""
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r DiffinDiff_HISP, fig.path = 'figure/DiffinDiff/'}
+# Install and load packages ---------------
+packages <- c(
+  "tidyverse",
+  "tidymodels",
+  "haven",
+  "ggrepel",
+  "directlabels",
+  "plotrix"
+)
+
+# Change to install = TRUE to install the required packages
+pacman::p_load(packages, character.only = TRUE, install = FALSE)
+
+# Load an example dataset ---------------
+# https://openknowledge.worldbank.org/handle/10986/25030
+# data <- read_dta("https://github.com/mizuhirosuzuki/R_econ_figures/blob/master/Library/HISP/evaluation.dta")
+data <- read_dta("HISP/evaluation.dta")
+
+data <- data %>%
+  filter(treatment_locality == 1) %>%
+  mutate(enrolled = factor(enrolled)) %>%
+  group_by(enrolled, round) %>%
+  summarise_at("health_expenditures", list(~ mean(.), ~ sd(.))) %>%
+  ungroup() %>%
+  mutate(label = ifelse(enrolled == 1, "Treatment", "Control"))
+  
+ggplot(data, aes(x = factor(round), y = mean, group = enrolled, colour = enrolled)) +
+  geom_pointrange(aes(ymin = mean - sd, ymax = mean + sd), position = position_dodge(width = 0.03)) + 
+  geom_dl(aes(label = label), method = list(dl.trans(x = x + 0.2), "last.points")) +
+  geom_line(position = position_dodge(width = 0.03)) +
+  theme_classic() +
+  scale_x_discrete(labels = c("Before", "After")) +
+  ylab("Health expenditures (mean and 1SD error bar)") +
+  xlab("") +
+  theme(
+    axis.text = element_text(size = 12),
+    axis.title.y = element_text(size = 14),
+    legend.title = element_blank(),
+    legend.position = "none"
+    )
+
+```

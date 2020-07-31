@@ -1,0 +1,134 @@
+---
+title: "Regression Coefficients: With graded error bars"
+author: ""
+date: ""
+---
+
+Largely based on Figure 16.7 in [Fundamentals of Data Visualization](https://serialmentor.com/dataviz/visualizing-uncertainty.html).
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r RegCoefGraded, fig.path = 'figure/RegressionCoef/', warning = FALSE}
+# Install and load packages ---------------
+#devtools::install_github("wilkelab/ungeviz")
+packages <- c(
+  "tidyverse",
+  "tidymodels",
+  "ungeviz",
+  "haven",
+  "forcats",
+  "colorspace",
+  "grid",
+  "caret",
+  "lfe"
+)
+
+# Change to install = TRUE to install the required packages
+pacman::p_load(packages, character.only = TRUE, install = FALSE)
+
+# Load an example dataset ---------------
+# See https://microdata.worldbank.org/index.php/catalog/2249
+# Only relevant variables are kept in the dataset
+# data <- read_dta("https://github.com/mizuhirosuzuki/R_econ_figures/tree/master/Library/Data/ReplicationDataGhanaJDE_short.dta")
+data <- read_dta("Data/ReplicationDataGhanaJDE_short.dta")
+
+# Treatment group includes only those who received in-kind treatment 
+# between 2nd and 3rd waves, for simplicity
+analysis_data <- data %>%
+  filter(wave >= 2, cashtreat != 1) %>%
+  group_by(sheno) %>%
+  mutate(
+    treatment = max((wave == 3) & (timetreat == 1)),
+    control = all(control == 1),
+    after = ifelse(wave >= 3, TRUE, FALSE),
+    wave = relevel(as.factor(wave), ref = "2")
+    ) %>%
+  filter(treatment == TRUE | control == TRUE) %>%
+  ungroup()
+
+outcome_list <- c(
+  "realfinalprofit", "expend_health_3months", 
+  "expend_education_3months", "expend_total_3months"
+  )
+
+df_result <- tibble(y_var = outcome_list) %>%
+  mutate(
+    model_fe = map(
+      y_var, ~ felm(as.formula(paste(.x, " ~ equiptreat * after | wave + sheno | 0 | sheno")), 
+                    data = analysis_data)),
+    tidied_model = map(model_fe, tidy)
+  )
+
+df_coef <- df_result %>%
+  dplyr::select(y_var, tidied_model) %>%
+  unnest(cols = tidied_model) %>%
+  filter(term == "equiptreat:afterTRUE") %>%
+  mutate(level_90 = 1, level_95 = 1) %>%
+  pivot_longer(starts_with("level_"), names_to = "key", values_to = "levels") %>%
+  mutate(
+    levels = ifelse(key == "level_90", "90%", "95%"),
+    lower_bound = ifelse(levels == "90%", 
+                         estimate - 1.645 * std.error,
+                         estimate - 1.96 * std.error),
+    upper_bound = ifelse(levels == "90%",
+                         estimate + 1.645 * std.error,
+                         estimate + 1.96 * std.error)
+    ) %>%
+  mutate_if(is.double, round, digits = 2) 
+
+ggplot(df_coef, aes(x = estimate, y = rev(y_var))) + 
+  geom_errorbarh(
+    aes(xmin = lower_bound, xmax = upper_bound, color = levels, size = levels),
+    height = 0
+  ) +
+  geom_point(size = 2.5) +
+  scale_x_continuous(limits = c(-30, 80)) +
+  scale_color_manual(
+    name = "Confidence level",
+    values = c(
+     `90%` = desaturate(darken("#0072B2", .2), .3),
+     `95%` = desaturate(lighten("#0072B2", .4), .3)
+    ),
+    guide = guide_legend(
+      direction = "horizontal",
+      title.position = "top",
+      label.position = "bottom"
+    )
+  ) +
+  scale_size_manual(
+    name = "Confidence level",
+    values = c(
+     `90%` = 2.,
+     `95%` = 1.
+    ),
+    guide = guide_legend(
+      direction = "horizontal",
+      title.position = "top",
+      label.position = "bottom"
+    )
+  ) +
+  theme_classic() +
+  geom_vline(xintercept = 0, size = 0.1, alpha = 0.5) +
+  scale_y_discrete(labels = rev(c("3mo Real Profit (cedi)", "3mo Total Exp. (cedi)", 
+                                  "3mo Health Exp. (cedi)",  "3mo Edu. Exp. (cedi)"))) +
+  ylab("Point Estimates & 95% CI") +
+  theme(
+    axis.line = element_blank(),
+    axis.text = element_text(size = 12),
+    axis.title.y = element_text(size = 14),
+    axis.title.x = element_blank(),
+    axis.ticks.y = element_blank(),
+    legend.position = c(1, 0.01),
+    legend.justification = c(1, 0),
+    legend.key.height = grid::unit(7, "pt"),
+    legend.key.width = grid::unit(35, "pt"),
+    legend.spacing.x = grid::unit(7, "pt"),
+    legend.spacing.y = grid::unit(3.5, "pt"),
+    legend.box.background = element_rect(fill = "white", color = NA),
+    legend.box.spacing = grid::unit(0, "pt"),
+    legend.title.align = 0.5
+    )
+
+```

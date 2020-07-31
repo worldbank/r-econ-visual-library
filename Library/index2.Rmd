@@ -1,0 +1,40 @@
+---
+title: "R Econ Visual Library"
+output: 
+  html_document:
+    theme: cerulean
+    toc: true
+    toc_float: true
+    toc_collapsed: true
+    toc_depth: 2
+    includes:
+      after_body: footer.html
+---
+
+R Econ Visual Library contains graphs created in R to explore impact evaluation data sets and display results.
+Click on a graph to view the code that created it.
+
+## Summary Statistics 
+  
+<p style="float: left; font-size: 12pt; text-align: center; width: 49%; margin-right: 1%; margin-bottom: 0.5em;">[<img src="./figure/BarPlots/HorizontalGroupSE-1.png" style="width: 100%">](./BarPlots.html) [Bar Plots](./BarPlots.html) </p> <p style="float: left; font-size: 12pt; text-align: center; width: 49%; margin-right: 1%; margin-bottom: 0.5em;">[<img src="./figure/DensityPlots/DensityRidgeline-1.png" style="width: 100%">](./DensityPlots.html) [Density Plots](./DensityPlots.html) </p>
+<p style="float: left; font-size: 12pt; text-align: center; width: 49%; margin-right: 1%; margin-bottom: 0.5em;">[<img src="./figure/ScatterPlots/ScatterLabels-1.png" style="width: 100%">](./ScatterPlots.html) [Scatter Plots](./ScatterPlots.html) </p>
+
+<p style="clear: both;">
+
+## Impact Evaluation
+
+<p style="float: left; font-size: 12pt; text-align: center; width: 49%; margin-right: 1%; margin-bottom: 0.5em;">[<img src="./figure/RegressionCoef/RegCoefMultipleOutcomes-1.png" style="width: 100%">](./RegressionCoef.html) [Regression Coefficients](./RegressionCoef.html) </p> <p style="float: left; font-size: 12pt; text-align: center; width: 49%; margin-right: 1%; margin-bottom: 0.5em;">[<img src="./figure/EventStudy/EventStudy-1.png" style="width: 100%">](./DiffinDiff.html) [Difference-in-Difrerences / Event Study](./DiffinDiff.html) </p>
+<p style="float: left; font-size: 12pt; text-align: center; width: 49%; margin-right: 1%; margin-bottom: 0.5em;">[<img src="./figure/RandomizationInference/RandomizationInference-1.png" style="width: 100%">](./RI.html) [Randomization Inference](./RI.html) </p> <p style="float: left; font-size: 12pt; text-align: center; width: 49%; margin-right: 1%; margin-bottom: 0.5em;">[<img src="./figure/RDD/RDDHist-1.png" style="width: 100%">](./RDD.html) [Regression Discontinuity Design](./RDD.html) </p>
+
+
+
+## GitHub Repository
+The Rmarkdown scripts and data sets used to create the Library's graphs are stored in the R Visual Library GitHub repository.
+
+## Useful links
+  + [DIME Wiki](https://dimewiki.worldbank.org/wiki/Main_Page)
+  + Data Visualization Cheatsheet (found [here](https://rstudio.com/resources/cheatsheets/))
+  + [Introduction to R for advanced Stata users](https://github.com/worldbank/dime-r-training)
+  + [The R Graph Gallery](https://www.r-graph-gallery.com/)
+  + [ggplot2: Elegant Graphics for Data Analysis](https://ggplot2-book.org/)
+  + [Data Visualization with R](https://rkabacoff.github.io/datavis/)

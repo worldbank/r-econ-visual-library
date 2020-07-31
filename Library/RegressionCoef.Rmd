@@ -1,0 +1,21 @@
+---
+title: "Regression Coefficients"
+author: ""
+date: ""
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+```
+
+[<img src="./figure/RegressionCoef/RegCoefMe-1.png" width="400"/>](./RegCoefME.html) [<img src="./figure/RegressionCoef/METable-1.png" width="400"/>](./METable.html) 
+
+[<img src="./figure/RegressionCoef/METable2data-1.png" width="400"/>](./METable2data.html) [<img src="./figure/RegressionCoef/RegCoefRounds-1.png" width="400"/>](./RegCoefRounds.html)
+
+[<img src="./figure/RegressionCoef/RegCoefMultipleOutcomes-1.png" width="400"/>](./RegCoefMultipleOutcomes.html) [<img src="./figure/RegressionCoef/RegCoefGraded-1.png" width="400"/>](./RegCoefGraded.html)
+
+
+
+
+

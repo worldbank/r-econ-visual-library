@@ -1,0 +1,65 @@
+---
+title: "Scatter Plots: With emphasized labels"
+author: ""
+date: ""
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r ScatterLabels, fig.path = 'figure/ScatterPlots/', warning = FALSE}
+# Install and load packages ---------------
+packages <- c(
+  "tidyverse",
+  "ggrepel",
+  "WDI",
+  "forcats",
+  "scales"
+)
+
+# Change to install = TRUE to install the required packages
+pacman::p_load(packages, character.only = TRUE, install = FALSE)
+
+# Load an example dataset ---------------
+data <- WDI(indicator = "NY.GDP.PCAP.KD", start = 1980, end = 2012)
+country_code <- as_tibble(WDI_data$country)
+
+data <- data %>%
+  rename(GDP = NY.GDP.PCAP.KD) %>%
+  inner_join(country_code, by = "country") %>%
+  filter(year %in% c(1980, 2012), region != "NA") %>%
+  group_by(iso3c) %>%
+  pivot_wider(names_from = "year", values_from = "GDP") %>%
+  ungroup()
+
+country_stress <- c("USA", "CHN", "BRA", "RWA")
+
+ggplot(data, aes(x = `1980`, y = `2012`)) + 
+  geom_point(aes(alpha = 0.8, color = (iso3c %in% country_stress)), show.legend = FALSE) +
+  geom_abline(slope = 1, color = "gray") +
+  geom_text_repel(aes(label = ifelse(iso3c %in% country_stress, iso3c, ""))) +
+  scale_y_log10(
+    limits = c(8e+1, 3e+5),
+    breaks = c(1e+2, 1e+3, 1e+4, 1e+5),
+    labels = expression(10^2, 10^3, 10^4, 10^5)
+  ) +
+  scale_x_log10(
+    limits = c(8e+1, 3e+5),
+    breaks = c(1e+2, 1e+3, 1e+4, 1e+5),
+    labels = expression(10^2, 10^3, 10^4, 10^5)
+  ) +
+  scale_color_manual(values = c("gray", "red")) +
+  xlab("GDP per capita (constant 2000 US$) in 1980") +
+  ylab("GDP per capita (constant 2000 US$) in 2012") +
+  theme_classic() +
+  theme(
+    axis.text = element_text(size = 12),
+    axis.title = element_text(size = 12)
+  )
+
+
+```
+
+
+

@@ -1,0 +1,86 @@
+---
+title: "Bar Plots: Horizontal Bars with Error Bars"
+author: ""
+date: ""
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r HorizontalGroupSE, fig.path = 'figure/BarPlots/'}
+# Install and load packages ---------------
+packages <- c(
+  "tidyverse",
+  "haven",
+  "forcats",
+  "labelled",
+  "sciplot",
+  "scales"
+)
+
+# Change to install = TRUE to install the required packages
+pacman::p_load(packages, character.only = TRUE, install = FALSE)
+
+# Load an example dataset ---------------
+# data <- read_dta("https://github.com/mizuhirosuzuki/R_econ_figures/tree/master/Library/Data/HorizontalGroupSE.dta")
+data <- read_dta("Data/HorizontalGroupSE.dta")
+data_varlabel <- unlist(var_label(data))
+
+# Legend labels
+city_label <- names(val_labels(data$city))
+city_val <- as.numeric(val_labels(data$city))
+for (i in seq_along(city_label)){
+  city_label[i] <- str_interp("${city_label[i]} (n = ${sum(data$city == city_val[i])})")
+}
+
+# Variable list used in the figure
+var_list <- c("dr_3", "correct_treatment", "med_b2_any_antibiotic", "med_b2_any_steroid", "med_b2_any_antister", 
+              "med_l_any_2", "med_b2_any_schedule_h", "med_b2_any_schedule_h1", "med_b2_any_schedule_x", "med_l_any_1")
+
+# Collapse the dataset across each treatment group
+collapsed_data <- data %>%
+  mutate(city = fct_rev(as.factor(city))) %>%
+  group_by(city) %>%
+  summarise_at(var_list, list(~ mean(., na.rm = T), ~ se(., na.rm = T))) %>%
+  ungroup()
+
+# Reshape data
+reshaped_data <- collapsed_data %>%
+  pivot_longer(ends_with(c("_mean", "_se")), names_to = "key", values_to = "value") %>%
+  extract(key, c("key", "stat"), "(.*)(_mean|_se)") %>%
+  pivot_wider(names_from = "stat", values_from = "value") %>%
+  mutate(key = reorder(as.factor(data_varlabel[.$key]), `_mean`))
+
+ggplot(reshaped_data, aes(x = reorder(key, `_mean`), y = `_mean`, fill = city)) +
+  geom_bar(
+    width = 0.8, position = position_dodge(width = 0.8),
+    stat = "identity", alpha = .6
+    ) +
+  geom_errorbar(
+    aes(ymin = `_mean` - `_se`, ymax = `_mean` + `_se`), 
+    width = 0.3, position = position_dodge(width = 0.8),
+    alpha = 0.6, size = 0.3
+    ) +
+  geom_text(
+    aes(label = format(round(`_mean`, 2), nsmall = 2)),
+    position = position_dodge(width = 0.8),
+    size = 2.5, hjust = -2
+    ) +
+  coord_flip(ylim = c(0, 1)) +
+  geom_hline(yintercept = 0, alpha = 0.5) +
+  scale_y_continuous(labels = percent) +
+  scale_fill_brewer(palette = "Set2", labels = city_label, breaks = city_val) +
+  theme_classic() +
+  theme(
+    axis.line.y = element_blank(),
+    axis.ticks.y = element_blank(),
+    axis.title = element_blank(),
+    axis.text.x = element_text(size = 10),
+    axis.text.y = element_text(size = 10),
+    legend.title = element_blank(),
+    legend.text  = element_text(size = 10),
+    legend.position = "bottom"
+    )
+
+```

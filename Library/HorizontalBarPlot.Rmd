@@ -1,0 +1,73 @@
+---
+title: "Bar Plots: Horizontal Bar Plots"
+author: ""
+date: ""
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r HorizontalBarPlot, fig.path = 'figure/BarPlots/', warning = FALSE}
+# Install and load packages ---------------
+packages <- c(
+  "tidyverse",
+  "haven",
+  "latex2exp",
+  "forcats"
+)
+
+# Change to install = TRUE to install the required packages
+pacman::p_load(packages, character.only = TRUE, install = FALSE)
+
+# Load example datasets ---------------
+# data1 <- read_dta("https://github.com/mizuhirosuzuki/R_econ_figures/tree/master/Library/Data/HorizontalBarPlot1.dta")
+# data2 <- read_dta("https://github.com/mizuhirosuzuki/R_econ_figures/tree/master/Library/Data/HorizontalBarPlot2.dta")
+data1 <- read_dta("Data/HorizontalBarPlot1.dta")
+data2 <- read_dta("Data/HorizontalBarPlot2.dta")
+
+# Generate hour variable from minute variable
+data2 <- data2 %>% mutate(hours = tottime / 60)
+
+# Append two datasets
+data <- bind_rows(data1, data2)
+
+data_mean <- data %>%
+  group_by(study) %>%
+  summarise(hours = mean(hours)) %>%
+  ungroup() %>%
+  mutate(study = fct_reorder(study, desc(hours)))
+
+# Drop unnecessary quotes
+data_mean$study <- factor(str_replace_all(levels(data_mean$study), "\\\"", ""))
+# Add newline sign (\n) before parentheses
+data_mean$study <- factor(str_replace_all(levels(data_mean$study), " \\(", "\n\\("))
+
+data_mean %>%
+  mutate(study = fct_reorder(study, desc(hours))) %>%
+  ggplot(aes(x = study, y = hours)) +
+  geom_bar(stat = "identity", alpha = .6, width = .4) +
+  geom_text(
+    aes(label = format(round(hours, 1), nsmall = 1)), 
+    position = position_dodge(width = 0.8), 
+    size = 4.5,
+    hjust = -0.35
+    ) +
+  geom_hline(yintercept = 0, alpha = 0.5) +
+  coord_flip(ylim = c(0, 3)) +
+  xlab("") +
+  ylab(TeX("Average Daily Time Seeing Patients $\\rightarrow$")) + 
+  scale_y_continuous(
+    breaks = c(0, 1, 2, 3), 
+    label = c('0', '1 Hour', '2 Hours', '3 Hours')
+    ) + 
+  theme_classic() +
+  theme(
+    axis.line.y = element_blank(),
+    axis.ticks.y = element_blank(),
+    axis.text = element_text(size = 12),
+    axis.title.x = element_text(size = 15)
+    )
+  
+```
+

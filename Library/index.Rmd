@@ -1,0 +1,39 @@
+---
+title: "R Econ Visual Library"
+output: 
+  html_document:
+    theme: cerulean
+    #toc: true
+    #toc_float: true
+    toc_collapsed: true
+    toc_depth: 2
+    includes:
+      after_body: footer.html
+---
+
+R Econ Visual Library contains graphs created in R to explore impact evaluation data sets and display results.
+The Rmarkdown scripts and data sets used to create the Library's graphs are stored in the [R Econ Visual Library GitHub repository](https://github.com/worldbank/r-econ-visual-library).
+
+## Summary Statistics 
+  [<img src="./figure/DensityPlots/DensityRidgeline-1.png" width="250"/ style="float:right">](./DensityRidgeline.html) [<img src="./figure/ScatterPlots/ScatterLabels-1.png" width="250"/ style="float:right">](./ScatterLabels.html)
+
+  + [Bar Plots](./BarPlots.html)
+  + [Density Plots](./DensityPlots.html)
+  + [Scatter Plots](./ScatterPlots.html)
+  
+## Impact Evaluation
+  
+  + [Regression Coefficients](./RegressionCoef.html)
+  + [Difference-in-Differences / Event Study](./DiffinDiff.html)
+  + [Randomization Inference](./RI.html)
+  + [Regression Discontinuity Design](./RDD.html)
+  [<img src="./figure/RegressionCoef/RegCoefMultipleOutcomes-1.png" width="250"/ style="float:right">](./RegCoefMultipleOutcomes.html) [<img src="./figure/RDD/RDDHist-1.png" width="250"/ style="float:right">](./RDDHist.html)
+
+## Useful links
+  + [DIME Wiki](https://dimewiki.worldbank.org/wiki/Main_Page)
+  + Data Visualization Cheatsheet (found [here](https://rstudio.com/resources/cheatsheets/))
+  + [Introduction to R for advanced Stata users](https://github.com/worldbank/dime-r-training)
+  + [The R Graph Gallery](https://www.r-graph-gallery.com/)
+  + [ggplot2: Elegant Graphics for Data Analysis](https://ggplot2-book.org/)
+  + [Data Visualization with R](https://rkabacoff.github.io/datavis/)
+  + [Coding Practices](https://dimewiki.worldbank.org/wiki/Stata_Coding_Practices)

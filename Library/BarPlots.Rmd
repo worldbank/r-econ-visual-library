@@ -1,0 +1,24 @@
+---
+title: "Bar Plots"
+author: ""
+date: ""
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+```
+
+[<img src="./figure/BarPlots/BarPlotsMultipleVariables-1.png" width="400"/>](./BarPlotsMultipleVariables.html) [<img src="./figure/BarPlots/BarPlotsTwoVariables-1.png" width="400"/>](./BarPlotsTwoVariables.html)
+
+[<img src="./figure/BarPlots/HorizontalBarPlot-1.png" width="400"/>](./HorizontalBarPlot.html) [<img src="./figure/BarPlots/BarPlotsCombineTwoAxes-1.png" width="400"/>](./BarPlotsCombineTwoAxes.html)
+
+[<img src="./figure/BarPlots/HorizontalBarMultipleVars-1.png" width="400"/>](./HorizontalBarMultipleVars.html) [<img src="./figure/BarPlots/HorizontalBetterbar-1.png" width="400"/>](./HorizontalBetterbar.html)
+
+[<img src="./figure/BarPlots/HorizontalGroupSE-1.png" width="400"/>](./HorizontalGroupSE.html) [<img src="./figure/BarPlots/StackBarGraphs-1.png" width="400"/>](./StackBarGraphs.html)
+
+[<img src="./figure/BarPlots/HorizontalBarOrderGroup-1.png" width="400"/>](./HorizontalBarOrderGroup.html)
+
+
+
+

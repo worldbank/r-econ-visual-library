@@ -1,0 +1,101 @@
+---
+title: "Regression Coefficients: Multiple Outcomes"
+author: ""
+date: ""
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r RegCoefMultipleOutcomes, fig.path = 'figure/RegressionCoef/', warning = FALSE}
+# Install and load packages ---------------
+packages <- c(
+  "tidyverse",
+  "tidymodels",
+  "haven",
+  "forcats",
+  "caret",
+  "lfe"
+)
+
+# Change to install = TRUE to install the required packages
+pacman::p_load(packages, character.only = TRUE, install = FALSE)
+
+# Load an example dataset ---------------
+# See https://microdata.worldbank.org/index.php/catalog/2249
+# Only relevant variables are kept in the dataset
+# data <- read_dta("https://github.com/mizuhirosuzuki/R_econ_figures/tree/master/Library/Data/ReplicationDataGhanaJDE_short.dta")
+data <- read_dta("Data/ReplicationDataGhanaJDE_short.dta")
+
+# Treatment group includes only those who received treatment 
+# between 2nd and 3rd waves, for simplicity
+analysis_data <- data %>%
+  filter(wave >= 2) %>%
+  group_by(sheno) %>%
+  mutate(
+    treatment = max((wave == 3) & (timetreat == 1)),
+    control = all(control == 1),
+    after = ifelse(wave >= 3, TRUE, FALSE),
+    wave = relevel(as.factor(wave), ref = "2")
+    ) %>%
+  filter(treatment == TRUE | control == TRUE) %>%
+  ungroup()
+
+outcome_list <- c(
+  "realfinalprofit", "expend_health_3months", 
+  "expend_education_3months", "expend_total_3months"
+  )
+
+df_result <- tibble(y_var = outcome_list) %>%
+  mutate(
+    model_fe = map(
+      y_var, ~ felm(
+        as.formula(paste(.x, " ~ (cashtreat + equiptreat) * after | wave + sheno | 0 | sheno")), 
+        data = analysis_data
+        )
+      ),
+    tidied_model = map(model_fe, tidy)
+  )
+
+df_coef <- df_result %>%
+  dplyr::select(y_var, tidied_model) %>%
+  unnest(cols = tidied_model) %>%
+  filter(term %in% c("cashtreat:afterTRUE", "equiptreat:afterTRUE")) %>%
+  mutate(
+    lower_bound = estimate - 1.96 * std.error,
+    upper_bound = estimate + 1.96 * std.error
+    ) %>%
+  mutate_if(is.double, round, digits = 2) 
+
+ggplot(df_coef, aes(x = y_var, y = estimate, colour = term)) + 
+  geom_pointrange(
+    aes(ymin = lower_bound, ymax = upper_bound), 
+    position = position_dodge(width = 0.9),
+    alpha = 0.6, size = 0.5
+    ) +
+  coord_flip(ylim = c(-120, 120)) + 
+  geom_hline(yintercept = 0, size = 0.1, alpha = 0.4) + 
+  theme_classic() +
+  scale_colour_brewer(
+    palette = "Set2", name = "Treatment", 
+    labels = c("Cash", "In-kind"), guide = guide_legend(reverse = TRUE)
+    ) +
+  scale_x_discrete(
+    labels = rev(c(
+      "3mo Real Profit (cedi)", "3mo Total Exp. (cedi)", 
+      "3mo Health Exp. (cedi)", "3mo Edu. Exp. (cedi)"
+      ))
+    ) +
+  xlab("Point Estimates & 95% CI") +
+  theme(
+    axis.text = element_text(size = 11),
+    axis.title = element_text(size = 14),
+    axis.line = element_blank(),
+    axis.title.x = element_blank(),
+    axis.ticks.y = element_blank(),
+    legend.text = element_text(size = 12),
+    legend.title = element_text(size = 14)
+    )
+
+```

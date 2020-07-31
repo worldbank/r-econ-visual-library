@@ -1,0 +1,104 @@
+---
+title: "Regression Coefficients: Marginal Effect"
+author: ""
+date: ""
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r RegCoefME, fig.path = 'figure/RegressionCoef/', warning = FALSE}
+# Install and load packages ---------------
+packages <- c(
+  "tidyverse",
+  "tidymodels",
+  "haven",
+  "forcats",
+  "scales",
+  "margins",
+  "latex2exp",
+  "caret"
+)
+
+# Change to install = TRUE to install the required packages
+pacman::p_load(packages, character.only = TRUE, install = FALSE)
+
+# Load an example dataset ---------------
+# data <- read_dta("https://github.com/mizuhirosuzuki/R_econ_figures/tree/master/Library/Data/RegCoefME.dta")
+data <- read_dta("Data/RegCoefME.dta")
+data_varlabel <- unlist(var_label(data))
+
+var_list <- c(colnames(data)[grepl("??_correct$", colnames(data))], "refer", "med_any", "med_class_any_6", "med_class_any_16")
+
+df_result <- tibble(y_var = var_list)
+df_result <- df_result %>%
+  mutate(
+    model_ols = map(y_var, ~ tryCatch({
+      lm(as.formula(paste(.x, "~ facility_private + factor(case_code)")), data = data)
+      }, error  = function(cond) {
+        lm(as.formula(paste(.x, "~ facility_private")), data = data)
+        })
+      ),
+    tidied_ols = map(model_ols, tidy),
+    glanced_ols = map(model_ols, glance),
+    model_logit = map(y_var, ~ tryCatch({
+      glm(as.formula(paste(.x, "~ facility_private + factor(case_code)")), data = data, family = "binomial")
+      }, error  = function(cond) {
+        glm(as.formula(paste(.x, "~ facility_private")), data = data, family = "binomial")
+        })
+      ),
+    margin = map(model_logit, margins),
+    sum_margin = map(margin, summary)
+    )
+
+df_coef_ols <- df_result %>%
+  dplyr::select(y_var, tidied_ols) %>%
+  unnest(cols = c(tidied_ols)) %>%
+  mutate_if(is.double, round, digits = 2) %>%
+  filter(term == "facility_private") %>%
+  dplyr::select(y_var, estimate, std.error) %>%
+  mutate(model = "Linear Model")
+
+df_coef_logit <- df_result %>%
+  dplyr::select(y_var, sum_margin) %>%
+  unnest(cols = c(sum_margin)) %>%
+  mutate_if(is.double, round, digits = 2) %>%
+  filter(factor == "facility_private") %>%
+  dplyr::select(y_var, AME, SE) %>%
+  rename(estimate = AME, std.error = SE) %>%
+  mutate(model = "Logistic Model")
+
+fig_df <- rbind(df_coef_ols, df_coef_logit) %>%
+          mutate(
+            y_var = as.factor(data_varlabel[.$y_var]),
+            y_var = fct_rev(factor(y_var, levels = data_varlabel[var_list])),
+            model = fct_rev(as.factor(model))
+            )
+
+ggplot(fig_df, aes(x = y_var, y = estimate, fill = model)) + 
+  geom_linerange(
+    aes(ymin = estimate - std.error, ymax = estimate + std.error), 
+    position = position_dodge(width = 0.9),
+    alpha = 0.6, size = 0.5
+    ) +
+  geom_dotplot(
+    binaxis = "y", 
+    position = "dodge",
+    stackdir = "center",
+    dotsize = 0.9
+    ) +
+  coord_flip(ylim = c(-1, 1)) +
+  geom_hline(yintercept = 0, size = 0.1, alpha = 0.5) +
+  scale_fill_discrete(breaks = rev(levels(fig_df$model))) +
+  theme_classic() +
+  ylab(TeX("$\\leftarrow$ Favors Public $\\;\\;\\;\\;\\;\\;$  Favors Privte $\\rightarrow$")) +
+  theme(
+    axis.line = element_blank(),
+    axis.ticks.y = element_blank(),
+    legend.title = element_blank(),
+    axis.title.y = element_blank(),
+    legend.position = "bottom"
+    )
+
+```

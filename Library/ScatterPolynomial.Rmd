@@ -1,0 +1,52 @@
+---
+title: "Scatter Plots: Polynomial"
+author: ""
+date: ""
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r ScatterPolynomial, fig.path = 'figure/ScatterPlots/', warning = FALSE}
+# Install and load packages ---------------
+packages <- c(
+  "tidyverse",
+  "haven",
+  "latex2exp",
+  "gridExtra",
+  "lemon",
+  "sciplot"
+)
+
+# Change to install = TRUE to install the required packages
+pacman::p_load(packages, character.only = TRUE, install = FALSE)
+
+# Load an example dataset ---------------
+# data <- read_dta("https://github.com/mizuhirosuzuki/R_econ_figures/tree/master/Library/Data/ScatterPolynomial.dta")
+data <- read_dta("Data/ScatterPolynomial.dta")
+
+subdata <- data %>%
+  filter(cons_pae_m_sine < quantile(.$cons_pae_m_sine, 0.99) & cons_pae_m_sine > quantile(.$cons_pae_m_sine, 0.01))
+
+p1 <- ggplot(subdata, aes(x = cons_pae_m_sine, y = cons_pae_sd_sine)) +
+      geom_point(alpha = 0.2, size = 0.5) +
+      geom_smooth(aes(colour = "red"), show.legend = TRUE) +
+      theme_classic() +
+      scale_colour_manual(name = "", values = "red", labels = "Local Poly. & 95% CI") +
+      xlab(TeX("$\\widehat{m}$")) +
+      ylab(TeX("$\\widehat{s}$"))
+
+p2 <- ggplot(subdata, aes(x = cons_pae_m_sine, y = cv)) +
+      geom_point(alpha = 0.2, size = 0.5) +
+      geom_smooth(aes(colour = "red"), show.legend = TRUE) +
+      theme_classic() +
+      scale_colour_manual(name = "", values = "red", labels = "Local Poly. % 95% CI") +
+      xlab(TeX("$\\widehat{m}$")) +
+      ylab(TeX("$\\widehat{s} / \\widehat{m}$"))
+
+grid_arrange_shared_legend(p1, p2, position = "bottom")
+
+```
+
+

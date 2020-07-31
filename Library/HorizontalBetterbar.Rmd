@@ -1,0 +1,91 @@
+---
+title: "Bar Plots: Horizontal Multiple Variables"
+author: ""
+date: ""
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r HorizontalBetterbar, fig.path = 'figure/BarPlots/'}
+# Install and load packages ---------------
+packages <- c(
+  "tidyverse",
+  "haven",
+  "labelled",
+  "forcats"
+)
+
+# Change to install = TRUE to install the required packages
+pacman::p_load(packages, character.only = TRUE, install = FALSE)
+
+# Load an example dataset ---------------
+# data <- read_dta("https://github.com/mizuhirosuzuki/R_econ_figures/tree/master/Library/Data/HorizontalBetterbar.dta")
+data <- read_dta("Data/HorizontalBetterbar.dta")
+data_varlabel <- unlist(var_label(data))
+
+# Make vector of variables to be used
+var_group_1 <- c()
+for (i in 1:21){
+  if (i == 6){
+    next
+  } else {
+    var_group_1 <- c(var_group_1, paste0("sp1_h", i))
+  }
+}
+
+var_group_2 <- c()
+for (i in 1:6){
+  if (i == 4){
+    next
+  } else {
+    var_group_2 <- c(var_group_2, paste0("sp1_e", i))
+  }
+}
+
+# Calculate the mean for each variable
+mean_data <- data %>%
+  summarise_at(
+    all_of(c(var_group_1, var_group_2)), 
+    list(~ mean(., na.rm = T))
+    )
+
+# Reshape the data and create group variable
+fig_data <- mean_data %>%
+  pivot_longer(
+    all_of(c(var_group_1, var_group_2)), 
+    names_to = "key", values_to = "value"
+    ) %>%
+  mutate(
+    key_label = data_varlabel[.$key],
+    group = ifelse(.$key %in% all_of(var_group_1), 1, 0),
+    key_label = fct_reorder(key_label, value)
+    )
+
+# Label for each variable
+x_label <- as.character(sort(interaction(fig_data$key_label, fig_data$group))) %>%
+  str_replace("\\.\\d", "")
+
+# Figure
+ggplot(fig_data, aes(x = interaction(key_label, group), y = value, label = key_label)) +
+  geom_bar(
+    stat = "identity", 
+    width = 0.6, position = position_dodge2(width = 0.6, preserve = "single")
+    ) +
+  coord_flip(ylim = c(0, 1)) +
+  geom_hline(yintercept = 0, alpha = 0.5) +
+  geom_text(
+    aes(label = format(round(value, 2), nsmall = 2)), 
+    position = position_dodge2(width = 0.6, preserve = "single"), 
+    hjust = -0.35
+    ) +
+  scale_x_discrete(labels = x_label) +
+  theme_classic() +
+  theme(
+    axis.line = element_blank(),
+    axis.ticks.y = element_blank(),
+    axis.title = element_blank()
+    )
+
+```

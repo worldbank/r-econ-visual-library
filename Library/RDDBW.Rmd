@@ -1,0 +1,62 @@
+---
+title: "Regression Discontinuity: Results with different bandwidths"
+author: ""
+date: ""
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, warning = FALSE, results = "hide", warning = FALSE}
+# Install and load packages ---------------
+packages <- c(
+  "tidyverse",
+  "haven",
+  "rdd",
+  "splines"
+)
+
+# Change to install = TRUE to install the required packages
+pacman::p_load(packages, character.only = TRUE, install = FALSE)
+
+# Load an example dataset ---------------
+# data <- read_dta("https://github.com/mizuhirosuzuki/R_econ_figures/tree/master/Library/Data/RDD_data.dta")
+data <- read_dta("Data/RDD_data.dta")
+data <- data %>%
+  mutate(treatment = (pmt_score >= cutoff))
+
+bw_seq = seq(0.5, 6, 0.5)
+rdd_mat = matrix(0, length(bw_seq), 3)
+for (i in seq_along(bw_seq)){
+  rdd_tmp <- RDestimate(
+    tmt_status ~ pmt_score, data = data, 
+    cutpoint = mean(data$cutoff), bw = bw_seq[i]
+    )
+  rdd_tmp <- summary(rdd_tmp)$coefficients["LATE",]
+  rdd_mat[i, 1] <- bw_seq[i]
+  rdd_mat[i, 2] <- rdd_tmp["Estimate"]
+  rdd_mat[i, 3] <- rdd_tmp["Std. Error"]
+}
+
+rdd_df <- as_tibble(rdd_mat)
+colnames(rdd_df) <- c("bw", "coef", "se")
+```
+
+```{r RDDBW, fig.path = 'figure/RDD/', warning = FALSE}
+ggplot(rdd_df, aes(x = bw, y = coef)) +
+  geom_point()  + 
+  geom_linerange(aes(ymin = coef - 1.96 * se, ymax = coef + 1.96 * se)) +
+  xlab("Bandwidth") +
+  ylab("Regression coefficients & 95% CI") +
+  theme_classic() +
+  theme(
+    axis.text = element_text(size = 12),
+    axis.title = element_text(size = 14)
+  )
+
+
+```
+
+

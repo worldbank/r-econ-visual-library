@@ -1,0 +1,72 @@
+---
+title: "Regression Discontinuity: Figure with Confidence Intervals"
+author: ""
+date: ""
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r RDDCI, fig.path = 'figure/RDD/', warning = FALSE}
+# Install and load packages ---------------
+packages <- c(
+  "tidyverse",
+  "haven",
+  "rdd",
+  "splines"
+)
+
+# Change to install = TRUE to install the required packages
+pacman::p_load(packages, character.only = TRUE, install = FALSE)
+
+# Load an example dataset ---------------
+# data <- read_dta("https://github.com/mizuhirosuzuki/R_econ_figures/tree/master/Library/Data/RDD_data.dta")
+data <- read_dta("Data/RDD_data.dta")
+data <- data %>%
+  mutate(treatment = (pmt_score >= cutoff))
+
+# Set bin width
+bin_width = 1.0
+
+fig_data <- data %>%
+  mutate(
+    pmt_score_bin = cut(
+      pmt_score, c(
+        seq(mean(cutoff), min(pmt_score), -bin_width), 
+        seq(mean(cutoff) + 0.001, max(pmt_score), bin_width)
+        )
+      )
+    ) %>%
+  group_by(treatment, pmt_score_bin) %>%
+  add_count(treatment) %>%
+  mutate(
+    mean_pmt_score = (min(pmt_score) + max(pmt_score)) / 2,
+    mean_tmt_status = mean(tmt_status)
+    ) %>%
+  ungroup()
+
+ggplot(fig_data, aes(x = pmt_score, tmt_status, color = treatment)) +
+  geom_smooth(method = lm, formula = y ~ bs(x, 3), size = 1.0, se = FALSE) +
+  geom_ribbon(
+    stat = "smooth", method = "lm", 
+    formula = "y ~ bs(x, 3)", fill = NA, linetype = "dashed", size = 0.3
+    ) +
+  geom_vline(aes(xintercept = cutoff), linetype = "longdash") +
+  xlab("Proxy means test score") +
+  ylab("Receiving treatment (95% CI)") +
+  scale_color_brewer(palette = "Set2") +
+  theme_classic() +
+  theme(
+    axis.text = element_text(size = 12),
+    axis.title = element_text(size = 14),
+    legend.position = "none"
+    )
+
+# This is easier but less customizable
+#rdd_res <- RDestimate(tmt_status ~ pmt_score, data = data, cutpoint = cutoff)
+#plot(rdd_res)
+
+```
+
+

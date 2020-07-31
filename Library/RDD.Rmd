@@ -1,0 +1,21 @@
+---
+title: "Regression Discontinuity Design"
+author: ""
+date: ""
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+```
+
+[<img src="./figure/RDD/RDDCI-1.png" width="400"/>](./RDDCI.html) [<img src="./figure/RDD/RDDBW-1.png" width="400"/>](./RDDBW.html)
+
+[<img src="./figure/RDD/RDDCIPoints-1.png" width="400"/>](./RDDCIPoints.html) [<img src="./figure/RDD/RDDLocalLinear-1.png" width="400"/>](./RDDLocalLinear.html) 
+
+[<img src="./figure/RDD/RDDHist-1.png" width="400"/>](./RDDHist.html) [<img src="./figure/RDD/RDDEstimate-1.png" width="400"/>](./RDDEstimate.html)
+
+[<img src="./figure/RDD/RDDPoints-1.png" width="400"/>](./RDDPoints.html) [<img src="./figure/RDD/RDD2Dbins-1.png" width="400"/>](./RDD2Dbins.html) 
+
+
+

@@ -1,0 +1,30 @@
+---
+title: "Regression Coefficients: Marginal Effect"
+author: ""
+date: ""
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# Install and load packages ---------------
+packages <- c(
+  "tidyverse",
+  "tidymodels",
+  "haven",
+  "forcats",
+  "latex2exp"
+)
+
+not_installed <- !packages %in% installed.packages()
+if (any(not_installed)) install.packages(packages[not_installed])
+lapply(packages,require,character.only=TRUE)
+
+## Load an example dataset ---------------
+#### I couldn't load the dataset
+#data <- read_dta("https://github.com/worldbank/Stata-IE-Visual-Library/raw/develop/Library/Charts/Chart%20of%20marginal%20effect%20with%20results%20table%20(Differences%20by%20different%20variables)/data.dta")
+#data_varlabel <- data %>% map_chr(~attributes(.)$label)
+#
+
+```
+

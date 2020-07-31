@@ -1,0 +1,13 @@
+---
+title: "Density Plots"
+author: ""
+date: ""
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+[<img src="./figure/DensityPlots/DensityPlotAverage-1.png" width="400"/>](./DensityPlotAverage.html) [<img src="./figure/DensityPlots/DensityCDF-1.png" width="400"/>](./DensityCDF.html) 
+
+[<img src="./figure/DensityPlots/DensityRidgeline-1.png" width="400"/>](./DensityRidgeline.html) [<img src="./figure/DensityPlots/DensityRidgelineRounds-1.png" width="400"/>](./DensityRidgelineRounds.html) 

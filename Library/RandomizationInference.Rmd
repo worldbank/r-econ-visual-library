@@ -1,0 +1,66 @@
+---
+title: "Randomization Inference"
+author: ""
+date: ""
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r RandomizationInference, fig.path = 'figure/RandomizationInference/'}
+# Install and load packages ---------------
+packages <- c(
+  "tidyverse",
+  "tidymodels",
+  "haven",
+  "ri2"
+)
+
+# Change to install = TRUE to install the required packages
+pacman::p_load(packages, character.only = TRUE, install = FALSE)
+
+# Load an example dataset ---------------
+# https://openknowledge.worldbank.org/handle/10986/25030
+# data <- read_dta("https://github.com/mizuhirosuzuki/R_econ_figures/blob/master/Library/HISP/evaluation.dta")
+data <- read_dta("HISP/evaluation.dta")
+
+analysis_data <- data %>%
+  filter(eligible == 1 & round == 1) 
+
+num_cluster <- length(unique((analysis_data$locality_identifier)))
+num_treated_cluster <- length(unique((analysis_data %>% filter(treatment_locality == 1))$locality_identifier))
+
+set.seed(42949)
+
+num_sim <- 1000
+sim_est <- rep(0, num_sim)
+for (i in 1:num_sim){
+  treated_locality_sim <- sample(unique(analysis_data$locality_identifier), num_treated_cluster)
+  
+  sim_data <- analysis_data %>%
+    mutate(treat_sim = ifelse(locality_identifier %in% treated_locality_sim, 1, 0))
+  
+  res <- lm(health_expenditures ~ treat_sim, data = sim_data)
+  sim_est[i] <- res$coefficients['treat_sim']
+}
+
+res <- lm(health_expenditures ~ treatment_locality, data = analysis_data)
+point_est <- res$coefficients["treatment_locality"]
+
+ggplot() +
+  geom_histogram(aes(x = sim_est), binwidth = 0.25) +
+  geom_vline(xintercept = point_est, alpha = 0.7, colour = "red") +
+  theme_classic() +
+  xlab("Simulated point estimates") +
+  theme(
+    axis.line.y = element_blank(),
+    axis.title.y = element_blank(),
+    axis.title.x = element_text(size = 14),
+    axis.ticks.y = element_blank(),
+    axis.text.y = element_blank(),
+    axis.text.x = element_text(size = 12)
+    )
+
+
+```

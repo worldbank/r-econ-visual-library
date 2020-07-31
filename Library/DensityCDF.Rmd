@@ -1,0 +1,55 @@
+---
+title: "Density Plots: Cumulative Density Curves"
+author: ""
+date: ""
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r DensityCDF, fig.path = 'figure/DensityPlots/'}
+
+# Install and load packages ---------------
+packages <- c(
+  "tidyverse",
+  "haven",
+  "labelled"
+)
+
+# Change to install = TRUE to install the required packages
+pacman::p_load(packages, character.only = TRUE, install = FALSE)
+
+# Load an example dataset ---------------
+# data <- read_dta("https://github.com/mizuhirosuzuki/R_econ_figures/tree/master/Library/Data/DensityCDF.dta")
+data <- read_dta("Data/DensityCDF.dta")
+
+data <- data %>%
+  mutate(post = as.factor(post)) %>%
+  group_by(post) %>%
+  mutate(mean_revenue = mean(revenue)) %>%
+  ungroup()
+
+ggplot(data, aes(x = revenue, color = post)) +
+  geom_vline(
+    aes(xintercept = mean_revenue, color = post), 
+    linetype = "dashed", size = 0.3
+    ) +
+  stat_ecdf() +
+  theme_classic() +
+  xlim(c(0, 25)) +
+  xlab("Agriculture Revenue (BRL thousands)") +
+  ylab("Cumulative Density") +
+  scale_colour_discrete(labels = c("Pre-treatment", "Post-treatment")) +
+  theme(
+    axis.text = element_text(size = 12),
+    axis.title = element_text(size = 15),
+    legend.title = element_blank(),
+    legend.text = element_text(size = 12),
+    legend.position = "bottom"
+    )
+
+
+```
+

@@ -1,0 +1,77 @@
+---
+title: "Bar Plots: Horizontal Multiple Variables"
+author: ""
+date: ""
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r HorizontalBarMultipleVars, fig.path = 'figure/BarPlots/'}
+# Install and load packages ---------------
+packages <- c(
+  "tidyverse",
+  "haven",
+  "labelled",
+  "forcats",
+  "scales"
+)
+
+# Change to install = TRUE to install the required packages
+pacman::p_load(packages, character.only = TRUE, install = FALSE)
+
+# Load an example dataset ---------------
+# data <- read_dta("https://github.com/mizuhirosuzuki/R_econ_figures/tree/master/Library/Data/HorizontalBarMultipleVars.dta", encoding = "latin1")
+data <- read_dta("Data/HorizontalBarMultipleVars.dta", encoding = "latin1")
+data_varlabel <- unlist(var_label(data))
+
+# Vector of variables used in the figure
+var_list <- c(colnames(data)[grepl("_correct$", colnames(data))],  
+              "checklist", "refer", "med_any", "med_class_any_6", "med_class_any_16")
+facility_label <- names(val_labels(data$facility_type))
+facility_val <- as.numeric(val_labels(data$facility_type))
+
+# Collapse the dataset across each treatment group
+collapsed_data <- data %>%
+                  mutate(facility_type = factor(facility_type)) %>%
+                  group_by(facility_type) %>%
+                  summarise_at(var_list, list(~ mean(., na.rm = T))) %>%
+                  ungroup()
+
+# Reshape data
+reshaped_data <- collapsed_data %>%
+                  pivot_longer(all_of(var_list), names_to = "key", values_to = "value") %>%
+                  mutate(key = as.factor(data_varlabel[.$key]))
+
+# Plot
+ggplot(reshaped_data, aes(x = reorder(key, value), y = value, fill = rev(facility_type))) +
+  geom_bar(
+    width = 0.8, position = position_dodge(width = 0.8), 
+    stat = "identity", alpha = .6
+    ) +
+  geom_text(
+    aes(label = format(round(value, 2), nsmall = 2)), 
+    position = position_dodge(width = 0.8), 
+    size = 3,
+    hjust = -0.35
+    ) +
+  scale_fill_brewer(
+    palette = "Set2", 
+    breaks = rev(facility_val), 
+    labels = facility_label
+    ) +
+  coord_flip(ylim = c(0, 1)) +
+  geom_hline(yintercept = 0, alpha = 0.5) +
+  scale_y_continuous(labels = percent) +
+  theme_classic() +
+  theme(
+    axis.line.y = element_blank(),
+    axis.title = element_blank(),
+    axis.ticks.y = element_blank(),
+    axis.text = element_text(size = 10),
+    legend.title = element_blank(),
+    legend.position = "bottom"
+    )
+
+```

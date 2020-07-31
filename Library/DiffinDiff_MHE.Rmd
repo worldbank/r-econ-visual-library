@@ -1,0 +1,65 @@
+---
+title: "Difference-in-Differences: Autor (2003)"
+author: ""
+date: ""
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r DiffinDiff_MHE, fig.path = 'figure/DiffinDiff/'}
+# Install and load packages ---------------
+packages <- c(
+  "tidyverse",
+  "tidymodels",
+  "haven",
+  "lfe"
+)
+
+# Change to install = TRUE to install the required packages
+pacman::p_load(packages, character.only = TRUE, install = FALSE)
+
+# Load an example dataset ---------------
+# Autor (2003): "Outsourcing at Will: The Contribution of Unjust Dismissal Doctrine to the Growth of Employment Outsourcing"
+# data <- read_dta("https://github.com/mizuhirosuzuki/R_econ_figures/tree/master/Library/Data/autor-jole-2003.dta")
+data <- read_dta("Data/autor-jole-2003.dta")
+
+admico_list <- c("admico_2", "admico_1", "admico0", "admico1", "admico2", "admico3", "mico4")
+admppa_list <- c("admppa_2", "admppa_1", "admppa0", "admppa1", "admppa2", "admppa3", "mppa4")
+admgfa_list <- c("admgfa_2", "admgfa_1", "admgfa0", "admgfa1", "admgfa2", "admgfa3", "mgfa4")
+labels <- c("2 Years\nprior", "1 Year\nprior", "Year of\nadoption", "1 Year\nafter", "2 Years\nafter", "3 Years\nafter", "4+ Years\nafter")
+
+data <- data %>%
+  filter(year >= 79, year <= 95, state != 98) %>%
+  select(state, year, annemp, lnths, all_of(admico_list), all_of(admppa_list), all_of(admgfa_list)) %>%
+  mutate(
+    trend = year - 78,
+    state = as.factor(state), 
+    year = as.factor(year)
+    )
+
+eq <- "lnths ~ log(annemp)"
+for (list in list(admico_list, admppa_list, admgfa_list)){
+  for (item in list){
+    eq <- paste(eq, "+", item)
+  }
+}
+eq <- paste(eq, "| state + year + state:trend | 0 | state")
+
+res <- felm(as.formula(eq), data = data)
+
+fig_data <- tibble(
+  label = factor(labels, levels = labels),
+  coef = summary(res)$coef[admico_list, "Estimate"] * 100,
+  se = summary(res)$coef[admico_list, "Cluster s.e."] * 100
+  )
+
+ggplot(fig_data, aes(x = label, y = coef)) +
+  geom_pointrange(aes(ymin = coef - 1.96 * se, ymax = coef + 1.96 * se)) +
+  theme_classic() +
+  geom_hline(yintercept = 0, alpha = 0.5, size = 0.5) +
+  ylab("Log points") +
+  xlab("Time relative to adoption of implied contract exception")
+
+```

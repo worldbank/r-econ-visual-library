@@ -67,6 +67,9 @@
 # Julia
 !/**/*.jl
 
+# HTML
+!/**/*.html
+
 #######################
 # Include some additional file formats in any output folder. You might have
 # to change the name of the Output folder to whatever it is called in your
@@ -88,3 +91,14 @@ password.*
 passwords.*
 password/
 passwords/
+
+!/Library/*.Rmd
+!/Library/Data/*.dta
+!/Library/HISP/*.dta
+/Library/Data/ReplicationDataGhanaJDE.dta
+!/docs/*.html
+!/docs/figure/**/*
+!/docs/site_libs/*
+
+
+.Rproj.user

@@ -1,0 +1,91 @@
+---
+title: "Regression Discontinuity: Figure with Confidence Intervals and Histograms"
+author: ""
+date: ""
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r RDDHist, fig.path = 'figure/RDD/', warning = FALSE}
+# Install and load packages ---------------
+packages <- c(
+  "tidyverse",
+  "haven",
+  "rdd",
+  "splines"
+)
+
+# Change to install = TRUE to install the required packages
+pacman::p_load(packages, character.only = TRUE, install = FALSE)
+
+# Load an example dataset ---------------
+# data <- read_dta("https://github.com/mizuhirosuzuki/R_econ_figures/tree/master/Library/Data/RDD_data.dta")
+data <- read_dta("Data/RDD_data.dta")
+
+data <- data %>%
+  mutate(treatment = (pmt_score >= cutoff))
+
+# Functions to find endpoints of intervals
+left_endpoint <- function(x){
+  return(max(bin_breaks[bin_breaks <= x]))
+}
+
+right_endpoint <- function(x){
+  return(min(bin_breaks[bin_breaks > x]))
+}
+
+# Bins for histogram
+bin_width = .25
+bin_breaks = with(
+  data, c(
+    seq(mean(cutoff), min(pmt_score) - bin_width, -bin_width), 
+    seq(mean(cutoff) + bin_width, max(pmt_score) + bin_width, bin_width)
+    )
+  )
+
+fig_data <- data %>%
+  mutate(pmt_score_bin = cut(pmt_score, sort(bin_breaks))) %>%
+  group_by(treatment, pmt_score_bin) %>%
+  mutate(n_bin = n()) %>%
+  mutate(
+    xmin = sapply(pmt_score, left_endpoint),
+    xmax = sapply(pmt_score, right_endpoint)
+    ) %>%
+  ungroup()
+
+hist_bottom = -0.5
+hist_top = -0.3
+
+ggplot(fig_data, aes(color = treatment, fill = treatment)) +
+  geom_rect(
+    aes(xmin = xmin, xmax = xmax,
+        ymin = hist_bottom, ymax = hist_bottom + (n_bin / max(n_bin)) * (hist_top - hist_bottom),
+        alpha = 0.3
+        )
+    ) +
+  geom_smooth(
+    aes(x = pmt_score, y = tmt_status), method = lm, 
+    formula = y ~ bs(x, 3), size = 1.0, se = FALSE
+    ) +
+  geom_ribbon(
+    aes(x = pmt_score, y = tmt_status), stat = "smooth", method = "lm", 
+    formula = "y ~ bs(x, 3)", fill = NA, linetype = "dashed", size = 0.3
+    ) +
+  geom_vline(aes(xintercept = cutoff), linetype = "longdash") +
+  xlab("Proxy means test score") +
+  ylab("Receiving treatment (95% CI)") +
+  scale_color_brewer(palette = "Set2") +
+  scale_fill_brewer(palette = "Set2") +
+  scale_y_continuous(breaks = c(0, 0.5, 1)) +
+  theme_classic() +
+  theme(
+    axis.text = element_text(size = 12),
+    axis.title = element_text(size = 14),
+    legend.position = "none"
+    )
+
+```
+
+

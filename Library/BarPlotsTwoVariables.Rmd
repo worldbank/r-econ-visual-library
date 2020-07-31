@@ -1,0 +1,60 @@
+---
+title: "Bar Plots: Two Variables"
+author: ""
+date: ""
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r BarPlotsTwoVariables, fig.path = 'figure/BarPlots/'}
+
+# Install and load packages ---------------
+packages <- c(
+  "tidyverse",
+  "haven",
+  "latex2exp"
+)
+
+# Change to install = TRUE to install the required packages
+pacman::p_load(packages, character.only = TRUE, install = FALSE)
+
+# Load an example dataset ---------------
+# data <- read_dta("https://github.com/mizuhirosuzuki/R_econ_figures/tree/master/Library/Data/BarPlotsTwoVariables.dta")
+data <- read_dta("Data/BarPlotsTwoVariables.dta")
+
+ggplot(data, aes(fill = type, y = treat_correct, x = interaction(study, case))) + 
+  geom_bar(width = 0.6, position = position_dodge(width = 0.8), stat = "identity") +
+  geom_text(
+    aes(label = format(round(treat_correct, 2), nsmall = 2)), 
+    position = position_dodge(width = 0.8), 
+    size = 4.5,
+    vjust = -0.35
+    ) +
+  geom_hline(yintercept = 0) +
+  annotate(
+    "text", x = c(1, 2, 3), y = -0.02,
+    label = levels(factor(data$study)), size = 5
+    ) +
+  annotate(
+    "text", x = c(1, 2.5), y = -0.08,
+    label = levels(factor((data$case))), size = 5
+    ) + 
+  theme_classic() +
+  scale_fill_brewer(palette = "Set2", name = "Measurement") +
+  ylab(TeX("Providers ordering correct treatment $\\rightarrow$")) + 
+  theme(
+    legend.position = 'bottom',
+    legend.title = element_text(size = 15),
+    legend.text = element_text(size = 15),
+    axis.title.x = element_blank(),
+    axis.ticks.x = element_blank(),
+    axis.text.x = element_blank(),
+    axis.text.y = element_text(size = 12),
+    axis.line = element_blank(),
+    axis.title.y = element_text(size = 15)
+    )
+  
+```
+

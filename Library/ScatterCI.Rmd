@@ -1,0 +1,69 @@
+---
+title: "Scatter Plots: Graded Confidence Intervals"
+author: ""
+date: ""
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r ScatterCI, fig.path = 'figure/ScatterPlots/', warning = FALSE}
+# Install and load packages ---------------
+packages <- c(
+  "tidyverse",
+  "haven",
+  "latex2exp",
+  "gridExtra",
+  "lemon",
+  "sciplot"
+)
+
+# Change to install = TRUE to install the required packages
+pacman::p_load(packages, character.only = TRUE, install = FALSE)
+
+# Load an example dataset ---------------
+# data <- read_dta("https://github.com/mizuhirosuzuki/R_econ_figures/tree/master/Library/Data/ScatterCI.dta")
+data <- read_dta("Data/ScatterCI.dta")
+
+set.seed(251668)
+
+subdata <- data %>%
+  filter(
+    cons_pae_m_sine < quantile(.$cons_pae_m_sine, 0.99) & 
+      cons_pae_m_sine > quantile(.$cons_pae_m_sine, 0.01)
+    ) %>%
+  sample_frac(0.05) # To emphasize the graded CI, 5% of obesrvations are randomly sampled
+
+ggplot(subdata, aes(x = cons_pae_m_sine, y = cons_pae_sd_sine)) +
+  geom_point(color = "black", alpha = 0.2, size = 0.8) +
+  stat_smooth(aes(size = NA, fill = "90%"), alpha = 0.3, show.legend = TRUE, level = 0.90) +
+  stat_smooth(aes(size = NA, fill = "95%"), alpha = 0.2, show.legend = TRUE, level = 0.95) +
+  stat_smooth(aes(size = NA, fill = "99%"), alpha = 0.1, show.legend = TRUE, level = 0.99) +
+  stat_smooth(color = "black", size = 0.8, alpha = 0.6, se = FALSE, show.legend = TRUE) +
+  theme_classic() +
+  scale_fill_manual(
+    name = "Confidence Intervals", 
+    values = c("90%" = "gray12", "95%" = "gray12", "99%" = "gray12")
+    ) +
+  guides(
+    fill = guide_legend(override.aes = list(
+      alpha = c(0.3, 0.2, 0.1),
+      size = c(0, 0, 0))
+      )
+    ) +
+  xlim(c(75, 130)) +
+  ylim(c(5, 22)) +
+  xlab(TeX("$\\widehat{m}$")) +
+  ylab(TeX("$\\widehat{s}$")) +
+  theme(
+    axis.text = element_text(size = 12),
+    axis.title = element_text(size = 15),
+    legend.position = c(1, 0.01),
+    legend.justification = c(1, 0),
+    legend.key.width = grid::unit(35, "pt"),
+    )
+
+```
+
+

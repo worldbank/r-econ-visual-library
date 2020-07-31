@@ -1,0 +1,55 @@
+---
+title: "Bar Plots: Horizontal Ordered Bar Plots by group"
+author: ""
+date: ""
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r HorizontalBarOrderGroup, fig.path = 'figure/BarPlots/', warning = FALSE}
+# Install and load packages ---------------
+packages <- c(
+  "tidyverse",
+  "WDI",
+  "forcats"
+)
+
+# Change to install = TRUE to install the required packages
+pacman::p_load(packages, character.only = TRUE, install = FALSE)
+
+# Load example datasets ---------------
+data <- WDI(indicator = "NY.GDP.PCAP.KD", start = 2018, end = 2018)
+country_code <- as_tibble(WDI_data$country)
+
+data <- data %>%
+  rename(GDP = NY.GDP.PCAP.KD) %>%
+  inner_join(country_code, by = "iso2c") %>%
+  filter(region != "Aggregates") %>%
+  top_n(-30, GDP) %>%
+  mutate(country = fct_reorder(country.x, GDP))
+
+ggplot(data, aes(x = country, y = GDP, fill = region)) +
+  geom_bar(stat = "identity", alpha = .6, width = .4) +
+  geom_text(
+    aes(label = format(round(GDP, 1), nsmall = 1)), 
+    hjust = -0.35,
+    size = 3
+    ) +
+  coord_flip(ylim = c(0, 1500)) +
+  geom_hline(yintercept = 0, alpha = 0.5) +
+  xlab("") +
+  ylab("GDP per capita (constant 2000 US$) in 2018") + 
+  theme_classic() +
+  scale_fill_brewer(palette = "Set2", name = "Region") +
+  theme(
+    axis.line.y = element_blank(),
+    axis.title.x = element_text(size = 12),
+    axis.text.x = element_text(size = 10),
+    axis.ticks.y = element_blank(),
+    legend.text = element_text(size = 10)
+    )
+  
+```
+
