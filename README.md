@@ -1,7 +1,7 @@
 #
 # R Econ Visual Library
 
-This repository contains graphs created in R to explore impact evaluation data sets and display results. The Library plots and codes can be viewed here ( ** add link after creating GitHub Pages ** ). The folders in the repository contain the `.Rmd` files that can be used to replicate the images in the Library.
+This repository contains graphs created in R to explore impact evaluation data sets and display results. The Library plots and codes can be viewed [here](https://worldbank.github.io/r-econ-visual-library/). The folders in the repository contain the `.Rmd` files that can be used to replicate the images in the Library.
 
 ## Contributing
 - If you have suggestions of plots you would like to see in this library and are not currently here, you can open an issue describing your suggestion.
