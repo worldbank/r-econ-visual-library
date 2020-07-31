@@ -354,8 +354,7 @@ packages &lt;- c(
 pacman::p_load(packages, character.only = TRUE, install = FALSE)
 
 # Load an example dataset ---------------
-# data &lt;- read_dta(&quot;https://github.com/mizuhirosuzuki/R_econ_figures/tree/master/Library/Data/METable.dta&quot;)
-data &lt;- read_dta(&quot;Data/METable.dta&quot;)
+data &lt;- read_dta(&quot;https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/METable.dta&quot;)
 data_varlabel &lt;- unlist(var_label(data))
 
 var_list &lt;- c(colnames(data)[grepl(&quot;??_correct$&quot;, colnames(data))], &quot;refer&quot;, &quot;med_any&quot;, &quot;med_class_any_6&quot;, &quot;med_class_any_16&quot;)

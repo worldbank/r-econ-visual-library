@@ -361,8 +361,7 @@ pacman::p_load(packages, character.only = TRUE, install = FALSE)
 table_chr_size = 2.5
 
 # First dataset
-# data1 &lt;- read_dta(&quot;https://github.com/mizuhirosuzuki/R_econ_figures/tree/master/Library/Data/METable2data.dta&quot;)
-data1 &lt;- read_dta(&quot;Data/METable2data.dta&quot;)
+data1 &lt;- read_dta(&quot;https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/METable2data.dta&quot;)
 data_varlabel &lt;- unlist(var_label(data1))
 
 data1 &lt;- data1 %&gt;%
@@ -439,8 +438,7 @@ dots_xaxis &lt;- ggplot_build(p1)$data[[1]][&#39;x&#39;]</code></pre>
   
 # Second dataset
 
-# data2 &lt;- read_dta(&quot;https://github.com/mizuhirosuzuki/R_econ_figures/tree/master/Library/Data/METable2data2.dta&quot;)
-data2 &lt;- read_dta(&quot;Data/METable2data2.dta&quot;)
+data2 &lt;- read_dta(&quot;https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/METable2data2.dta&quot;)
 data_varlabel &lt;- unlist(var_label(data2))
 
 data2 &lt;- data2 %&gt;%

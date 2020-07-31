@@ -23,8 +23,7 @@ packages <- c(
 pacman::p_load(packages, character.only = TRUE, install = FALSE)
 
 # Load an example dataset ---------------
-# data <- read_dta("https://github.com/mizuhirosuzuki/R_econ_figures/blob/master/Library/Data/BarPlotsCombineTwoAxes.dta")
-data <- read_dta("Data/BarPlotsCombineTwoAxes.dta")
+data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/BarPlotsCombineTwoAxes.dta")
 
 food_group_list = c('animal', 'fruit', 'grain', 'veg', 'starch', 'processed_sugar')
 food_label_list = c(

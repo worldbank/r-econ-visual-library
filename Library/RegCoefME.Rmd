@@ -25,8 +25,7 @@ packages <- c(
 pacman::p_load(packages, character.only = TRUE, install = FALSE)
 
 # Load an example dataset ---------------
-# data <- read_dta("https://github.com/mizuhirosuzuki/R_econ_figures/tree/master/Library/Data/RegCoefME.dta")
-data <- read_dta("Data/RegCoefME.dta")
+data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/RegCoefME.dta")
 data_varlabel <- unlist(var_label(data))
 
 var_list <- c(colnames(data)[grepl("??_correct$", colnames(data))], "refer", "med_any", "med_class_any_6", "med_class_any_16")

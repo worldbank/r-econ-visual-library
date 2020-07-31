@@ -21,10 +21,8 @@ packages <- c(
 pacman::p_load(packages, character.only = TRUE, install = FALSE)
 
 # Load example datasets ---------------
-# data1 <- read_dta("https://github.com/mizuhirosuzuki/R_econ_figures/tree/master/Library/Data/HorizontalBarPlot1.dta")
-# data2 <- read_dta("https://github.com/mizuhirosuzuki/R_econ_figures/tree/master/Library/Data/HorizontalBarPlot2.dta")
-data1 <- read_dta("Data/HorizontalBarPlot1.dta")
-data2 <- read_dta("Data/HorizontalBarPlot2.dta")
+data1 <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/HorizontalBarPlot1.dta")
+data2 <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/HorizontalBarPlot2.dta")
 
 # Generate hour variable from minute variable
 data2 <- data2 %>% mutate(hours = tottime / 60)

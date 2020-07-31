@@ -23,8 +23,7 @@ packages <- c(
 pacman::p_load(packages, character.only = TRUE, install = FALSE)
 
 # Load an example dataset ---------------
-# data <- read_dta("https://github.com/mizuhirosuzuki/R_econ_figures/tree/master/Library/Data/ScatterPolynomial.dta")
-data <- read_dta("Data/ScatterPolynomial.dta")
+data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/ScatterPolynomial.dta")
 
 subdata <- data %>%
   filter(cons_pae_m_sine < quantile(.$cons_pae_m_sine, 0.99) & cons_pae_m_sine > quantile(.$cons_pae_m_sine, 0.01))

@@ -22,8 +22,7 @@ packages <- c(
 pacman::p_load(packages, character.only = TRUE, install = FALSE)
 
 # Load an example dataset ---------------
-# data <- read_dta("https://github.com/mizuhirosuzuki/R_econ_figures/tree/master/Library/Data/HorizontalBarMultipleVars.dta", encoding = "latin1")
-data <- read_dta("Data/HorizontalBarMultipleVars.dta", encoding = "latin1")
+data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/HorizontalBarMultipleVars.dta", encoding = "latin1")
 data_varlabel <- unlist(var_label(data))
 
 # Vector of variables used in the figure

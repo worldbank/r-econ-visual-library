@@ -30,8 +30,7 @@ pacman::p_load(packages, character.only = TRUE, install = FALSE)
 table_chr_size = 2.5
 
 # First dataset
-# data1 <- read_dta("https://github.com/mizuhirosuzuki/R_econ_figures/tree/master/Library/Data/METable2data.dta")
-data1 <- read_dta("Data/METable2data.dta")
+data1 <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/METable2data.dta")
 data_varlabel <- unlist(var_label(data1))
 
 data1 <- data1 %>%
@@ -108,8 +107,7 @@ p1 <- p1 + annotate("text", x = dots_xaxis$x, y = 500,
   
 # Second dataset
 
-# data2 <- read_dta("https://github.com/mizuhirosuzuki/R_econ_figures/tree/master/Library/Data/METable2data2.dta")
-data2 <- read_dta("Data/METable2data2.dta")
+data2 <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/METable2data2.dta")
 data_varlabel <- unlist(var_label(data2))
 
 data2 <- data2 %>%

@@ -22,8 +22,7 @@ packages <- c(
 pacman::p_load(packages, character.only = TRUE, install = FALSE)
 
 # Load an example dataset ---------------
-# data <- read_dta("https://github.com/mizuhirosuzuki/R_econ_figures/tree/master/Library/Data/RDD_data.dta")
-data <- read_dta("Data/RDD_data.dta")
+data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/RDD_data.dta")
 data <- data %>%
   mutate(treatment = (pmt_score >= cutoff))
 

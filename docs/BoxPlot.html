@@ -352,8 +352,7 @@ packages &lt;- c(
 pacman::p_load(packages, character.only = TRUE, install = FALSE)
 
 # Load an example dataset ---------------
-# data &lt;- read.dta13(&quot;https://github.com/mizuhirosuzuki/R_econ_figures/tree/master/Library/Data/BoxPlot.dta&quot;)
-data &lt;- read.dta13(&quot;Data/BoxPlot.dta&quot;)
+data &lt;- read.dta13(&quot;https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/BoxPlot.dta&quot;)
 data_varlabel &lt;- varlabel(data)
 
 data$country = fct_rev(as.factor(data$country))
