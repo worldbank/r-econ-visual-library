@@ -20,8 +20,7 @@ packages <- c(
 pacman::p_load(packages, character.only = TRUE, install = FALSE)
 
 # Load an example dataset ---------------
-# data <- read_dta("https://github.com/mizuhirosuzuki/R_econ_figures/tree/master/Library/Data/DensityWithData.dta")
-data <- read_dta("Data/DensityWithData.dta")
+data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/DensityWithData.dta")
 
 data <- data %>%
   filter(!(is.na(theta_mle) | is.na(roster_6a8))) %>%

@@ -22,8 +22,7 @@ packages <- c(
 pacman::p_load(packages, character.only = TRUE, install = FALSE)
 
 # Load an example dataset ---------------
-# data <- read_dta("https://github.com/mizuhirosuzuki/R_econ_figures/blob/master/Library/Data/BarPlotsMultipleVariables.dta")
-data <- read_dta("Data/BarPlotsMultipleVariables.dta")
+data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/BarPlotsMultipleVariables.dta")
 
 # Collapse the dataset across each treatment group
 collapsed_data <- data %>%

@@ -355,8 +355,7 @@ packages &lt;- c(
 pacman::p_load(packages, character.only = TRUE, install = FALSE)
 
 # Load an example dataset ---------------
-# data &lt;- read_dta(&quot;https://github.com/mizuhirosuzuki/R_econ_figures/tree/master/Library/Data/StackBarGraphs.dta&quot;)
-data &lt;- read_dta(&quot;Data/StackBarGraphs.dta&quot;)
+data &lt;- read_dta(&quot;https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/StackBarGraphs.dta&quot;)
 data_varlabel &lt;- unlist(var_label(data))
 data &lt;- data %&gt;% mutate(case = ifelse(case == 5, &quot;Case 1&quot;, &quot;Case 2&quot;))
 

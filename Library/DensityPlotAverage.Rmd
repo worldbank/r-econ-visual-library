@@ -21,8 +21,7 @@ packages <- c(
 pacman::p_load(packages, character.only = TRUE, install = FALSE)
 
 # Load an example dataset ---------------
-# data <- read_dta("https://github.com/mizuhirosuzuki/R_econ_figures/tree/master/Library/Data/DensityPlotAverage.dta")
-data <- read_dta("Data/DensityPlotAverage.dta")
+data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/DensityPlotAverage.dta")
 
 data <- data %>%
   mutate(post = as.factor(.$post)) %>%

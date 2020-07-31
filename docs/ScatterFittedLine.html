@@ -352,8 +352,7 @@ packages &lt;- c(
 pacman::p_load(packages, character.only = TRUE, install = FALSE)
 
 # Load an example dataset ---------------
-# data &lt;- read_dta(&quot;https://github.com/mizuhirosuzuki/R_econ_figures/tree/master/Library/Data/ScatterFittedLine.dta&quot;)
-data &lt;- read_dta(&quot;Data/ScatterFittedLine.dta&quot;)
+data &lt;- read_dta(&quot;https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/ScatterFittedLine.dta&quot;)
 
 data &lt;- data %&gt;% mutate(post = as.factor(post))
 

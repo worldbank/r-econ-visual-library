@@ -352,10 +352,8 @@ packages &lt;- c(
 pacman::p_load(packages, character.only = TRUE, install = FALSE)
 
 # Load example datasets ---------------
-# data1 &lt;- read_dta(&quot;https://github.com/mizuhirosuzuki/R_econ_figures/tree/master/Library/Data/HorizontalBarPlot1.dta&quot;)
-# data2 &lt;- read_dta(&quot;https://github.com/mizuhirosuzuki/R_econ_figures/tree/master/Library/Data/HorizontalBarPlot2.dta&quot;)
-data1 &lt;- read_dta(&quot;Data/HorizontalBarPlot1.dta&quot;)
-data2 &lt;- read_dta(&quot;Data/HorizontalBarPlot2.dta&quot;)
+data1 &lt;- read_dta(&quot;https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/HorizontalBarPlot1.dta&quot;)
+data2 &lt;- read_dta(&quot;https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/HorizontalBarPlot2.dta&quot;)
 
 # Generate hour variable from minute variable
 data2 &lt;- data2 %&gt;% mutate(hours = tottime / 60)

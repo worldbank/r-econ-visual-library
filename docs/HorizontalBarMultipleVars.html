@@ -353,8 +353,7 @@ packages &lt;- c(
 pacman::p_load(packages, character.only = TRUE, install = FALSE)
 
 # Load an example dataset ---------------
-# data &lt;- read_dta(&quot;https://github.com/mizuhirosuzuki/R_econ_figures/tree/master/Library/Data/HorizontalBarMultipleVars.dta&quot;, encoding = &quot;latin1&quot;)
-data &lt;- read_dta(&quot;Data/HorizontalBarMultipleVars.dta&quot;, encoding = &quot;latin1&quot;)
+data &lt;- read_dta(&quot;https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/HorizontalBarMultipleVars.dta&quot;, encoding = &quot;latin1&quot;)
 data_varlabel &lt;- unlist(var_label(data))
 
 # Vector of variables used in the figure

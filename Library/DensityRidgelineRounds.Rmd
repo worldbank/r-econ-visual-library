@@ -22,8 +22,7 @@ pacman::p_load(packages, character.only = TRUE, install = FALSE)
 # Load an example dataset ---------------
 # See https://microdata.worldbank.org/index.php/catalog/2249
 # Only relevant variables are kept in the dataset
-# data <- read_dta("https://github.com/mizuhirosuzuki/R_econ_figures/tree/master/Library/Data/ReplicationDataGhanaJDE_short.dta")
-data <- read_dta("Data/ReplicationDataGhanaJDE_short.dta")
+data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/ReplicationDataGhanaJDE_short.dta")
 
 # Treatment group includes only those who received treatment 
 # between 2nd and 3rd waves, for simplicity.

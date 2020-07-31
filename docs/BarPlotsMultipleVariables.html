@@ -351,8 +351,7 @@ packages &lt;- c(
 pacman::p_load(packages, character.only = TRUE, install = FALSE)
 
 # Load an example dataset ---------------
-# data &lt;- read_dta(&quot;https://github.com/mizuhirosuzuki/R_econ_figures/blob/master/Library/Data/BarPlotsMultipleVariables.dta&quot;)
-data &lt;- read_dta(&quot;Data/BarPlotsMultipleVariables.dta&quot;)
+data &lt;- read_dta(&quot;https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/BarPlotsMultipleVariables.dta&quot;)
 
 # Collapse the dataset across each treatment group
 collapsed_data &lt;- data %&gt;%

@@ -21,8 +21,7 @@ packages <- c(
 pacman::p_load(packages, character.only = TRUE, install = FALSE)
 
 # Load an example dataset ---------------
-# data <- read_dta("https://github.com/mizuhirosuzuki/R_econ_figures/tree/master/Library/Data/HorizontalBetterbar.dta")
-data <- read_dta("Data/HorizontalBetterbar.dta")
+data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/HorizontalBetterbar.dta")
 data_varlabel <- unlist(var_label(data))
 
 # Make vector of variables to be used
