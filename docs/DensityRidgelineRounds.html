@@ -357,8 +357,6 @@ data &lt;- read_dta(&quot;https://github.com/worldbank/r-econ-visual-library/raw
 
 # Treatment group includes only those who received treatment 
 # between 2nd and 3rd waves, for simplicity.
-# Also, to emphasize the effectiveness, some numbers are added to the outcome 
-# for treatment groups.
 analysis_data &lt;- data %&gt;%
   filter(wave &gt;= 2) %&gt;%
   group_by(sheno) %&gt;%
@@ -370,9 +368,7 @@ analysis_data &lt;- data %&gt;%
   ungroup() %&gt;%
   mutate(
     treatment_group = ifelse(cashtreat == 1, &quot;Cash&quot;,
-                               ifelse(equiptreat == 1, &quot;In-kind&quot;, &quot;Control&quot;)),
-    realfinalprofit = ifelse(cashtreat == 1 &amp; wave &gt;= 3, realfinalprofit + 50,
-                               ifelse(equiptreat == 1 &amp; wave &gt;= 3, realfinalprofit + 100, realfinalprofit))
+                               ifelse(equiptreat == 1, &quot;In-kind&quot;, &quot;Control&quot;))
     )
 
 ggplot(analysis_data, aes(x = realfinalprofit, y = fct_rev(factor(wave)), 
@@ -384,7 +380,7 @@ ggplot(analysis_data, aes(x = realfinalprofit, y = fct_rev(factor(wave)),
   scale_color_brewer(palette = &quot;Set2&quot;, name = &quot;Group&quot;, breaks = c(&quot;Control&quot;, &quot;Cash&quot;, &quot;In-kind&quot;)) +
   scale_fill_brewer(palette = &quot;Set2&quot;, name = &quot;Group&quot;, breaks = c(&quot;Control&quot;, &quot;Cash&quot;, &quot;In-kind&quot;)) +
   xlim(c(0, 250))</code></pre>
-<pre><code>## Picking joint bandwidth of 15.8</code></pre>
+<pre><code>## Picking joint bandwidth of 18.3</code></pre>
 <p><img src="figure/DensityPlots/DensityRidgelineRounds-1.png" width="672" /></p>
 
 

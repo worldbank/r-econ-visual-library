@@ -26,8 +26,6 @@ data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/
 
 # Treatment group includes only those who received treatment 
 # between 2nd and 3rd waves, for simplicity.
-# Also, to emphasize the effectiveness, some numbers are added to the outcome 
-# for treatment groups.
 analysis_data <- data %>%
   filter(wave >= 2) %>%
   group_by(sheno) %>%
@@ -39,9 +37,7 @@ analysis_data <- data %>%
   ungroup() %>%
   mutate(
     treatment_group = ifelse(cashtreat == 1, "Cash",
-                               ifelse(equiptreat == 1, "In-kind", "Control")),
-    realfinalprofit = ifelse(cashtreat == 1 & wave >= 3, realfinalprofit + 50,
-                               ifelse(equiptreat == 1 & wave >= 3, realfinalprofit + 100, realfinalprofit))
+                               ifelse(equiptreat == 1, "In-kind", "Control"))
     )
 
 ggplot(analysis_data, aes(x = realfinalprofit, y = fct_rev(factor(wave)), 
