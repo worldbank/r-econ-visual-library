@@ -1,5 +1,5 @@
 ---
-title: 'Hot to contribute'
+title: 'How to contribute'
 author: ""
 date: ""
 ---
