@@ -23,6 +23,10 @@ pacman::p_load(packages, character.only = TRUE, install = FALSE)
 # Load an example dataset ---------------
 data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/BarPlotsTwoVariables.dta")
 
+# Printing the first five rows of the data to visualize its structure
+head(data)
+
+# Create a graph ---------------
 ggplot(data, aes(fill = type, y = treat_correct, x = interaction(study, case))) + 
   geom_bar(width = 0.6, position = position_dodge(width = 0.8), stat = "identity") +
   geom_text(

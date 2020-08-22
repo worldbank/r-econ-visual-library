@@ -25,15 +25,24 @@ pacman::p_load(packages, character.only = TRUE, install = FALSE)
 data <- read.dta13("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/BoxPlot.dta")
 data_varlabel <- varlabel(data)
 
-data$country = fct_rev(as.factor(data$country))
-data$provider_cadre = fct_rev(as.factor(data$provider_cadre))
-xlab = levels(data$country)
+# Printing the first five rows of the data to visualize its structure before data wrangling
+head(data)
+
+# Data wrangling ---------------
+data$country <- fct_rev(as.factor(data$country))
+data$provider_cadre <- fct_rev(as.factor(data$provider_cadre))
+xlab <- levels(data$country)
+
 for (i in seq_along(xlab)){
   xlab[i] = str_interp("${xlab[i]} (N = ${sum(data$country == xlab[i])})")
 }
 
-med_competence_mle = median(data$competence_mle)
+med_competence_mle <- median(data$competence_mle)
 
+# Printing the first five rows of the data to visualize its structure after data wrangling
+head(data)
+
+# Create a graph ---------------
 ggplot(data, aes(x = country, y = competence_mle, fill = provider_cadre)) +
   geom_boxplot(outlier.shape = NA) +
   coord_flip(ylim = c(-2.5, 3.5)) +

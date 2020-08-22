@@ -25,6 +25,12 @@ pacman::p_load(packages, character.only = TRUE, install = FALSE)
 # Load an example dataset ---------------
 data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/BarPlotsCombineTwoAxes.dta")
 
+# Printing the first five rows of the data to visualize its structure before data wrangling
+head(data)
+
+# Data wrangling ---------------
+
+# creating a vector of observations with appropriate labels  
 food_group_list = c('animal', 'fruit', 'grain', 'veg', 'starch', 'processed_sugar')
 food_label_list = c(
   animal = 'Animal Sourced',
@@ -35,10 +41,15 @@ food_label_list = c(
   processed_sugar = 'Processed Sugar'
   )
 
+# filtering data to the observations of interests
 fig_data <- data %>%
   filter(food_group %in% food_group_list) %>%
   mutate(food_group = recode_factor(food_group, !!!food_label_list))
 
+# Printing the first five rows of the data to visualize its structure after data wrangling
+head(fig_data)
+
+# Create a graph ---------------
 ggplot(fig_data) +
   geom_bar(aes(x = int1mo, y = number_group), stat = "identity", alpha = .6, width = .4) +
   geom_line(aes(x = int1mo, y = total_exp / 1000)) +
