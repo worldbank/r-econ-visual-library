@@ -24,6 +24,11 @@ pacman::p_load(packages, character.only = TRUE, install = FALSE)
 # Load an example dataset ---------------
 data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/BarPlotsMultipleVariables.dta")
 
+# Printing the first five rows of the data to visualize its structure before data wrangling
+head(data)
+
+# Data wrangling ---------------
+
 # Collapse the dataset across each treatment group
 collapsed_data <- data %>%
                   group_by(treatment_group) %>%
@@ -51,10 +56,15 @@ fig_data <- reshaped_data %>%
                 "w_Spring_Winter_Potato_Prod", 
                 "w_Main_Paddy_Prod"
               ))
-  
+
+# Printing the first five rows of the data to visualize its structure after data wrangling
+head(fig_data)
+
 ```
 
 ```{r BarPlotsMultipleVariables, fig.path = 'figure/BarPlots/'}
+
+# Create a graph ---------------
 ggplot(fig_data, aes(x = crop, y = value, fill = colname)) +
   geom_bar(
     width = 0.6, position = position_dodge(width = 0.6), 
