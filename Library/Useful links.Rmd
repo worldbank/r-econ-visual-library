@@ -1,0 +1,13 @@
+---
+title: 'Useful links'
+author: ""
+date: ""
+---
+
+  + [DIME Wiki](https://dimewiki.worldbank.org/wiki/Main_Page)
+  + [Data Visualization Cheatsheet](https://rstudio.com/resources/cheatsheets/)
+  + [Introduction to R for advanced Stata users](https://github.com/worldbank/dime-r-training)
+  + [The R Graph Gallery](https://www.r-graph-gallery.com/)
+  + [ggplot2: Elegant Graphics for Data Analysis](https://ggplot2-book.org/)
+  + [Data Visualization with R](https://rkabacoff.github.io/datavis/)
+  + [Coding Practices](https://dimewiki.worldbank.org/wiki/Stata_Coding_Practices)
