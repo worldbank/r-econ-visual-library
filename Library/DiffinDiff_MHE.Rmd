@@ -37,7 +37,7 @@ labels <- c("2 Years\nprior", "1 Year\nprior", "Year of\nadoption", "1 Year\naft
 data <- data %>%
   filter(year >= 79, year <= 95, state != 98) %>%
   select(state, year, annemp, lnths, all_of(admico_list), all_of(admppa_list), all_of(admgfa_list)) %>%
-  # all_of is a selector helper from tidyselect that lets you select variables
+  # all_of is a selector helper from tidyselect that lets you select variables 
   mutate(
     trend = year - 78,
     state = as.factor(state), 
