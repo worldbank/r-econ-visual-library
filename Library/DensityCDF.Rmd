@@ -24,22 +24,33 @@ pacman::p_load(packages, character.only = TRUE, install = FALSE)
 # Load an example dataset ---------------
 data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/DensityCDF.dta")
 
+# Printing the first five rows of the data to visualize its structure before data wrangling
+head(data)
+
+# Data wrangling ---------------
 data <- data %>%
   mutate(post = as.factor(post)) %>%
   group_by(post) %>%
   mutate(mean_revenue = mean(revenue)) %>%
   ungroup()
 
+# Printing the first five rows of the data to visualize its structure after data wrangling
+head(data)
+
+# Create a graph ---------------
 ggplot(data, aes(x = revenue, color = post)) +
   geom_vline(
     aes(xintercept = mean_revenue, color = post), 
     linetype = "dashed", size = 0.3
     ) +
-  stat_ecdf() +
+  stat_ecdf() + 
+  # stat_ecdf for empirical cumulative density function
   theme_classic() +
   xlim(c(0, 25)) +
-  xlab("Agriculture Revenue (BRL thousands)") +
-  ylab("Cumulative Density") +
+  labs(
+    x = "Agriculture Revenue (BRL thousands)",
+    y = "Cumulative Density"
+  ) +
   scale_colour_discrete(labels = c("Pre-treatment", "Post-treatment")) +
   theme(
     axis.text = element_text(size = 12),
@@ -48,7 +59,6 @@ ggplot(data, aes(x = revenue, color = post)) +
     legend.text = element_text(size = 12),
     legend.position = "bottom"
     )
-
 
 ```
 

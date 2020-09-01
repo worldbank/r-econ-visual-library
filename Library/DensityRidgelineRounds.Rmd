@@ -24,6 +24,11 @@ pacman::p_load(packages, character.only = TRUE, install = FALSE)
 # Only relevant variables are kept in the dataset
 data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/ReplicationDataGhanaJDE_short.dta")
 
+# Printing the first five rows of the data to visualize its structure before data wrangling
+head(data)
+
+# Data wrangling ---------------
+
 # Treatment group includes only those who received treatment 
 # between 2nd and 3rd waves, for simplicity.
 analysis_data <- data %>%
@@ -38,14 +43,25 @@ analysis_data <- data %>%
   mutate(
     treatment_group = ifelse(cashtreat == 1, "Cash",
                                ifelse(equiptreat == 1, "In-kind", "Control"))
-    )
+    ) 
+# Using ifelse (nested in this case) function to make the treatment_group variable that passes a given test
+# Here, Cash" is assigned if the unit of observation is equal to 1 or "In Kind" if equiptreat is equal to 1
+# and Control otherwise
 
-ggplot(analysis_data, aes(x = realfinalprofit, y = fct_rev(factor(wave)), 
-                          color = factor(treatment_group), fill = factor(treatment_group))) +
+# Printing the first five rows of the data to visualize its structure after data wrangling
+head(data)
+
+# Create a graph ---------------
+ggplot(analysis_data, aes(x = realfinalprofit, 
+                          y = fct_rev(factor(wave)), 
+                          color = factor(treatment_group), 
+                          fill = factor(treatment_group))) +
   geom_density_ridges(alpha = 0.1, scale = 1) +
   theme_ridges() +
-  xlab("3-month Real Profit (cedi)") +
-  ylab("Rounds") +
+  labs(
+    x = "3-month Real Profit (cedi)",
+    y = "Rounds"
+  ) +
   scale_color_brewer(palette = "Set2", name = "Group", breaks = c("Control", "Cash", "In-kind")) +
   scale_fill_brewer(palette = "Set2", name = "Group", breaks = c("Control", "Cash", "In-kind")) +
   xlim(c(0, 250))

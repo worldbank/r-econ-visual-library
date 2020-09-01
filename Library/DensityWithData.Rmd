@@ -22,8 +22,12 @@ pacman::p_load(packages, character.only = TRUE, install = FALSE)
 # Load an example dataset ---------------
 data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/DensityWithData.dta")
 
+# Printing the first five rows of the data to visualize its structure before data wrangling
+head(data)
+
+# Data wrangling ---------------
 data <- data %>%
-  filter(!(is.na(theta_mle) | is.na(roster_6a8))) %>%
+  filter(!(is.na(theta_mle) | is.na(roster_6a8))) %>% 
   mutate(
     score = theta_mle - min(theta_mle), 
     bach = (as.numeric(roster_6a8) > 4)
@@ -32,8 +36,10 @@ data <- data %>%
   mutate(tot_num = n()) %>%
   ungroup()
 
-bw = 0.1
 
+bw = 0.1 # setting the bandwith variable separetly for later uses 
+
+# Using for loop to customize the dataset
 for (i in c(0, 1)){
   sub_data <- data %>% filter(bach == i)
   hist_graph <- ggplot(sub_data, aes(x = score)) + geom_histogram(binwidth = bw)
@@ -43,8 +49,10 @@ for (i in c(0, 1)){
   data$bin_score[data$bach == i] <- hist_data$count[findInterval(sub_data$score, hist_breaks)]
 }
 
+# Printing the first five rows of the data to visualize its structure after data wrangling
 head(data)
 
+# Create a graph ---------------
 ggplot(data, aes(x = score, colour = bach)) +
   #geom_density(aes(y = ..density.. * tot_num * bw)) +
   geom_density(aes(y = ..count.. * bw)) +
