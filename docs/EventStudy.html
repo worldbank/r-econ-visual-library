@@ -2,451 +2,69 @@
 
 <html>
 
+<!--HEAD -->
 <head>
 
-<meta charset="utf-8" />
-<meta name="generator" content="pandoc" />
-<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+  <!--Head: created by RMarkdown (mostly) -->
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>R Econ Visual Library</title>
+
+  <link rel="stylesheet"
+    href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z"
+    crossorigin="anonymous">
+
+  <link rel="stylesheet" href="site_libs/bootstrap-3.3.5/css/cerulean.min.css">
+  <link rel="stylesheet" href="site_libs/custom-css.css">
+
+  <script
+    src="https://code.jquery.com/jquery-3.5.1.min.js"
+    integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
+    crossorigin="anonymous"
+    onload="loaded=true; console.log(loaded)">
+  </script>
+
+  <script type="text/javascript">
+    jQuery(document).ready(function(){
+        jQuery("#contain").load("https://raw.githubusercontent.com/worldbank/r-econ-visual-library/develop/docs/header.html");
+    });
+  </script>
 
 
-<meta name="author" content="" />
-
-
-<title>Event Study</title>
-
-<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<link href="site_libs/bootstrap-3.3.5/css/cerulean.min.css" rel="stylesheet" />
-<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
-<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
-<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
-<script src="site_libs/navigation-1.1/tabsets.js"></script>
-<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
-<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-
-<style type="text/css">code{white-space: pre;}</style>
-<style type="text/css">
-  pre:not([class]) {
-    background-color: white;
+  <script type="text/javascript">
+  if (window.hljs) {
+    hljs.configure({languages: []});
+    hljs.initHighlightingOnLoad();
+    if (document.readyState && document.readyState === "complete") {
+      window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+    }
   }
-</style>
-<script type="text/javascript">
-if (window.hljs) {
-  hljs.configure({languages: []});
-  hljs.initHighlightingOnLoad();
-  if (document.readyState && document.readyState === "complete") {
-    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
-  }
-}
-</script>
-
-
-
-<style type="text/css">
-h1 {
-  font-size: 34px;
-}
-h1.title {
-  font-size: 38px;
-}
-h2 {
-  font-size: 30px;
-}
-h3 {
-  font-size: 24px;
-}
-h4 {
-  font-size: 18px;
-}
-h5 {
-  font-size: 16px;
-}
-h6 {
-  font-size: 12px;
-}
-.table th:not([align]) {
-  text-align: left;
-}
-</style>
-
-
-
-
-<style type = "text/css">
-.main-container {
-  max-width: 940px;
-  margin-left: auto;
-  margin-right: auto;
-}
-code {
-  color: inherit;
-  background-color: rgba(0, 0, 0, 0.04);
-}
-img {
-  max-width:100%;
-}
-.tabbed-pane {
-  padding-top: 12px;
-}
-.html-widget {
-  margin-bottom: 20px;
-}
-button.code-folding-btn:focus {
-  outline: none;
-}
-summary {
-  display: list-item;
-}
-</style>
-
-
-<style type="text/css">
-/* padding for bootstrap navbar */
-body {
-  padding-top: 51px;
-  padding-bottom: 40px;
-}
-/* offset scroll position for anchor links (for fixed navbar)  */
-.section h1 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h2 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h3 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h4 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h5 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h6 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.dropdown-submenu {
-  position: relative;
-}
-.dropdown-submenu>.dropdown-menu {
-  top: 0;
-  left: 100%;
-  margin-top: -6px;
-  margin-left: -1px;
-  border-radius: 0 6px 6px 6px;
-}
-.dropdown-submenu:hover>.dropdown-menu {
-  display: block;
-}
-.dropdown-submenu>a:after {
-  display: block;
-  content: " ";
-  float: right;
-  width: 0;
-  height: 0;
-  border-color: transparent;
-  border-style: solid;
-  border-width: 5px 0 5px 5px;
-  border-left-color: #cccccc;
-  margin-top: 5px;
-  margin-right: -10px;
-}
-.dropdown-submenu:hover>a:after {
-  border-left-color: #ffffff;
-}
-.dropdown-submenu.pull-left {
-  float: none;
-}
-.dropdown-submenu.pull-left>.dropdown-menu {
-  left: -100%;
-  margin-left: 10px;
-  border-radius: 6px 0 6px 6px;
-}
-</style>
-
-<script>
-// manage active state of menu based on current page
-$(document).ready(function () {
-  // active menu anchor
-  href = window.location.pathname
-  href = href.substr(href.lastIndexOf('/') + 1)
-  if (href === "")
-    href = "index.html";
-  var menuAnchor = $('a[href="' + href + '"]');
-
-  // mark it active
-  menuAnchor.parent().addClass('active');
-
-  // if it's got a parent navbar menu mark it active as well
-  menuAnchor.closest('li.dropdown').addClass('active');
-});
-</script>
-
-<!-- tabsets -->
-
-<style type="text/css">
-.tabset-dropdown > .nav-tabs {
-  display: inline-table;
-  max-height: 500px;
-  min-height: 44px;
-  overflow-y: auto;
-  background: white;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-}
-
-.tabset-dropdown > .nav-tabs > li.active:before {
-  content: "";
-  font-family: 'Glyphicons Halflings';
-  display: inline-block;
-  padding: 10px;
-  border-right: 1px solid #ddd;
-}
-
-.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-  content: "&#xe258;";
-  border: none;
-}
-
-.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-  content: "";
-  font-family: 'Glyphicons Halflings';
-  display: inline-block;
-  padding: 10px;
-  border-right: 1px solid #ddd;
-}
-
-.tabset-dropdown > .nav-tabs > li.active {
-  display: block;
-}
-
-.tabset-dropdown > .nav-tabs > li > a,
-.tabset-dropdown > .nav-tabs > li > a:focus,
-.tabset-dropdown > .nav-tabs > li > a:hover {
-  border: none;
-  display: inline-block;
-  border-radius: 4px;
-  background-color: transparent;
-}
-
-.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
-  display: block;
-  float: none;
-}
-
-.tabset-dropdown > .nav-tabs > li {
-  display: none;
-}
-</style>
-
-<!-- code folding -->
-
-
-
+  </script>
 
 </head>
 
+<!-- BODY -->
 <body>
 
+  <!-- Upper row -->
+  <div id="contain"></div>
 
-<div class="container-fluid main-container">
-
-
-
-
-<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
-  <div class="container">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <a class="navbar-brand" href="index.html">R Econ Visual Library</a>
-    </div>
-    <div id="navbar" class="navbar-collapse collapse">
-      <ul class="nav navbar-nav">
-        <li>
-  <a href="index.html">Home</a>
-</li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Summary Statistics
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="BarPlots.html">Bar Plots</a>
-    </li>
-    <li>
-      <a href="DensityPlots.html">Density Plots</a>
-    </li>
-    <li>
-      <a href="ScatterPlots.html">Scatter Plots</a>
-    </li>
-  </ul>
-</li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Impact Evaluation
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="RegressionCoef.html">Regression Coefficients</a>
-    </li>
-    <li>
-      <a href="DiffinDiff.html">Diff-in-Diffs</a>
-    </li>
-    <li>
-      <a href="RI.html">Randomization Inference</a>
-    </li>
-    <li>
-      <a href="RDD.html">Regression Discontinuity</a>
-    </li>
-  </ul>
-</li>
-<li>
-  <a href="Contribute.html">Contribute</a>
-</li>
-<li>
-  <a href="https://github.com/worldbank/r-econ-visual-library/blob/master/LICENSE">License</a>
-</li>
-<li>
-  <a href="https://github.com/worldbank/r-econ-visual-library">GitHub</a>
-</li>
-      </ul>
-      <ul class="nav navbar-nav navbar-right">
-        
-      </ul>
-    </div><!--/.nav-collapse -->
-  </div><!--/.container -->
-</div><!--/.navbar -->
-
-<div class="fluid-row" id="header">
-
-
-
-<h1 class="title toc-ignore">Event Study</h1>
-
-</div>
-
-
-<pre class="r"><code># Install and load packages ---------------
-packages &lt;- c(
-  &quot;tidyverse&quot;,
-  &quot;tidymodels&quot;,
-  &quot;haven&quot;,
-  &quot;lfe&quot;
-)
-
-# Change to install = TRUE to install the required packages
-pacman::p_load(packages, character.only = TRUE, install = FALSE)
-
-# Load an example dataset ---------------
-# Autor (2003): &quot;Outsourcing at Will: The Contribution of Unjust Dismissal Doctrine to the Growth of Employment Outsourcing&quot;
-data &lt;- read_dta(&quot;https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/autor-jole-2003.dta&quot;)
-
-admico_list &lt;- c(&quot;admico_2&quot;, &quot;admico_1&quot;, &quot;admico0&quot;, &quot;admico1&quot;, &quot;admico2&quot;, &quot;admico3&quot;, &quot;mico4&quot;)
-
-analysis_data &lt;- data %&gt;%
-  filter(year &gt;= 79, year &lt;= 95, state != 98) %&gt;%
-  select(state, year, annemp, lnths, all_of(admico_list)) %&gt;%
-  group_by(state) %&gt;%
-  mutate(
-    adoption_first_year = min(ifelse(admico0 == 1, year, Inf)),
-    adoption = ifelse(year &gt;= min(ifelse(admico0 == 1, year, Inf)), 1, 0),
-    year_since_adoption = year - adoption_first_year
-    ) %&gt;%
-  ungroup() %&gt;%
-  mutate(
-    year_since_adoption = relevel(as.factor(year_since_adoption), ref = &quot;-1&quot;),
-    state = as.factor(state),
-    year = as.factor(year)
-    )
-
-res &lt;- felm(lnths ~ factor(year_since_adoption) | state + year | 0 | state, data = analysis_data)
-
-labels &lt;- c()
-var_list &lt;- c()
-for (num in seq(-9, 15)){
-  if (num != -1){
-    labels &lt;- c(labels, num)
-    var_list &lt;- c(var_list, paste0(&quot;factor(year_since_adoption)&quot;, as.character(num)))
-  }
-}
-
-fig_data &lt;- tibble(
-  label = labels,
-  coef = summary(res)$coef[var_list, &quot;Estimate&quot;] * 100,
-  se = summary(res)$coef[var_list, &quot;Cluster s.e.&quot;] * 100
-  ) %&gt;%
-  add_row(label = -1, coef = 0, se = 0)
-
-ggplot(fig_data, aes(x = label, y = coef)) +
-  geom_pointrange(aes(ymin = coef - 1.96 * se, ymax = coef + 1.96 * se), alpha = 0.7) +
-  geom_vline(xintercept = -0.5, alpha = 0.3, linetype = &quot;dashed&quot;, size = 0.3) +
-  theme_classic() +
-  geom_hline(yintercept = 0, alpha = 0.5, size = 0.5) +
-  ylab(&quot;Coefficient estimates &amp; 95% CI&quot;) +
-  xlab(&quot;Year relative to adoption of implied contract exception&quot;) +
-  theme(
-    axis.text = element_text(size = 12),
-    axis.title = element_text(size = 14)
-  )</code></pre>
-<p><img src="figure/EventStudy/EventStudy-1.png" width="672" /></p>
-
-
-
-
-</div>
-
-<script>
-
-// add bootstrap table styles to pandoc tables
-function bootstrapStylePandocTables() {
-  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
-}
-$(document).ready(function () {
-  bootstrapStylePandocTables();
-});
-
-
-</script>
-
-<!-- tabsets -->
-
-<script>
-$(document).ready(function () {
-  window.buildTabsets("TOC");
-});
-
-$(document).ready(function () {
-  $('.tabset-dropdown > .nav-tabs > li').click(function () {
-    $(this).parent().toggleClass('nav-tabs-open')
-  });
-});
-</script>
-
-<!-- code folding -->
-
-
+  <!-- Content -->
+  <div class="container-fluid main-container">
+  </div>
 <!-- dynamically load mathjax for compatibility with self-contained -->
-<script>
-  (function () {
-    var script = document.createElement("script");
-    script.type = "text/javascript";
-    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
-    document.getElementsByTagName("head")[0].appendChild(script);
-  })();
+<script
+  src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+  integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+  crossorigin="anonymous">
+</script>
+<script
+  src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+  integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
+  crossorigin="anonymous">
 </script>
 
 </body>

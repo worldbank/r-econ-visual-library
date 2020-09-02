@@ -12,15 +12,26 @@
 
   <title>R Econ Visual Library</title>
 
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-  <link rel="stylesheet" href="site_libs/bootstrap-3.3.5/css/cerulean.min.css">
+  <link rel="stylesheet"
+    href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z"
+    crossorigin="anonymous">
 
-  <script src="site_libs/jquery-3.5.1/jquery.min.js"></script>
-  <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
-  <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
-  <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
-  <script src="site_libs/navigation-1.1/tabsets.js"></script>
-  <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+  <link rel="stylesheet" href="site_libs/bootstrap-3.3.5/css/cerulean.min.css">
+  <link rel="stylesheet" href="site_libs/custom-css.css">
+
+  <script
+    src="https://code.jquery.com/jquery-3.5.1.min.js"
+    integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
+    crossorigin="anonymous"
+    onload="loaded=true; console.log(loaded)">
+  </script>
+
+  <script type="text/javascript">
+    jQuery(document).ready(function(){
+        jQuery("#contain").load("https://raw.githubusercontent.com/worldbank/r-econ-visual-library/develop/docs/header.html");
+    });
+  </script>
 
 
   <script type="text/javascript">
@@ -33,117 +44,13 @@
   }
   </script>
 
-  <!--Manual styling -->
-  <style type="text/css">
-
-    h1 {
-      font-size: 34px;
-    }
-    h3{
-    	text-align: left;
-    	color: #333;
-    	padding: 10px 0px;
-    	font: 14px bold Verdana, sans-serif;
-    	font-weight: bold;
-        margin-top: 14px;
-    }
-    .main-container {
-        max-width: 1150px;
-        margin-left: auto;
-        margin-right: auto;
-    }
-    img {
-      max-width:90%;
-      display: block;
-      margin-left: auto;
-      margin-right: auto;
-    }
-    .card {
-      margin-bottom: 20px;
-    }
-    .jumbotron {
-      padding: 20px;
-    }
-    .navbar-custom {
-      background-color: #0071bc;
-      color: #ededed;
-    }
-    .jumbotron {
-      background-color: #1486c9;
-      color: #ffffff;
-    }
-    .dropdown-toggle {
-      color: #ffffff;
-    }
-    .navbar-link {
-      color: #ffffff;
-    }
-    nav.navbar {
-      background: #0071bc;
-    }
-    .row1 {
-      margin-top: 20px;
-    }
-
-  </style>
 </head>
 
 <!-- BODY -->
 <body>
 
   <!-- Upper row -->
-  <div class="sticky-top">
-
-    <!-- Title -->
-    <div class="jumbotron jumbotron-fluid my-0">
-      <div class="container">
-        <h1 class="display-4">R Econ Visual Library</h1>
-        <p class="lead">This is a modified jumbotron that occupies the entire horizontal space of its parent.</p>
-      </div>
-    </div>
-
-    <!-- Navegation bar -->
-    <nav class="navbar navbar-expand navbar-custom">
-    <div class="container">
-      <div id="navbar" class="navbar-collapse collapse navbar-custom">
-
-        <!-- Left side navegation: website content -->
-        <ul class="nav navbar-nav">
-          <a class="navbar-brand navbar-link" href="index.html">Home</a>
-          <li class="dropdown">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-              Summary Statistics
-            </a>
-            <ul class="dropdown-menu" role="menu">
-              <li> <a href="BarPlots.html">Bar Plots</a> </li>
-              <li> <a href="DensityPlots.html">Density Plots</a> </li>
-              <li> <a href="ScatterPlots.html">Scatter Plots</a> </li>
-            </ul>
-          </li>
-          <li class="dropdown">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-              Impact Evaluation
-            </a>
-            <ul class="dropdown-menu" role="menu">
-              <li> <a href="RegressionCoef.html">Regression Coefficients</a> </li>
-              <li> <a href="DiffinDiff.html">Diff-in-Diffs</a> </li>
-              <li> <a href="RI.html">Randomization Inference</a> </li>
-              <li> <a href="RDD.html">Regression Discontinuity</a> </li>
-            </ul>
-          </li>
-          <li> <a href="Links.html" class="navbar-link">Useful links</a> </li>
-        </ul>
-
-          <!-- Right side: Meta information -->
-          <ul class="nav navbar-nav navbar-right">
-            <li> <a href="Contribute.html" class="navbar-link">Contribute</a> </li>
-            <li> <a href="https://github.com/worldbank/r-econ-visual-library/blob/master/LICENSE" class="navbar-link">License</a> </li>
-            <li> <a href="https://github.com/worldbank/r-econ-visual-library" class="navbar-link">GitHub</a> </li>
-
-          </ul>
-        </div><!--/.navbar-colapse-->
-      </div><!--/.container -->
-    </div><!--/.sticky-top -->
+  <div id="contain"></div>
 
   <!-- Content -->
   <div class="container-fluid main-container">
@@ -261,13 +168,15 @@
         an initiative to provide data quality assurance to all DIME impact evaluations.</p>
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
-<script>
-  (function () {
-    var script = document.createElement("script");
-    script.type = "text/javascript";
-    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
-    document.getElementsByTagName("head")[0].appendChild(script);
-  })();
+<script
+  src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+  integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+  crossorigin="anonymous">
+</script>
+<script
+  src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+  integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
+  crossorigin="anonymous">
 </script>
 
 </body>
