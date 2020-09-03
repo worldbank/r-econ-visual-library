@@ -1,5 +1,5 @@
 ---
-title: 'Bar Plots: Combine Two Axes'
+pagetitle: 'BarPlotsCombineTwoAxes'
 author: ''
 date: ''
 ---
@@ -8,8 +8,19 @@ date: ''
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r BarPlotsCombineTwoAxes, fig.path = 'figure/BarPlots/'}
+```{r, echo = FALSE, include = FALSE}
+library(htmltools)
+```
 
+```{r, echo = FALSE}
+includeHTML("../../head.html")
+includeCSS("../../../docs/site_libs/custom-css.css")
+includeCSS("../../../docs/site_libs/bootstrap-3.3.5/css/cerulean.min.css")
+includeHTML("../../../docs/header.html")
+```
+
+
+```{r BarPlotsCombineTwoAxes, fig.path = '../../../docs/figure/BarPlots/'}
 # Install and load packages ---------------
 packages <- c(
   "tidyverse",
@@ -21,6 +32,7 @@ packages <- c(
 
 # Change to install = TRUE to install the required packages
 pacman::p_load(packages, character.only = TRUE, install = FALSE)
+
 
 # Load an example dataset ---------------
 data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/BarPlotsCombineTwoAxes.dta")

@@ -12,7 +12,7 @@
 <meta name="author" content="" />
 
 
-<title>Bar Plots: SidebySideHorizontalBar</title>
+<title>Randomization Inference</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -278,7 +278,7 @@ $(document).ready(function () {
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
     Summary Statistics
-     
+
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
@@ -296,7 +296,7 @@ $(document).ready(function () {
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
     Impact Evaluation
-     
+
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
@@ -325,7 +325,7 @@ $(document).ready(function () {
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+
       </ul>
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
@@ -335,12 +335,63 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">Bar Plots: SidebySideHorizontalBar</h1>
+<h1 class="title toc-ignore">Randomization Inference</h1>
 
 </div>
 
 
-<p>Under construction</p>
+<pre class="r"><code># Install and load packages ---------------
+packages &lt;- c(
+  &quot;tidyverse&quot;,
+  &quot;tidymodels&quot;,
+  &quot;haven&quot;,
+  &quot;ri2&quot;
+)
+
+# Change to install = TRUE to install the required packages
+pacman::p_load(packages, character.only = TRUE, install = FALSE)
+
+# Load an example dataset ---------------
+# https://openknowledge.worldbank.org/handle/10986/25030
+data &lt;- read_dta(&quot;https://github.com/worldbank/r-econ-visual-library/raw/master/Library/HISP/evaluation.dta&quot;)
+
+analysis_data &lt;- data %&gt;%
+  filter(eligible == 1 &amp; round == 1)
+
+num_cluster &lt;- length(unique((analysis_data$locality_identifier)))
+num_treated_cluster &lt;- length(unique((analysis_data %&gt;% filter(treatment_locality == 1))$locality_identifier))
+
+set.seed(42949)
+
+num_sim &lt;- 1000
+sim_est &lt;- rep(0, num_sim)
+for (i in 1:num_sim){
+  treated_locality_sim &lt;- sample(unique(analysis_data$locality_identifier), num_treated_cluster)
+
+  sim_data &lt;- analysis_data %&gt;%
+    mutate(treat_sim = ifelse(locality_identifier %in% treated_locality_sim, 1, 0))
+
+  res &lt;- lm(health_expenditures ~ treat_sim, data = sim_data)
+  sim_est[i] &lt;- res$coefficients[&#39;treat_sim&#39;]
+}
+
+res &lt;- lm(health_expenditures ~ treatment_locality, data = analysis_data)
+point_est &lt;- res$coefficients[&quot;treatment_locality&quot;]
+
+ggplot() +
+  geom_histogram(aes(x = sim_est), binwidth = 0.25) +
+  geom_vline(xintercept = point_est, alpha = 0.7, colour = &quot;red&quot;) +
+  theme_classic() +
+  xlab(&quot;Simulated point estimates&quot;) +
+  theme(
+    axis.line.y = element_blank(),
+    axis.title.y = element_blank(),
+    axis.title.x = element_text(size = 14),
+    axis.ticks.y = element_blank(),
+    axis.text.y = element_blank(),
+    axis.text.x = element_text(size = 12)
+    )</code></pre>
+<p><img src="figure/RandomizationInference/RandomizationInference-1.png" width="672" /></p>
 
 
 
