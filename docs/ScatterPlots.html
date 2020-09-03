@@ -54,6 +54,27 @@
 
   <!-- Content -->
   <div class="container-fluid main-container">
+    <script type="text/javascript">
+
+    var plotType = "ScatterPlots"
+    var plots = ["ScatterCI",
+                 "ScatterFittedLine",
+                 "ScatterLabels",
+                 "ScatterPlotsStratified",
+                 "ScatterPolynomial"
+               ];
+
+
+     for(var i = 0; i < plots.length; i++) {
+       document.write('<div class = "col-sm-6">');
+       document.write('<div class="card">');
+       document.write('<a href="figure/' + plotType + '/' + plots[i] + '.html" class="stretched-link"></a>');
+       document.write('<div class="card-body">');
+       document.write('<img class="card-img" src="figure/' + plotType + '/' + plots[i] +'-1.png">');
+       document.write('</div></div></div>');
+     }
+
+    </script>
   </div>
 <!-- dynamically load mathjax for compatibility with self-contained -->
 <script
