@@ -29,7 +29,7 @@
 
   <script type="text/javascript">
     jQuery(document).ready(function(){
-        jQuery("#contain").load("https://raw.githubusercontent.com/worldbank/r-econ-visual-library/develop/docs/header.html");
+        jQuery("#contain").load("https://raw.githubusercontent.com/worldbank/r-econ-visual-library/develop/docs/_header.html");
     });
   </script>
 
@@ -56,7 +56,6 @@
   <div class="container-fluid main-container">
     <script type="text/javascript">
 
-    var plotType = "BarPlots"
     var plots = ["BarPlotsCombineTwoAxes",
                  "BarPlotsMultipleVariables",
                  "BarPlotsTwoVariables",
@@ -72,9 +71,9 @@
      for(var i = 0; i < plots.length; i++) {
        document.write('<div class = "col-sm-6">');
        document.write('<div class="card">');
-       document.write('<a href="figure/' + plotType + '/' + plots[i] + '.html" class="stretched-link"></a>');
+       document.write('<a href="' + plots[i] + '.html" class="stretched-link"></a>');
        document.write('<div class="card-body">');
-       document.write('<img class="card-img" src="figure/' + plotType + '/' + plots[i] +'-1.png">');
+       document.write('<img class="card-img" src="figure/' + plots[i] +'-1.png">');
        document.write('</div></div></div>');
      }
 
