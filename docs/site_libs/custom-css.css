@@ -23,9 +23,6 @@ img {
 .card {
   margin-bottom: 20px;
 }
-.jumbotron {
-  padding: 20px;
-}
 .navbar-custom {
   background-color: #0071bc;
   color: #ededed;
@@ -33,6 +30,8 @@ img {
 .jumbotron {
   background-color: #1486c9;
   color: #ffffff;
+  padding: 20px;
+  margin-bottom: 0px;
 }
 .dropdown-toggle {
   color: #ffffff;
