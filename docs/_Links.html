@@ -29,7 +29,7 @@
 
   <script type="text/javascript">
     jQuery(document).ready(function(){
-        jQuery("#contain").load("https://raw.githubusercontent.com/worldbank/r-econ-visual-library/develop/docs/header.html");
+        jQuery("#contain").load("https://raw.githubusercontent.com/worldbank/r-econ-visual-library/develop/docs/_header.html");
     });
   </script>
 
@@ -55,25 +55,107 @@
   <!-- Content -->
   <div class="container-fluid main-container">
 
+    <!-- First plot row -->
+    <div class="row row1" id="header">
 
+      <div class = "col-lg-3 d-flex align-items-stretc">
+        <div class="card">
+          <div class="card-header">
+            <a href="https://dimewiki.worldbank.org/wiki/Main_Page" class="stretched-link"></a>
+            DIME Wiki
+          </div>
+          <div class="card-body">
+            <img class="card-img" src="figure/dimewiki.png">
+          </div>
+        </div>
+      </div>
 
+      <div class = "col-lg-3 d-flex align-items-stretc">
+        <div class="card">
+          <div class="card-header">
+            <a href="https://github.com/worldbank/dime-r-training" class="stretched-link"></a>
+            Intron to R for advanced Stata users </div>
+          <div class="card-body">
+            <img class="card-img" src="figure/rtraining.png">
+          </div>
+        </div>
+      </div>
 
-    <ul>
-    <li><a href="https://dimewiki.worldbank.org/wiki/Main_Page">DIME Wiki</a></li>
-    <li><a href="https://rstudio.com/resources/cheatsheets/">Data Visualization Cheatsheet</a></li>
-    <li><a href="https://github.com/worldbank/dime-r-training">Introduction to R for advanced Stata users</a></li>
-    <li><a href="https://www.r-graph-gallery.com/">The R Graph Gallery</a></li>
-    <li><a href="https://ggplot2-book.org/">ggplot2: Elegant Graphics for Data Analysis</a></li>
-    <li><a href="https://rkabacoff.github.io/datavis/">Data Visualization with R</a></li>
-    <li><a href="https://dimewiki.worldbank.org/wiki/Stata_Coding_Practices">Coding Practices</a></li>
-    </ul>
+      <div class = "col-lg-3 d-flex align-items-stretc">
+        <div class="card">
+          <div class="card-header">
+            <a href="https://worldbank.github.io/Stata-IE-Visual-Library/" class="stretched-link"></a>
+            Stata Visual Library </div>
+          <div class="card-body">
+            <img class="card-img" src="figure/stata.png">
+          </div>
+        </div>
+      </div>
 
+      <div class = "col-lg-3 d-flex align-items-stretc">
+        <div class="card">
+          <div class="card-header">
+            <a href="https://dimewiki.worldbank.org/wiki/Coding_practices" class="stretched-link"></a>
+            Coding Practices
+          </div>
+          <div class="card-body">
+            <img class="card-img" src="figure/practices.png">
+          </div>
+        </div>
+      </div>
 
+    </div><!-- First plot row -->
 
+    <!-- Second plot row -->
+    <div class="row" id="header">
 
+      <div class = "col-lg-3 d-flex align-items-stretc">
+        <div class="card">
+          <div class="card-header">
+            <a href="https://www.r-graph-gallery.com/" class="stretched-link"></a>
+            R graph gallery </div>
+          <div class="card-body">
+            <img class="card-img" src="figure/rgraphgallery.png">
+          </div>
+        </div>
+      </div>
 
+      <div class = "col-lg-3 d-flex align-items-stretc">
+        <div class="card">
+          <div class="card-header"> ggplot2: Elegant Graphics for Data Analysis </div>
+          <a href="https://ggplot2-book.org/" class="stretched-link"></a>
+          <div class="card-body">
+            <img class="card-img" src="figure/ggplot.jpg">
+          </div>
+        </div>
+      </div>
 
+      <div class = "col-lg-3 d-flex align-items-stretc">
+        <div class="card">
+          <div class="card-header">
+            <a href="https://rstudio.com/resources/cheatsheets/" class="stretched-link"></a>
+            RStudio cheatsheets
+          </div>
+          <div class="card-body">
+            <img class="card-img" src="figure/cheatsheet.png">
+          </div>
+        </div>
+      </div>
+
+      <div class = "col-lg-3 d-flex align-items-stretc">
+        <div class="card">
+          <div class="card-header">
+            <a href="https://rkabacoff.github.io/datavis/" class="stretched-link"></a>
+            Data Visualization with R </div>
+          <div class="card-body">
+            <img class="card-img" src="figure/RandomizationInference-1.png">
+          </div>
+        </div>
+      </div>
+
+    </div><!-- Second plot row -->
   </div>
+
 <!-- dynamically load mathjax for compatibility with self-contained -->
 <script
   src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
