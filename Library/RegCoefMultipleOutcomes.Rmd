@@ -1,5 +1,5 @@
 ---
-title: "Regression Coefficients: Multiple Outcomes"
+pagetitle: "Regression Coefficients: Multiple Outcomes"
 author: ""
 date: ""
 ---
@@ -8,7 +8,7 @@ date: ""
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r RegCoefMultipleOutcomes, fig.path = 'figure/RegressionCoef/', warning = FALSE}
+```{r RegCoefMultipleOutcomes, fig.path = '../docs/figure/', warning = FALSE}
 # Install and load packages ---------------
 packages <- c(
   "tidyverse",

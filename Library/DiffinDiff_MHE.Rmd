@@ -1,5 +1,5 @@
 ---
-title: "Difference-in-Differences: Autor (2003)"
+pagetitle: "Difference-in-Differences: Autor (2003)"
 author: ""
 date: ""
 ---
@@ -8,7 +8,7 @@ date: ""
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r DiffinDiff_MHE, fig.path = 'figure/DiffinDiff/'}
+```{r DiffinDiff_MHE, fig.path = '../docs/figure/'}
 # Install and load packages ---------------
 packages <- c(
   "tidyverse",

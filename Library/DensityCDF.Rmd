@@ -1,5 +1,5 @@
 ---
-title: "Density Plots: Cumulative Density Curves"
+pagetitle: "Density Plots: Cumulative Density Curves"
 author: ""
 date: ""
 ---
@@ -9,7 +9,7 @@ date: ""
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r DensityCDF, fig.path = 'figure/DensityPlots/'}
+```{r DensityCDF, fig.path = '../docs/figure/'}
 
 # Install and load packages ---------------
 packages <- c(

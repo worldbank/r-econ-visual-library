@@ -1,0 +1,71 @@
+---
+pagetitle: 'BarPlotsCombineTwoAxes'
+author: ''
+date: ''
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r BarPlotsCombineTwoAxes, fig.path = '../docs/figure/'}
+
+# Install and load packages ---------------
+packages <- c(
+  "tidyverse",
+  "haven",
+  "grid",
+  "gridExtra",
+  "cowplot"
+)
+
+# Change to install = TRUE to install the required packages
+pacman::p_load(packages, character.only = TRUE, install = FALSE)
+
+
+# Load an example dataset ---------------
+data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/BarPlotsCombineTwoAxes.dta")
+
+food_group_list = c('animal', 'fruit', 'grain', 'veg', 'starch', 'processed_sugar')
+food_label_list = c(
+  animal = 'Animal Sourced',
+  fruit = 'Fruit',
+  grain = 'Grain',
+  veg = 'Vegetable',
+  starch = "Starchy Foods",
+  processed_sugar = 'Processed Sugar'
+  )
+
+fig_data <- data %>%
+  filter(food_group %in% food_group_list) %>%
+  mutate(food_group = recode_factor(food_group, !!!food_label_list))
+
+ggplot(fig_data) +
+  geom_bar(aes(x = int1mo, y = number_group), stat = "identity", alpha = .6, width = .4) +
+  geom_line(aes(x = int1mo, y = total_exp / 1000)) +
+  scale_y_continuous(
+    sec.axis = sec_axis(~.*1000,  name = "Total Value of Exp. 1,000 Real Tz Sh. (line)"), 
+    expand = c(0, 0)
+    ) +
+  geom_hline(yintercept = 0, alpha = 0.5) +
+  coord_cartesian(ylim = c(0, 3.3)) +
+  scale_x_continuous(breaks = c(3, 6, 9, 12)) +
+  theme_classic() +
+  labs(
+    title = "",
+    x = "Month of Interview",
+    y = "Avg. Number of Foods from \n Group Consumed Last Month (bar)"
+    ) +
+  facet_wrap(~food_group, strip.position = "top") +
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    axis.ticks = element_blank(),
+    axis.line = element_blank(),
+    strip.background = element_blank(),
+    strip.text = element_text(size = 12),
+    strip.placement = "outside"
+    )
+
+```
+
+

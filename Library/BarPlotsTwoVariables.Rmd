@@ -1,5 +1,4 @@
 ---
-title: "Bar Plots: Two Variables"
 author: ""
 date: ""
 ---
@@ -8,7 +7,7 @@ date: ""
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r BarPlotsTwoVariables, fig.path = 'figure/BarPlots/'}
+```{r BarPlotsTwoVariables, fig.path = '../docs/figure/'}
 
 # Install and load packages ---------------
 packages <- c(

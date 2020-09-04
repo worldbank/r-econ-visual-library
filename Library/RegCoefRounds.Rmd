@@ -1,5 +1,5 @@
 ---
-title: "Regression Coefficients: Point Estimates by Rounds"
+pagetitle: "Regression Coefficients: Point Estimates by Rounds"
 author: ""
 date: ""
 ---
@@ -8,7 +8,7 @@ date: ""
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r RegCoefRounds, fig.path = 'figure/RegressionCoef/', warning = FALSE}
+```{r RegCoefRounds, fig.path = '../docs/figure/', warning = FALSE}
 # Install and load packages ---------------
 packages <- c(
   "tidyverse",
