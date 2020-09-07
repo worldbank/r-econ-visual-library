@@ -1,4 +1,0 @@
-name: "my-website"
-output_dir: "../../../docs/figure/BarPlots"
-output:
-  html_document
