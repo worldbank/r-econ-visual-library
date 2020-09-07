@@ -1,5 +1,5 @@
 ---
-title: "Bar Plots: Multiple Variables"
+pagetitle: "Bar Plots: Multiple Variables"
 author: ""
 date: ""
 ---
@@ -54,7 +54,7 @@ fig_data <- reshaped_data %>%
   
 ```
 
-```{r BarPlotsMultipleVariables, fig.path = 'figure/BarPlots/'}
+```{r BarPlotsMultipleVariables, fig.path = '../docs/figure/'}
 ggplot(fig_data, aes(x = crop, y = value, fill = colname)) +
   geom_bar(
     width = 0.6, position = position_dodge(width = 0.6), 

@@ -1,0 +1,8 @@
+name: "my-website"
+output_dir: "../docs"
+output:
+  html_document:
+    css: "../docs/site_libs/custom-css.css"
+    in_header: "head.html"
+    includes:
+      in_header: "header.html"

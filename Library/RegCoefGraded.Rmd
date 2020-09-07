@@ -1,5 +1,5 @@
 ---
-title: "Regression Coefficients: With graded error bars"
+pagetitle: "Regression Coefficients: With graded error bars"
 author: ""
 date: ""
 ---
@@ -10,7 +10,7 @@ Largely based on Figure 16.7 in [Fundamentals of Data Visualization](https://ser
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r RegCoefGraded, fig.path = 'figure/RegressionCoef/', warning = FALSE}
+```{r RegCoefGraded, fig.path = '../docs/figure/', warning = FALSE}
 # Install and load packages ---------------
 #devtools::install_github("wilkelab/ungeviz")
 packages <- c(

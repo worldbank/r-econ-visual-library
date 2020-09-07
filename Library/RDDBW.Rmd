@@ -1,5 +1,5 @@
 ---
-title: "Regression Discontinuity: Results with different bandwidths"
+pagetitle: "Regression Discontinuity: Results with different bandwidths"
 author: ""
 date: ""
 ---
@@ -43,7 +43,7 @@ rdd_df <- as_tibble(rdd_mat)
 colnames(rdd_df) <- c("bw", "coef", "se")
 ```
 
-```{r RDDBW, fig.path = 'figure/RDD/', warning = FALSE}
+```{r RDDBW, fig.path = '../docs/figure/', warning = FALSE}
 ggplot(rdd_df, aes(x = bw, y = coef)) +
   geom_point()  + 
   geom_linerange(aes(ymin = coef - 1.96 * se, ymax = coef + 1.96 * se)) +

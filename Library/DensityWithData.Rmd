@@ -1,5 +1,5 @@
 ---
-title: "Density Plots"
+pagetitle: "Density Plots"
 author: ""
 date: ""
 ---
@@ -9,7 +9,7 @@ date: ""
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r DensityWithData, fig.path = 'figure/DensityPlots/'}
+```{r DensityWithData, fig.path = '../docs/figure/'}
 # Install and load packages ---------------
 packages <- c(
   "tidyverse",
