@@ -433,7 +433,7 @@ pacman::p_load(packages, character.only = TRUE, install = FALSE)
 
 # Load an example dataset ---------------
 # https://openknowledge.worldbank.org/handle/10986/25030
-data &lt;- read_dta(&quot;https://github.com/worldbank/r-econ-visual-library/raw/master/Library/HISP/evaluation.dta&quot;)
+data &lt;- read_dta(&quot;https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/evaluation.dta&quot;)
 
 analysis_data &lt;- data %&gt;%
   filter(eligible == 1 &amp; round == 1) 
