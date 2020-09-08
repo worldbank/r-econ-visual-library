@@ -22,7 +22,7 @@ pacman::p_load(packages, character.only = TRUE, install = FALSE)
 
 # Load an example dataset ---------------
 # https://openknowledge.worldbank.org/handle/10986/25030
-data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/HISP/evaluation.dta")
+data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/evaluation.dta")
 
 analysis_data <- data %>%
   filter(eligible == 1 & round == 1) 
