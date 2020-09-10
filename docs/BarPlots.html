@@ -12,6 +12,11 @@
 
   <title>R Econ Visual Library</title>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+    integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+    crossorigin="anonymous">
+  </script>
+
   <link rel="stylesheet"
     href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
     integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z"
@@ -31,6 +36,12 @@
     jQuery(document).ready(function(){
         jQuery("#contain").load("https://raw.githubusercontent.com/worldbank/r-econ-visual-library/master/docs/header.html");
     });
+  </script>
+
+  <script type="text/javascript">
+    $(function () {
+      $('[data-toggle="tooltip"]').tooltip()
+    })
   </script>
 
 
@@ -70,7 +81,7 @@
 
      for(var i = 0; i < plots.length; i++) {
        document.write('<div class = "col-sm-6">');
-       document.write('<div class="card">');
+       document.write('<div class="card" data-toggle="tooltip" data-placement="bottom" title="Click on image to see the code">');
        document.write('<a href="' + plots[i] + '.html" class="stretched-link"></a>');
        document.write('<div class="card-body">');
        document.write('<img class="card-img" src="figure/' + plots[i] +'-1.png">');
