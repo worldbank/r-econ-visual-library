@@ -52,10 +52,11 @@ analysis_data <- data %>%
 head(data)
 
 # Create a graph ---------------
-ggplot(analysis_data, aes(x = realfinalprofit, 
-                          y = fct_rev(factor(wave)), 
-                          color = factor(treatment_group), 
-                          fill = factor(treatment_group))) +
+ggplot(analysis_data, 
+       aes(x = realfinalprofit, 
+              y = fct_rev(factor(wave)), 
+       color = factor(treatment_group), 
+       fill = factor(treatment_group))) +
   geom_density_ridges(alpha = 0.1, scale = 1) +
   theme_ridges() +
   labs(
@@ -67,4 +68,3 @@ ggplot(analysis_data, aes(x = realfinalprofit,
   xlim(c(0, 250))
 
 ```
-
