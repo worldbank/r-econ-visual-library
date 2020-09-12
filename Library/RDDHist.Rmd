@@ -23,6 +23,10 @@ pacman::p_load(packages, character.only = TRUE, install = FALSE)
 # Load an example dataset ---------------
 data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/RDD_data.dta")
 
+# Printing the first five rows of the data to visualize its structure before data wrangling
+head(data)
+
+# Data wrangling ---------------
 data <- data %>%
   mutate(treatment = (pmt_score >= cutoff))
 
@@ -44,6 +48,7 @@ bin_breaks = with(
     )
   )
 
+# Creating fig-_data using the parameters set above
 fig_data <- data %>%
   mutate(pmt_score_bin = cut(pmt_score, sort(bin_breaks))) %>%
   group_by(treatment, pmt_score_bin) %>%
@@ -56,6 +61,11 @@ fig_data <- data %>%
 
 hist_bottom = -0.5
 hist_top = -0.3
+
+# Printing the first five rows of the data to visualize its structure after data wrangling
+head(fig_data)
+
+# Create a graph ---------------
 
 ggplot(fig_data, aes(color = treatment, fill = treatment)) +
   geom_rect(
@@ -73,8 +83,10 @@ ggplot(fig_data, aes(color = treatment, fill = treatment)) +
     formula = "y ~ bs(x, 3)", fill = NA, linetype = "dashed", size = 0.3
     ) +
   geom_vline(aes(xintercept = cutoff), linetype = "longdash") +
-  xlab("Proxy means test score") +
-  ylab("Receiving treatment (95% CI)") +
+  labs(
+    x = "Proxy means test score",
+    y = "Receiving treatment (95% CI)"
+  ) +
   scale_color_brewer(palette = "Set2") +
   scale_fill_brewer(palette = "Set2") +
   scale_y_continuous(breaks = c(0, 0.5, 1)) +

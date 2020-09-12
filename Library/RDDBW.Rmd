@@ -23,12 +23,18 @@ pacman::p_load(packages, character.only = TRUE, install = FALSE)
 
 # Load an example dataset ---------------
 data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/RDD_data.dta")
+
+# Printing the first five rows of the data to visualize its structure before data wrangling
+head(data)
+
+# Data wrangling ---------------
 data <- data %>%
   mutate(treatment = (pmt_score >= cutoff))
 
 bw_seq = seq(0.5, 6, 0.5)
 rdd_mat = matrix(0, length(bw_seq), 3)
 for (i in seq_along(bw_seq)){
+  # USe RDestimate for regression discontinuity design (rdd)
   rdd_tmp <- RDestimate(
     tmt_status ~ pmt_score, data = data, 
     cutpoint = mean(data$cutoff), bw = bw_seq[i]
@@ -41,21 +47,26 @@ for (i in seq_along(bw_seq)){
 
 rdd_df <- as_tibble(rdd_mat)
 colnames(rdd_df) <- c("bw", "coef", "se")
+
+# Printing the first five rows of the data to visualize its structure after data wrangling
+head(data)
 ```
 
 ```{r RDDBW, fig.path = 'figure/RDD/', warning = FALSE}
+# Create a grpah ---------------
+
 ggplot(rdd_df, aes(x = bw, y = coef)) +
   geom_point()  + 
   geom_linerange(aes(ymin = coef - 1.96 * se, ymax = coef + 1.96 * se)) +
-  xlab("Bandwidth") +
-  ylab("Regression coefficients & 95% CI") +
+  labs(
+    x = "Bandwidth",
+    y = "Regression coefficients & 95% CI"
+  ) +
   theme_classic() +
   theme(
     axis.text = element_text(size = 12),
     axis.title = element_text(size = 14)
   )
-
-
 ```
 
 

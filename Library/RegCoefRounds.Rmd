@@ -27,6 +27,11 @@ pacman::p_load(packages, character.only = TRUE, install = FALSE)
 # Only relevant variables are kept in the dataset
 data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/ReplicationDataGhanaJDE_short.dta")
 
+# Printing the first five rows of the data to visualize its structure before data wrangling
+head(data)
+
+# Data wrangling ---------------
+
 # Treatment group includes only those who received treatment 
 # between 2nd and 3rd waves, for simplicity
 analysis_data <- data %>%
@@ -40,6 +45,7 @@ analysis_data <- data %>%
   filter(treatment == TRUE | control == TRUE) %>%
   ungroup()
 
+# Use felm to fit linear models with group fixed effects
 res <- felm(
   realfinalprofit ~ (cashtreat + equiptreat) * wave | wave + sheno | 0 | sheno, 
   data = analysis_data
@@ -55,6 +61,11 @@ fig_data <- tibble(
   coef = summary(res)$coef[c(cash_var_list, equip_var_list), "Estimate"],
   se = summary(res)$coef[c(cash_var_list, equip_var_list), "Cluster s.e."]
   )
+
+# Printing the first five rows of the data to visualize its structure after data wrangling
+head(fig_data)
+
+# Create a graph ---------------
 
 ggplot(fig_data, aes(x = wave, y = coef, colour = group)) + 
   geom_pointrange(

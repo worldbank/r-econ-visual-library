@@ -22,21 +22,34 @@ pacman::p_load(packages, character.only = TRUE, install = FALSE)
 
 # Load an example dataset ---------------
 # https://openknowledge.worldbank.org/handle/10986/25030
-data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/HISP/evaluation.dta")
+data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/evaluation.dta")
 
+# Printing the first five rows of the data to visualize its structure before data wrangling
+head(data)
+
+# Data wrangling ---------------
+
+# Set the cutoff level
 cutoff <- 58
 
 data <- data %>%
   filter(treatment_locality == 1) %>%
   mutate(treatment = (poverty_index <= cutoff))
-  
+
+# Printing the first five rows of the data to visualize its structure after data wrangling
+head(data)
+
+# Create a graph ---------------
+
 ggplot(data, aes(x = poverty_index, y = health_expenditures, color = treatment)) +
   geom_point(alpha = 0.2, size = 0.1) +
   geom_smooth(method = lm, formula = y ~ bs(x, 3), size = 1.0, se = FALSE) +
   geom_vline(xintercept = cutoff, linetype = "longdash") +
   ylim(c(0, 45)) +
-  xlab("Baseline Poverty Index") +
-  ylab("Health Expenditures ($)") +
+  labs(
+    x = "Baseline Poverty Index",
+    y = "Health Expenditures ($)"
+  ) +
   scale_color_brewer(palette = "Set2", labels = c("Not eligible", "Eligible")) +
   theme_classic() +
   theme(

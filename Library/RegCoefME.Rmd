@@ -18,7 +18,8 @@ packages <- c(
   "scales",
   "margins",
   "latex2exp",
-  "caret"
+  "caret",
+  "labelled"
 )
 
 # Change to install = TRUE to install the required packages
@@ -26,6 +27,11 @@ pacman::p_load(packages, character.only = TRUE, install = FALSE)
 
 # Load an example dataset ---------------
 data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/RegCoefME.dta")
+
+# Printing the first five rows of the data to visualize its structure before data wrangling
+head(data)
+
+# Data wrangling ---------------
 data_varlabel <- unlist(var_label(data))
 
 var_list <- c(colnames(data)[grepl("??_correct$", colnames(data))], "refer", "med_any", "med_class_any_6", "med_class_any_16")
@@ -33,6 +39,7 @@ var_list <- c(colnames(data)[grepl("??_correct$", colnames(data))], "refer", "me
 df_result <- tibble(y_var = var_list)
 df_result <- df_result %>%
   mutate(
+    # Use tryCatch to handle errors and warning 
     model_ols = map(y_var, ~ tryCatch({
       lm(as.formula(paste(.x, "~ facility_private + factor(case_code)")), data = data)
       }, error  = function(cond) {
@@ -51,6 +58,7 @@ df_result <- df_result %>%
     sum_margin = map(margin, summary)
     )
 
+# Coefficients from OLS 
 df_coef_ols <- df_result %>%
   dplyr::select(y_var, tidied_ols) %>%
   unnest(cols = c(tidied_ols)) %>%
@@ -59,6 +67,7 @@ df_coef_ols <- df_result %>%
   dplyr::select(y_var, estimate, std.error) %>%
   mutate(model = "Linear Model")
 
+# Coefficietns from logit
 df_coef_logit <- df_result %>%
   dplyr::select(y_var, sum_margin) %>%
   unnest(cols = c(sum_margin)) %>%
@@ -74,6 +83,11 @@ fig_df <- rbind(df_coef_ols, df_coef_logit) %>%
             y_var = fct_rev(factor(y_var, levels = data_varlabel[var_list])),
             model = fct_rev(as.factor(model))
             )
+
+# Printing the first five rows of the data to visualize its structure after data wrangling
+head(fig_df)
+
+# Create a graph ---------------
 
 ggplot(fig_df, aes(x = y_var, y = estimate, fill = model)) + 
   geom_linerange(
@@ -91,6 +105,7 @@ ggplot(fig_df, aes(x = y_var, y = estimate, fill = model)) +
   geom_hline(yintercept = 0, size = 0.1, alpha = 0.5) +
   scale_fill_discrete(breaks = rev(levels(fig_df$model))) +
   theme_classic() +
+  # Use TeX to display special characters in the label for y-axis
   ylab(TeX("$\\leftarrow$ Favors Public $\\;\\;\\;\\;\\;\\;$  Favors Privte $\\rightarrow$")) +
   theme(
     axis.line = element_blank(),

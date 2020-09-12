@@ -25,25 +25,41 @@ pacman::p_load(packages, character.only = TRUE, install = FALSE)
 # Load an example dataset ---------------
 data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/ScatterPolynomial.dta")
 
+# Printing the first five rows of the data to visualize its structure before data wrangling
+head(data)
+
+# Data wrangling ---------------
 subdata <- data %>%
   filter(cons_pae_m_sine < quantile(.$cons_pae_m_sine, 0.99) & cons_pae_m_sine > quantile(.$cons_pae_m_sine, 0.01))
 
+# Printing the first five rows of the data to visualize its structure after data wrangling
+head(subdata)
+
+# Create a graph ---------------
+
+# Saving the ggplot object p1
 p1 <- ggplot(subdata, aes(x = cons_pae_m_sine, y = cons_pae_sd_sine)) +
       geom_point(alpha = 0.2, size = 0.5) +
       geom_smooth(aes(colour = "red"), show.legend = TRUE) +
       theme_classic() +
       scale_colour_manual(name = "", values = "red", labels = "Local Poly. & 95% CI") +
+      # Use TeX to allow for LaTeX expressions
       xlab(TeX("$\\widehat{m}$")) +
       ylab(TeX("$\\widehat{s}$"))
 
+# Saving the ggplot object2
 p2 <- ggplot(subdata, aes(x = cons_pae_m_sine, y = cv)) +
       geom_point(alpha = 0.2, size = 0.5) +
       geom_smooth(aes(colour = "red"), show.legend = TRUE) +
       theme_classic() +
       scale_colour_manual(name = "", values = "red", labels = "Local Poly. % 95% CI") +
+      # Use TeX to allow for LaTeX characters 
       xlab(TeX("$\\widehat{m}$")) +
       ylab(TeX("$\\widehat{s} / \\widehat{m}$"))
 
+# Create a graph ---------------
+
+# Use grid_arrange to display two plots
 grid_arrange_shared_legend(p1, p2, position = "bottom")
 
 ```

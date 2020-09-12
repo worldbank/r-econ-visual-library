@@ -23,9 +23,14 @@ pacman::p_load(packages, character.only = TRUE, install = FALSE)
 # Load an example dataset ---------------
 data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/RDD_data.dta")
 
+# Printing the first five rows of the data to visualize its structure before data wrangling
+head(data)
+
+# Data wrangling ---------------
 data <- data %>%
   mutate(treatment = (pmt_score >= cutoff))
 
+# Set bin width and bin_breaks 
 bin_width = 1.0
 bin_breaks = with(data, c(seq(mean(cutoff), min(pmt_score) - bin_width, -bin_width), seq(mean(cutoff) + bin_width, max(pmt_score) + bin_width, bin_width)))
 
@@ -48,16 +53,23 @@ fig_data <- data %>%
     ) %>%
   ungroup()
 
+# Printing the first five rows of the data to visualize its structure after data wrangling
+head(fig_data)
+
+# Create a graph ---------------
+
 ggplot(fig_data, aes(x = pmt_score, tmt_status, color = treatment)) +
   geom_point(aes(x = mid_point, y = mean_tmt_status, size = n), show.legend = FALSE) +
   geom_smooth(method = lm, formula = y ~ bs(x, 3), size = 1.0, se = FALSE) +
   geom_ribbon(
-    stat = "smooth", method = "lm", 
+    stat = "smooth", method = "lm", # lm for linear model 
     formula = "y ~ bs(x, 3)", fill = NA, linetype = "dashed", size = 0.3
     ) +
   geom_vline(aes(xintercept = cutoff), linetype = "longdash") +
-  xlab("Proxy means test score") +
-  ylab("Receiving treatment (95% CI)") +
+  labs(
+    x = "Proxy means test score",
+    y = "Receiving treatment (95% CI)"
+  ) +
   scale_color_brewer(palette = "Set2") +
   theme_classic() +
   theme(

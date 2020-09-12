@@ -10,6 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r EventStudy, fig.path = 'figure/EventStudy/', warning = FALSE}
 # Install and load packages ---------------
+
 packages <- c(
   "tidyverse",
   "tidymodels",
@@ -51,7 +52,7 @@ analysis_data <- data %>%
 # Printing the first five rows of the data to visualize its structure after data wrangling
 head(data)
 
-# felm function is used to fit linear models with multiple group fixed effects 
+# Regression Results - felm function is used to fit linear models with multiple group fixed effects 
 res <- felm(lnths ~ factor(year_since_adoption) | state + year | 0 | state, data = analysis_data)
 
 labels <- c()
@@ -70,13 +71,18 @@ fig_data <- tibble(
   ) %>%
   add_row(label = -1, coef = 0, se = 0)
 
+# Create a graph ---------------
+
 ggplot(fig_data, aes(x = label, y = coef)) +
   geom_pointrange(aes(ymin = coef - 1.96 * se, ymax = coef + 1.96 * se), alpha = 0.7) +
+  # Be extra careful in setting ymin and ymax parameters with respect to the critical value when using pointrange 
   geom_vline(xintercept = -0.5, alpha = 0.3, linetype = "dashed", size = 0.3) +
   theme_classic() +
   geom_hline(yintercept = 0, alpha = 0.5, size = 0.5) +
-  ylab("Coefficient estimates & 95% CI") +
-  xlab("Year relative to adoption of implied contract exception") +
+  labs(
+    x = "Year relative to adoption of implied contract exception",
+    y = "Coefficient estimates & 95% CI"
+  ) +
   theme(
     axis.text = element_text(size = 12),
     axis.title = element_text(size = 14)

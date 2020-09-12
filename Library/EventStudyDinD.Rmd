@@ -9,7 +9,9 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r EventStudyDinD, fig.path = 'figure/EventStudy/', warning = FALSE}
+
 # Install and load packages ---------------
+
 packages <- c(
   "tidyverse",
   "tidymodels",
@@ -23,6 +25,11 @@ pacman::p_load(packages, character.only = TRUE, install = FALSE)
 # Load an example dataset ---------------
 # Autor (2003): "Outsourcing at Will: The Contribution of Unjust Dismissal Doctrine to the Growth of Employment Outsourcing"
 data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/autor-jole-2003.dta")
+
+# Printing the first five rows of the data to visualize its structure before data wrangling
+head(data)
+
+# Data wrangling ---------------
 
 admico_list <- c("admico_2", "admico_1", "admico0", "admico1", "admico2", "admico3", "mico4")
 
@@ -43,7 +50,10 @@ analysis_data <- data %>%
     year = as.factor(year)
     )
 
-# Regression results
+# Printing the first five rows of the data to visualize its structure after data wrangling
+head(data)
+
+# Saving regression results
 res_es <- felm(lnths ~ factor(year_since_adoption) | state + year | 0 | state, data = analysis_data)
 res_dind <- felm(lnths ~ after | state + year | 0 | state, data = analysis_data)
 
@@ -71,17 +81,21 @@ fig_data <- tibble(
     dind_se = ifelse(label >= 0, dind_se, 0)
     )
 
-# Figure
+# Create a graph ---------------
+
 ggplot(fig_data, aes(x = label, y = es_coef)) +
   geom_pointrange(aes(ymin = es_coef - 1.96 * es_se, ymax = es_coef + 1.96 * es_se), alpha = 0.7) +
+  # Be careful in setting the ymin and ymax parameters with respect to the critical value when using pointrange 
   geom_vline(xintercept = -0.5, alpha = 0.3, linetype = "dashed", size = 0.3) +
   geom_line(data = fig_data, aes(x = label, y = dind_coef, group = (label >= 0)), color = "red", alpha = 0.7) +
   geom_line(data = fig_data, aes(x = label, y = dind_coef + 1.96 * dind_se, group = (label >= 0)), linetype = "dashed", color = "red", alpha = 0.7) +
   geom_line(data = fig_data, aes(x = label, y = dind_coef - 1.96 * dind_se, group = (label >= 0)), linetype = "dashed", color = "red", alpha = 0.7) +
   theme_classic() +
   geom_hline(yintercept = 0, alpha = 0.5, size = 0.5) +
-  ylab("Coefficient estimates & 95% CI") +
-  xlab("Year relative to adoption of implied contract exception") +
+  labs(
+    x = "Coefficient estimates & 95% CI",
+    y = "Year relative to adoption of implied contract exception"
+  ) +
   theme(
     axis.text = element_text(size = 12),
     axis.title = element_text(size = 14)

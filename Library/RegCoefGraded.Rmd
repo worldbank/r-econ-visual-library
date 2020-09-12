@@ -33,6 +33,11 @@ pacman::p_load(packages, character.only = TRUE, install = FALSE)
 # Only relevant variables are kept in the dataset
 data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/ReplicationDataGhanaJDE_short.dta")
 
+# Printing the first five rows of the data to visualize its structure before data wrangling
+head(data)
+
+# Data wrangling ---------------
+
 # Treatment group includes only those who received in-kind treatment 
 # between 2nd and 3rd waves, for simplicity
 analysis_data <- data %>%
@@ -55,6 +60,7 @@ outcome_list <- c(
 df_result <- tibble(y_var = outcome_list) %>%
   mutate(
     model_fe = map(
+      # use felm to fit linear models with multiple group fixed effects
       y_var, ~ felm(as.formula(paste(.x, " ~ equiptreat * after | wave + sheno | 0 | sheno")), 
                     data = analysis_data)),
     tidied_model = map(model_fe, tidy)
@@ -76,6 +82,11 @@ df_coef <- df_result %>%
                          estimate + 1.96 * std.error)
     ) %>%
   mutate_if(is.double, round, digits = 2) 
+
+# Printing the first five rows of the data to visualize its structure after data wrangling
+head(df_coef)
+
+# Create a graph ---------------
 
 ggplot(df_coef, aes(x = estimate, y = rev(y_var))) + 
   geom_errorbarh(

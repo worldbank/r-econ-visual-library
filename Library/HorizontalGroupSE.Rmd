@@ -9,7 +9,9 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r HorizontalGroupSE, fig.path = 'figure/BarPlots/'}
+
 # Install and load packages ---------------
+
 packages <- c(
   "tidyverse",
   "haven",
@@ -24,6 +26,13 @@ pacman::p_load(packages, character.only = TRUE, install = FALSE)
 
 # Load an example dataset ---------------
 data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/HorizontalGroupSE.dta")
+
+# Printing the first five rows of the data to visualize its structure before data wrangling
+head(data)
+
+# Data wrangling ---------------
+
+# Unlist variables
 data_varlabel <- unlist(var_label(data))
 
 # Legend labels
@@ -41,7 +50,7 @@ var_list <- c("dr_3", "correct_treatment", "med_b2_any_antibiotic", "med_b2_any_
 collapsed_data <- data %>%
   mutate(city = fct_rev(as.factor(city))) %>%
   group_by(city) %>%
-  summarise_at(var_list, list(~ mean(., na.rm = T), ~ se(., na.rm = T))) %>%
+  summarise_at(var_list, list(~ mean(., na.rm = TRUE), ~ se(., na.rm = TRUE))) %>%
   ungroup()
 
 # Reshape data
@@ -51,6 +60,12 @@ reshaped_data <- collapsed_data %>%
   pivot_wider(names_from = "stat", values_from = "value") %>%
   mutate(key = reorder(as.factor(data_varlabel[.$key]), `_mean`))
 
+# Printing the first five rows of the data to visualize its structure after data wrangling
+head(reshaped_data)
+
+# Create a plot ---------------
+
+# Backtickes are used for '_mean' because it is a non-standard variable name in R
 ggplot(reshaped_data, aes(x = reorder(key, `_mean`), y = `_mean`, fill = city)) +
   geom_bar(
     width = 0.8, position = position_dodge(width = 0.8),
@@ -66,12 +81,15 @@ ggplot(reshaped_data, aes(x = reorder(key, `_mean`), y = `_mean`, fill = city)) 
     position = position_dodge(width = 0.8),
     size = 2.5, hjust = -2
     ) +
+    # coord_flip flips the x and y axes. This is useful when the graph is too long (horizontally) or too tall (vertically)
   coord_flip(ylim = c(0, 1)) +
   geom_hline(yintercept = 0, alpha = 0.5) +
   scale_y_continuous(labels = percent) +
   scale_fill_brewer(palette = "Set2", labels = city_label, breaks = city_val) +
   theme_classic() +
   theme(
+    # element_blank() removes the given visualization. 
+    # For instance, axis.line.y = element_blank removes the axis.line.y
     axis.line.y = element_blank(),
     axis.ticks.y = element_blank(),
     axis.title = element_blank(),
@@ -79,7 +97,7 @@ ggplot(reshaped_data, aes(x = reorder(key, `_mean`), y = `_mean`, fill = city)) 
     axis.text.y = element_text(size = 10),
     legend.title = element_blank(),
     legend.text  = element_text(size = 10),
-    legend.position = "bottom"
+    legend.position = "bottom" # setting the position of the legend to the bottom
     )
 
 ```

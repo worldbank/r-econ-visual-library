@@ -25,6 +25,12 @@ pacman::p_load(packages, character.only = TRUE, install = FALSE)
 # Load an example dataset ---------------
 data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/ScatterCI.dta")
 
+# Printing the first five rows of the data to visualize its structure before data wrangling
+head(data)
+
+# Data wrangling ---------------
+
+# Setting the seed to enhance the reproducibility of the work
 set.seed(251668)
 
 subdata <- data %>%
@@ -33,6 +39,11 @@ subdata <- data %>%
       cons_pae_m_sine > quantile(.$cons_pae_m_sine, 0.01)
     ) %>%
   sample_frac(0.05) # To emphasize the graded CI, 5% of obesrvations are randomly sampled
+
+# Printing the first five rows of the data to visualize its structure after data wrangling
+head(subdata)
+
+# Create a graph ---------------
 
 ggplot(subdata, aes(x = cons_pae_m_sine, y = cons_pae_sd_sine)) +
   geom_point(color = "black", alpha = 0.2, size = 0.8) +
@@ -53,6 +64,7 @@ ggplot(subdata, aes(x = cons_pae_m_sine, y = cons_pae_sd_sine)) +
     ) +
   xlim(c(75, 130)) +
   ylim(c(5, 22)) +
+  # Using TeX to display special characters in the labels for x-axis and y-axis
   xlab(TeX("$\\widehat{m}$")) +
   ylab(TeX("$\\widehat{s}$")) +
   theme(

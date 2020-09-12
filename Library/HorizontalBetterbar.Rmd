@@ -22,6 +22,13 @@ pacman::p_load(packages, character.only = TRUE, install = FALSE)
 
 # Load an example dataset ---------------
 data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/HorizontalBetterbar.dta")
+
+# Printing the first five rows of the data to visualize its structure before data wrangling
+head(data)
+
+# Data wrangling ---------------
+
+# Unlist var_label
 data_varlabel <- unlist(var_label(data))
 
 # Make vector of variables to be used
@@ -30,7 +37,7 @@ for (i in 1:21){
   if (i == 6){
     next
   } else {
-    var_group_1 <- c(var_group_1, paste0("sp1_h", i))
+    var_group_1 <- c(var_group_1, paste0("sp1_h", i)) # using paste0 to concatenate "sp1_h" and i
   }
 }
 
@@ -47,7 +54,7 @@ for (i in 1:6){
 mean_data <- data %>%
   summarise_at(
     all_of(c(var_group_1, var_group_2)), 
-    list(~ mean(., na.rm = T))
+    list(~ mean(., na.rm = TRUE)) 
     )
 
 # Reshape the data and create group variable
@@ -66,13 +73,18 @@ fig_data <- mean_data %>%
 x_label <- as.character(sort(interaction(fig_data$key_label, fig_data$group))) %>%
   str_replace("\\.\\d", "")
 
-# Figure
+# Printing the first five rows of the data to visualize its structure after data wrangling
+head(fig_data)
+
+# Create a plot ---------------
 ggplot(fig_data, aes(x = interaction(key_label, group), y = value, label = key_label)) +
   geom_bar(
     stat = "identity", 
+    # Seeting position_dodge2 preserve argument to "single" maintains the total width of a single element
     width = 0.6, position = position_dodge2(width = 0.6, preserve = "single")
     ) +
-  coord_flip(ylim = c(0, 1)) +
+  # coord_flip flips the x and y axes. This is useful when the graph is too long (horizontally) or too tall (vertically)
+  coord_flip(ylim = c(0, 1)) + 
   geom_hline(yintercept = 0, alpha = 0.5) +
   geom_text(
     aes(label = format(round(value, 2), nsmall = 2)), 
@@ -82,6 +94,8 @@ ggplot(fig_data, aes(x = interaction(key_label, group), y = value, label = key_l
   scale_x_discrete(labels = x_label) +
   theme_classic() +
   theme(
+    # element_blank() removes the given visualization. 
+    # For instance, axis.line.y = element_blank removes the axis.line.y
     axis.line = element_blank(),
     axis.ticks.y = element_blank(),
     axis.title = element_blank()

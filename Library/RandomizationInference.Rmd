@@ -9,7 +9,9 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r RandomizationInference, fig.path = 'figure/RandomizationInference/'}
+
 # Install and load packages ---------------
+
 packages <- c(
   "tidyverse",
   "tidymodels",
@@ -21,8 +23,14 @@ packages <- c(
 pacman::p_load(packages, character.only = TRUE, install = FALSE)
 
 # Load an example dataset ---------------
+
 # https://openknowledge.worldbank.org/handle/10986/25030
-data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/HISP/evaluation.dta")
+data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/evaluation.dta")
+
+# Printing the first five rows of the data to visualize its structure before data wrangling
+head(data)
+
+# Data wrangling ---------------
 
 analysis_data <- data %>%
   filter(eligible == 1 & round == 1) 
@@ -30,7 +38,9 @@ analysis_data <- data %>%
 num_cluster <- length(unique((analysis_data$locality_identifier)))
 num_treated_cluster <- length(unique((analysis_data %>% filter(treatment_locality == 1))$locality_identifier))
 
+# Setting seed to enhance the reproducibility of the work
 set.seed(42949)
+
 
 num_sim <- 1000
 sim_est <- rep(0, num_sim)
@@ -44,8 +54,11 @@ for (i in 1:num_sim){
   sim_est[i] <- res$coefficients['treat_sim']
 }
 
+# Regression results 
 res <- lm(health_expenditures ~ treatment_locality, data = analysis_data)
 point_est <- res$coefficients["treatment_locality"]
+
+# Create a graph ---------------
 
 ggplot() +
   geom_histogram(aes(x = sim_est), binwidth = 0.25) +
@@ -60,6 +73,5 @@ ggplot() +
     axis.text.y = element_blank(),
     axis.text.x = element_text(size = 12)
     )
-
 
 ```

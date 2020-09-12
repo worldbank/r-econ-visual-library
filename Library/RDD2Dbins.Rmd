@@ -21,10 +21,16 @@ packages <- c(
 pacman::p_load(packages, character.only = TRUE, install = FALSE)
 
 # Load an example dataset ---------------
-# https://openknowledge.worldbank.org/handle/10986/25030
-data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/HISP/evaluation.dta")
 
-cutoff <- 58
+# https://openknowledge.worldbank.org/handle/10986/25030
+data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/evaluation.dta")
+
+# Printing the first five rows of the data to visualize its structure before data wrangling
+head(data)
+
+# Data wrangling ---------------
+
+cutoff <- 58 # setting the cutoff level
 
 # Functions to find endpoints of intervals
 left_endpoint <- function(x){
@@ -43,7 +49,7 @@ top_endpoint <- function(x){
   return(min(var_bin_breaks[var_bin_breaks > x]))
 }
 
-# Bins for histogram
+# Set bins for histogram
 hor_bin_width = 2.5
 hor_bin_breaks = with(
   data, c(
@@ -62,6 +68,7 @@ hor_bin_breaks = with(
 var_bin_width = 2.5
 var_bin_breaks = with(data, seq(0, max(health_expenditures) + var_bin_width, var_bin_width))
 
+# Saving the fig_data using the parameters set above
 fig_data <- data %>%
   filter(treatment_locality == 1) %>%
   mutate(
@@ -79,6 +86,11 @@ fig_data <- data %>%
     ) %>%
   ungroup()
 
+# Printing the first five rows of the data to visualize its structure after data wrangling
+head(data)
+
+# Create a graph ---------------
+
 ggplot(fig_data, aes(x = poverty_index, y = health_expenditures, color = treatment)) +
   geom_rect(
     aes(xmin = xmin, xmax = xmax, 
@@ -88,8 +100,10 @@ ggplot(fig_data, aes(x = poverty_index, y = health_expenditures, color = treatme
   geom_smooth(method = lm, formula = y ~ bs(x, 3), size = 1.0, se = FALSE) +
   geom_vline(xintercept = cutoff, linetype = "longdash") +
   ylim(c(0, 45)) +
-  xlab("Baseline Poverty Index") +
-  ylab("Health Expenditures ($)") +
+  labs(
+    x = "Baseline Poverty Index",
+    y = "Health Expenditures ($)"
+  ) +
 #  scale_color_brewer(name = "Eligibility",
 #                     palette = "Set2", 
 #                     labels = c("Not eligible", "Eligible")) +

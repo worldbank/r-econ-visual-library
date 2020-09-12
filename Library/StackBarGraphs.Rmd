@@ -25,11 +25,19 @@ pacman::p_load(packages, character.only = TRUE, install = FALSE)
 
 # Load an example dataset ---------------
 data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/StackBarGraphs.dta")
+
+# Printing the first five rows of the data to visualize its structure before data wrangling
+head(data)
+
+# Data wrangling ---------------
+
 data_varlabel <- unlist(var_label(data))
 data <- data %>% mutate(case = ifelse(case == 5, "Case 1", "Case 2"))
 
 var_list <- colnames(data)[grepl("^med_b2_antister_cat.{2}$", colnames(data))]
+
 # Function to make a bar graph, with referral label as an argument
+# Function to create multiple plots (reducing the codeload)
 make_bar <- function(idx){
   
   value_labels <- val_labels(data$dr_3)
@@ -40,6 +48,7 @@ make_bar <- function(idx){
   
   x_label <- c("Case 1", "Case 2")
   for (i in seq_along(x_label)){
+    # Use str_interp (String Interpolation) where expressions within the curly brackets can be evaluated 
     x_label[i] <- str_interp(
     "${x_label[i]}\n(${sum(sub_data$case == x_label[i])}/${sum(data$case == x_label[i])})"
     )
@@ -58,6 +67,7 @@ make_bar <- function(idx){
       key = fct_reorder(key, desc(num))
       )
 
+  # Saving the ggplot object p
   p <- ggplot(reshaped_data, aes(x = case, y = value, fill = key)) + 
     geom_bar(position = "fill", stat = "identity", width = 0.4) +
     scale_x_discrete(labels = x_label) +
@@ -78,9 +88,13 @@ make_bar <- function(idx){
   return(p)
 }
 
+# Saving ggplot objects p1 and p2 using the function make_bar
 p1 <- make_bar(1)
 p2 <- make_bar(2)
 
+# Create a graph ---------------
+
+# Using grid_arrange to display two plots
 grid_arrange_shared_legend(p1, p2, position = "right")
 
 
