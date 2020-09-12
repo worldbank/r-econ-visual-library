@@ -55,8 +55,9 @@ ggplot(fig_data) +
   # fine tuning the graph using alpha and width options
   geom_line(aes(x = int1mo, y = total_exp / 1000)) +
   scale_y_continuous(
+    # sec.axis is a convenient option to create a second axis
     sec.axis = sec_axis(~.*1000,  name = "Total Value of Exp. 1,000 Real Tz Sh. (line)"), 
-    # sec.axis is a convenit option to create a second axis
+
     expand = c(0, 0)
     ) +
   geom_hline(yintercept = 0, alpha = 0.5) +
@@ -79,5 +80,4 @@ ggplot(fig_data) +
     )
 
 ```
-
 
