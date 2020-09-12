@@ -50,7 +50,7 @@ head(data)
 eq <- "lnths ~ log(annemp)"
 for (list in list(admico_list, admppa_list, admgfa_list)){
   for (item in list){
-    eq <- paste(eq, "+", item) # using paste function to concatenate two varaibles, separated by "+" in this case
+    eq <- paste(eq, "+", item) # using paste function to concatenate two variables, separated by "+" in this case
   }
 }
 eq <- paste(eq, "| state + year + state:trend | 0 | state")
