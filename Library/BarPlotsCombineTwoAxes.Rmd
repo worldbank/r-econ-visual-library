@@ -51,8 +51,13 @@ head(fig_data)
 
 # Create a graph ---------------
 ggplot(fig_data) +
-  geom_bar(aes(x = int1mo, y = number_group), stat = "identity", alpha = .6, width = .4) +
-  # fine tuning the graph using alpha and width options
+# fine tuning the graph using alpha and width options
+  geom_bar(aes(x = int1mo,
+               y = number_group),
+            stat = "identity", 
+            alpha = .6, # transparency
+            width = .4 # bar width
+            ) +
   geom_line(aes(x = int1mo, y = total_exp / 1000)) +
   scale_y_continuous(
     # sec.axis is a convenient option to create a second axis
@@ -80,4 +85,3 @@ ggplot(fig_data) +
     )
 
 ```
-
