@@ -45,7 +45,7 @@ analysis_data <- data %>%
                                ifelse(equiptreat == 1, "In-kind", "Control"))
     ) 
 # Using ifelse (nested in this case) function to make the treatment_group variable that passes a given test
-# Here, Cash" is assigned if the unit of observation is equal to 1 or "In Kind" if equiptreat is equal to 1
+# Here, "Cash" is assigned to the data point if cashtreat is equal to 1 or "In Kind" if equiptreat is equal to 1. "Control" is assigned to every other case
 # and Control otherwise
 
 # Printing the first five rows of the data to visualize its structure after data wrangling
@@ -67,5 +67,4 @@ ggplot(analysis_data, aes(x = realfinalprofit,
   xlim(c(0, 250))
 
 ```
-
 
