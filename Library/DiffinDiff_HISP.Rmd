@@ -34,9 +34,9 @@ data <- data %>%
   filter(treatment_locality == 1) %>%
   mutate(enrolled = factor(enrolled)) %>%
   group_by(enrolled, round) %>%
-  summarise_at("health_expenditures", list(~ mean(.), ~ sd(.))) %>%
   # summarize_at, summarize_if, and summarize_all is a powerful function that apply the 
   # same transformations (~ mean(.), ~sd(.) in this case) to multiple variables
+  summarise_at("health_expenditures", list(~ mean(.), ~ sd(.))) %>%
   ungroup() %>%
   mutate(label = ifelse(enrolled == 1, "Treatment", "Control"))
 
@@ -65,5 +65,4 @@ ggplot(data, aes(x = factor(round), y = mean, group = enrolled, colour = enrolle
     )
 
 ```
-
 

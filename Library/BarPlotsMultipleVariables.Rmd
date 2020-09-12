@@ -67,8 +67,10 @@ head(fig_data)
 # Create a graph ---------------
 ggplot(fig_data, aes(x = crop, y = value, fill = colname)) +
   geom_bar(
-    width = 0.6, position = position_dodge(width = 0.6),
-    stat = "identity", alpha = .8
+    width = 0.6, 
+    position = position_dodge(width = 0.6),
+    stat = "identity", 
+    alpha = .8
     ) +
   geom_text(
     aes(label = format(round(value, 1), nsmall = 1)), 

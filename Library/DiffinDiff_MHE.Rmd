@@ -32,7 +32,7 @@ head(data)
 admico_list <- c("admico_2", "admico_1", "admico0", "admico1", "admico2", "admico3", "mico4")
 admppa_list <- c("admppa_2", "admppa_1", "admppa0", "admppa1", "admppa2", "admppa3", "mppa4")
 admgfa_list <- c("admgfa_2", "admgfa_1", "admgfa0", "admgfa1", "admgfa2", "admgfa3", "mgfa4")
-labels <- c("2 Years\nprior", "1 Year\nprior", "Year of\nadoption", "1 Year\nafter", "2 Years\nafter", "3 Years\nafter", "4+ Years\nafter") # using \n to create a new line (\ is an escape operator and \n means a new line)
+labels <- c("2 Years\nprior", "1 Year\nprior", "Year of\nadoption", "1 Year\nafter", "2 Years\nafter", "3 Years\nafter", "4+ Years\nafter") # using \n to create a new line (the \n character means a new line)
 
 data <- data %>%
   filter(year >= 79, year <= 95, state != 98) %>%
@@ -50,7 +50,7 @@ head(data)
 eq <- "lnths ~ log(annemp)"
 for (list in list(admico_list, admppa_list, admgfa_list)){
   for (item in list){
-    eq <- paste(eq, "+", item) # using paste function to concatenate two varaibles, separated by "+" in this case
+    eq <- paste(eq, "+", item) # using paste function to concatenate two variables, separated by "+" in this case
   }
 }
 eq <- paste(eq, "| state + year + state:trend | 0 | state")
