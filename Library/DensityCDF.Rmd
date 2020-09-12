@@ -43,8 +43,9 @@ ggplot(data, aes(x = revenue, color = post)) +
     aes(xintercept = mean_revenue, color = post), 
     linetype = "dashed", size = 0.3
     ) +
+  # Add empirical cumulative density function
   stat_ecdf() + 
-  # stat_ecdf for empirical cumulative density function
+
   theme_classic() +
   xlim(c(0, 25)) +
   labs(
@@ -61,4 +62,3 @@ ggplot(data, aes(x = revenue, color = post)) +
     )
 
 ```
-
