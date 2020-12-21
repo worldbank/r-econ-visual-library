@@ -70,5 +70,3 @@ ggplot(analysis_data,
   xlim(c(0, 250))
 
 ```
-
-

@@ -22,10 +22,15 @@ pacman::p_load(packages, character.only = TRUE, install = FALSE)
 # Load an example dataset ---------------
 data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/BarPlotsTwoVariables.dta")
 
-ggplot(data, aes(fill = type, y = treat_correct, x = interaction(study, case))) + 
+# Printing the first five rows of the data to visualize its structure
+head(data)
+
+# Create a graph ---------------
+ggplot(data, aes(fill = type, y = treat_correct, x = interaction(study, case))) +  
+  # using the interaction function computes a factor that represents the interaction of the given factors (study and case in this example)
   geom_bar(width = 0.6, position = position_dodge(width = 0.8), stat = "identity") +
   geom_text(
-    aes(label = format(round(treat_correct, 2), nsmall = 2)), 
+    aes(label = format(round(treat_correct, 2), nsmall = 2)),  
     position = position_dodge(width = 0.8), 
     size = 4.5,
     vjust = -0.35

@@ -24,38 +24,56 @@ pacman::p_load(packages, character.only = TRUE, install = FALSE)
 # Autor (2003): "Outsourcing at Will: The Contribution of Unjust Dismissal Doctrine to the Growth of Employment Outsourcing"
 data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/autor-jole-2003.dta")
 
+# Printing the first five rows of the data to visualize its structure before data wrangling
+head(data)
+
+# Data wrangling ---------------
+
 admico_list <- c("admico_2", "admico_1", "admico0", "admico1", "admico2", "admico3", "mico4")
 admppa_list <- c("admppa_2", "admppa_1", "admppa0", "admppa1", "admppa2", "admppa3", "mppa4")
 admgfa_list <- c("admgfa_2", "admgfa_1", "admgfa0", "admgfa1", "admgfa2", "admgfa3", "mgfa4")
-labels <- c("2 Years\nprior", "1 Year\nprior", "Year of\nadoption", "1 Year\nafter", "2 Years\nafter", "3 Years\nafter", "4+ Years\nafter")
+labels <- c("2 Years\nprior", "1 Year\nprior", "Year of\nadoption", "1 Year\nafter", "2 Years\nafter", "3 Years\nafter", "4+ Years\nafter") # using \n to create a new line (the \n character means a new line)
 
 data <- data %>%
   filter(year >= 79, year <= 95, state != 98) %>%
   select(state, year, annemp, lnths, all_of(admico_list), all_of(admppa_list), all_of(admgfa_list)) %>%
+  # all_of is a selector helper from tidyselect that lets you select variables
   mutate(
     trend = year - 78,
     state = as.factor(state), 
     year = as.factor(year)
     )
 
+# Printing the first five rows of the data to visualize its structure before data wrangling
+head(data)
+
 eq <- "lnths ~ log(annemp)"
 for (list in list(admico_list, admppa_list, admgfa_list)){
   for (item in list){
-    eq <- paste(eq, "+", item)
+    eq <- paste(eq, "+", item) # using paste function to concatenate two variables, separated by "+" in this case
   }
 }
 eq <- paste(eq, "| state + year + state:trend | 0 | state")
 
-res <- felm(as.formula(eq), data = data)
+# felm is used to fit linear modles with multiple group fixed effects
+res <- felm(as.formula(eq), data = data) 
 
+# Creating a fig_data using the results from the felm function 
 fig_data <- tibble(
   label = factor(labels, levels = labels),
   coef = summary(res)$coef[admico_list, "Estimate"] * 100,
   se = summary(res)$coef[admico_list, "Cluster s.e."] * 100
+  # One can extract statistical information such as the coefficients using summary$(what_you_want_to_get)
   )
+
+# Printing the first five rows of the fig_data to visualize its structrue
+print(fig_data)
+
+# Create a graph ---------------
 
 ggplot(fig_data, aes(x = label, y = coef)) +
   geom_pointrange(aes(ymin = coef - 1.96 * se, ymax = coef + 1.96 * se)) +
+  # Be extra careful in setting the ymin and ymax parameters for geom_pointrange
   theme_classic() +
   geom_hline(yintercept = 0, alpha = 0.5, size = 0.5) +
   ylab("Log points") +
