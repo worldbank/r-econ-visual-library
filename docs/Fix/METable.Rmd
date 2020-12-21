@@ -1,0 +1,113 @@
+---
+pagetitle: "Regression Coefficients: With Table"
+author: ""
+date: ""
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r METable, fig.path = '../docs/figure/', warning = FALSE}
+# Install and load packages ---------------
+packages <- c(
+  "tidyverse",
+  "tidymodels",
+  "haven",
+  "labelled",
+  "forcats",
+  "latex2exp"
+)
+
+# Change to install = TRUE to install the required packages
+pacman::p_load(packages, character.only = TRUE, install = FALSE)
+
+# Load an example dataset ---------------
+data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/METable.dta")
+data_varlabel <- unlist(var_label(data))
+
+var_list <- c(colnames(data)[grepl("??_correct$", colnames(data))], "refer", "med_any", "med_class_any_6", "med_class_any_16")
+
+df_result <- tibble(y_var = var_list) %>%
+  mutate(
+    model_logit = map(y_var, ~ tryCatch({
+      glm(as.formula(paste(.x, "~ facility_private + factor(case_code)")), data = data, family = "binomial")
+      }, error  = function(cond) {
+        glm(as.formula(paste(.x, "~ facility_private")), data = data, family = "binomial")
+        })
+      ),
+    tidied_logit = map(model_logit, tidy)
+    )
+
+df_coef_logit <- df_result %>%
+  dplyr::select(y_var, tidied_logit) %>%
+  unnest(cols = tidied_logit) %>%
+  mutate(
+    lower_bound = exp(estimate - 1.96 * std.error),
+    upper_bound = exp(estimate + 1.96 * std.error),
+    OR = exp(estimate),
+    p_value = 2 * pnorm(- abs(estimate / std.error))
+    )  %>%
+  mutate_if(is.double, round, digits = 2) %>%
+  filter(term == "facility_private") %>%
+  mutate(y_var = as.factor(data_varlabel[.$y_var])) %>%
+  mutate(y_var = fct_rev(factor(y_var, levels = data_varlabel[var_list])))
+
+p <- ggplot(df_coef_logit, aes(x = y_var, y = OR)) + 
+  geom_linerange(
+    aes(ymin = lower_bound, ymax = upper_bound), 
+    alpha = 0.6, size = 0.5
+    ) +
+  geom_dotplot(
+    binaxis = "y", 
+    stackdir = "center",
+    dotsize = 0.5
+    ) +
+  coord_flip(ylim = c(0.01, 1e+7)) +
+  geom_hline(yintercept = 1, size = 0.1, alpha = 0.5) +
+  geom_hline(yintercept = 1, size = 0.1, alpha = 0.5) +
+  scale_y_log10(breaks = c(0.01, 0.1, 1, 10, 100)) +
+  theme_classic() +
+  ylab(TeX("$\\leftarrow$ Favors Public $\\;\\;\\;\\;\\;\\;$  Favors Privte $\\rightarrow$ \n")) +
+  theme(
+    axis.line = element_blank(),
+    axis.ticks.y = element_blank(),
+    legend.title = element_blank(),
+    axis.title.y = element_blank(),
+    axis.title.x = element_text(hjust = -0.1),
+    legend.position = "bottom"
+    )
+    
+ci_str <- c()
+for (i in seq_along(df_coef_logit$lower_bound)){
+  ci_str <- c(ci_str, str_interp("[ ${df_coef_logit$lower_bound[i]}, ${df_coef_logit$upper_bound[i]} ]"))
+}
+
+dots_xaxis <- ggplot_build(p)$data[[1]]['x']
+## `stat_bindot()` using `bins = 30`. Pick better value with `binwidth`.
+p + annotate(
+  "text", x = dots_xaxis$x, y = 500,
+  label = as.character(df_coef_logit$OR), size = 4
+  ) +
+  annotate(
+    "text", x = dots_xaxis$x, y = 3e+4,
+    label = ci_str, size = 4
+    ) +
+  annotate(
+    "text", x = dots_xaxis$x, y = 1e+6,
+    label = df_coef_logit$p_value, size = 4
+    ) +
+  annotate(
+    "text", x = max(dots_xaxis$x) + 0.5, y = 500,
+    label = "OR", size = 4
+    ) +
+  annotate(
+    "text", x = max(dots_xaxis$x) + 0.5, y = 3e+4,
+    label = "95% CI", size = 4
+    ) +
+  annotate(
+    "text", x = max(dots_xaxis$x) + 0.5, y = 1e+6,
+    label = "P-value", size = 4
+    )
+```
+
