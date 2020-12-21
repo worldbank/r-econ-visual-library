@@ -23,15 +23,27 @@ pacman::p_load(packages, character.only = TRUE, install = FALSE)
 # Load an example dataset ---------------
 data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/ScatterFittedLine.dta")
 
+# Printing the first five rows of the data to visualize its structure before data wrangling
+head(data)
+
+# Data wrangling ---------------
+
+# Changing the post variable to factor to facilitate visualization
 data <- data %>% mutate(post = as.factor(post))
 
+# Printing the first five rows of the data to visualize its structure after data wrangling
+head(data)
+
+# Create a graph ---------------
 ggplot(data, aes(x = area_cult, y = revenue, colour = post)) +
   geom_point(aes(alpha = 0.2), show.legend = FALSE) +
   geom_smooth(aes(group = post, colour = post), method = "lm", se = FALSE) +
   theme_classic() +
-  ylab("Agriculture revenue (BRL thousands)") +
-  xlab("Cultivated area (ha)") +
-  scale_color_discrete(name = "", labels = c("Pre-treatment", "Post-treatment")) +
+  labs(
+    x = "Agriculture revenue (BRL thousands)",
+    y = "Cultivated area (ha)"
+  ) +
+  scale_color_discrete(name = "", labels = c("Pre-treatment", "Post-treatment")) + 
   theme(
     axis.text = element_text(size = 12),
     axis.title = element_text(size = 14),

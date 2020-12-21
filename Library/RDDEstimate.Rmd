@@ -25,18 +25,31 @@ pacman::p_load(packages, character.only = TRUE, install = FALSE)
 # https://openknowledge.worldbank.org/handle/10986/25030
 data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/evaluation.dta")
 
+# Printing the first five rows of the data to visualize its structure before data wrangling
+head(data)
+
+# Data wrangling ---------------
+
+# Set the cutoff level
 cutoff <- 58
 
 data <- data %>%
   filter(treatment_locality == 1) %>%
   mutate(treatment = (poverty_index <= cutoff))
 
+# Printing the first five rows of the data to visualize its structure after data wrangling
+head(data)
+
+# Saving the ggplot object p
 p <- ggplot(data, aes(x = poverty_index, y = health_expenditures, color = treatment)) +
   geom_smooth(method = lm, formula = y ~ bs(x, 3), size = 1.0, se = FALSE)
 
+# Use ggplot_build to produce an object that can be rendered
 right_y = (ggplot_build(p)$data[[1]] %>% filter(x >= cutoff) %>% arrange(x) %>% slice(1))$y
 left_y = (ggplot_build(p)$data[[1]] %>% filter(x <= cutoff) %>% arrange(desc(x)) %>% slice(1))$y
 diff_y = right_y - left_y
+
+# Create a graph ---------------
 
 ggplot(data, aes(x = poverty_index, y = health_expenditures, color = treatment)) +
   geom_smooth(method = lm, formula = y ~ bs(x, 3), size = 1.0, se = FALSE) +
@@ -47,8 +60,10 @@ ggplot(data, aes(x = poverty_index, y = health_expenditures, color = treatment))
   annotate("text", x = cutoff + 4, y = (right_y + left_y) / 2, label = format(round(diff_y, 2), 2)) + 
   geom_vline(xintercept = cutoff, linetype = "longdash") +
   ylim(c(0, 30)) +
-  xlab("Baseline Poverty Index") +
-  ylab("Health Expenditures ($)") +
+  labs(
+    x = "Baseline Poverty Index",
+    y = "Health Expenditures ($)"
+  ) + 
   scale_color_brewer(palette = "Set2", labels = c("Not eligible", "Eligible")) +
   theme_classic() +
   theme(
@@ -57,6 +72,5 @@ ggplot(data, aes(x = poverty_index, y = health_expenditures, color = treatment))
     legend.title = element_blank(),
     legend.text = element_text(size = 11)
     )
-
 
 ```

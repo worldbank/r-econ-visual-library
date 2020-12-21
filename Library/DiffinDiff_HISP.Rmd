@@ -26,22 +26,37 @@ pacman::p_load(packages, character.only = TRUE, install = FALSE)
 # https://openknowledge.worldbank.org/handle/10986/25030
 data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/evaluation.dta")
 
+# Printing the first five rows of the data to visualize its structure before data wrangling
+head(data)
+
+# Data wrangling ---------------
 data <- data %>%
   filter(treatment_locality == 1) %>%
   mutate(enrolled = factor(enrolled)) %>%
   group_by(enrolled, round) %>%
+  # summarize_at, summarize_if, and summarize_all is a powerful function that apply the 
+  # same transformations (~ mean(.), ~sd(.) in this case) to multiple variables
   summarise_at("health_expenditures", list(~ mean(.), ~ sd(.))) %>%
   ungroup() %>%
   mutate(label = ifelse(enrolled == 1, "Treatment", "Control"))
-  
+
+
+# Printing the first five rows of the data to visualize its structure after data wrangling
+head(data)  
+
+# Create a graph ---------------
 ggplot(data, aes(x = factor(round), y = mean, group = enrolled, colour = enrolled)) +
-  geom_pointrange(aes(ymin = mean - sd, ymax = mean + sd), position = position_dodge(width = 0.03)) + 
+  geom_pointrange(aes(ymin = mean - sd, ymax = mean + sd), position = position_dodge(width = 0.03)) +  
+  # make sure to be extra careful in setting ymin and ymax parameters for geom_pointrange
   geom_dl(aes(label = label), method = list(dl.trans(x = x + 0.2), "last.points")) +
+  # geom_dl funtion is used for plotting labels
   geom_line(position = position_dodge(width = 0.03)) +
   theme_classic() +
   scale_x_discrete(labels = c("Before", "After")) +
-  ylab("Health expenditures (mean and 1SD error bar)") +
-  xlab("") +
+  labs(
+    x = "",
+    y = "Health expenditures (mean and 1SD error bar)"
+  ) +
   theme(
     axis.text = element_text(size = 12),
     axis.title.y = element_text(size = 14),
@@ -50,3 +65,4 @@ ggplot(data, aes(x = factor(round), y = mean, group = enrolled, colour = enrolle
     )
 
 ```
+

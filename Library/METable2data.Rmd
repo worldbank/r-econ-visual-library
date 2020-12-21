@@ -33,6 +33,11 @@ table_chr_size = 2.5
 data1 <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/METable2data.dta")
 data_varlabel <- unlist(var_label(data1))
 
+# Printing the first five rows of the data to visualize its structure before data wrangling
+head(data)
+
+# Data wrangling ---------------
+
 data1 <- data1 %>%
   mutate(case_3 = ifelse(case == 3, TRUE, FALSE))
 
@@ -41,6 +46,7 @@ var_list <- c("correct", "treat_cxr", "re_3", "re_4",
 
 df_result <- tibble(y_var = var_list) %>%
   mutate(
+    # Use svyglm (Survey-Weighted Generalised Linear Models) 
     model_logit = map(y_var, ~ svyglm(
       as.formula(paste(.x, "~ case_3 + factor(city) + factor(type_formal)")), 
       design = svydesign(ids = ~1, weights = ~weight_city, data = data1), 
@@ -52,6 +58,7 @@ df_result <- tibble(y_var = var_list) %>%
 df_coef_logit <- df_result %>%
   dplyr::select(y_var, tidied_logit) %>%
   unnest(cols = tidied_logit) %>%
+  # Set the approrpiate critical value for lower and upper bounds
   mutate(lower_bound = exp(estimate - 1.96 * std.error),
          upper_bound = exp(estimate + 1.96 * std.error),
          OR = exp(estimate),
@@ -62,6 +69,10 @@ df_coef_logit <- df_result %>%
   mutate(y_var = as.factor(data_varlabel[.$y_var])) %>%
   mutate(y_var = fct_rev(factor(y_var, levels = data_varlabel[var_list])))
 
+# Printing the first five rows of the data to visualize its structure after data wrangling
+head(df_coef_logit)
+
+# Saving the ggplot object to p1
 p1 <- ggplot(df_coef_logit, aes(x = y_var, y = OR)) + 
       geom_linerange(aes(ymin = lower_bound, ymax = upper_bound), 
                      alpha = 0.6, size = 0.5) +
@@ -92,6 +103,7 @@ for (i in seq_along(df_coef_logit$lower_bound)){
 
 dots_xaxis <- ggplot_build(p1)$data[[1]]['x']
 
+# Adding annotation to the p1 ggplot object
 p1 <- p1 + annotate("text", x = dots_xaxis$x, y = 500,
              label = as.character(df_coef_logit$OR), size = table_chr_size) +
     annotate("text", x = dots_xaxis$x, y = 3e+4,
@@ -106,10 +118,13 @@ p1 <- p1 + annotate("text", x = dots_xaxis$x, y = 500,
              label = "P-value", size = table_chr_size)
   
 # Second dataset
-
 data2 <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/METable2data2.dta")
 data_varlabel <- unlist(var_label(data2))
 
+# Printing the first five rows of the data to visualize its structure before data wrangling
+head(data)
+
+# Data wrangling ---------------
 data2 <- data2 %>%
   mutate(case_3 = ifelse(case == 3, TRUE, FALSE))
 
@@ -119,6 +134,7 @@ var_list <- c("correct", "treat_cxr", "re_3", "re_4",
 df_result <- tibble(y_var = var_list) %>%
   mutate(
     model_logit = map(
+      # Use glm (generalized linear model)
       y_var, ~ glm(as.formula(paste(.x, "~ sp4_spur_1")), 
       data = data2, family = "binomial")
       ),
@@ -129,6 +145,7 @@ df_coef_logit <- df_result %>%
   dplyr::select(y_var, tidied_logit) %>%
   unnest(cols = tidied_logit) %>%
   mutate(
+    # Set the approrpiate critical value for lower and upper bounds
     lower_bound = exp(estimate - 1.96 * std.error),
     upper_bound = exp(estimate + 1.96 * std.error),
     OR = exp(estimate),
@@ -140,6 +157,10 @@ df_coef_logit <- df_result %>%
   mutate(y_var = as.factor(data_varlabel[.$y_var])) %>%
   mutate(y_var = fct_rev(factor(y_var, levels = data_varlabel[var_list])))
 
+# Printing the first five rows of the data to visualize its structure after data wrangling
+head(data)
+
+# Saving ggplot object p2
 p2 <- ggplot(df_coef_logit, aes(x = y_var, y = OR)) + 
   geom_linerange(
     aes(ymin = lower_bound, ymax = upper_bound), 
@@ -173,6 +194,7 @@ for (i in seq_along(df_coef_logit$lower_bound)){
 
 dots_xaxis <- ggplot_build(p2)$data[[1]]['x']
 
+# Adding annotaitons to the ggplot object p2
 p2 <- p2 + 
   annotate(
     "text", x = dots_xaxis$x, y = 500,
@@ -199,6 +221,9 @@ p2 <- p2 +
     label = "P-value", size = table_chr_size
     )
 
+# Create a grpah ---------------
+
+# Using grid.arrange to display two plots
 grid.arrange(arrangeGrob(p1, p2))
 
 ```

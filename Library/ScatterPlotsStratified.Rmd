@@ -23,6 +23,12 @@ pacman::p_load(packages, character.only = TRUE, install = FALSE)
 
 # Load an example dataset ---------------
 data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/ScatterPlotsStratified.dta")
+
+# Printing the first five rows of the data to visualize its structure before data wrangling
+head(data)
+
+# Data wrangling ---------------
+
 data_varlabel <- unlist(var_label(data))
 
 sp_case_label <- names(val_labels(data$sp_case))
@@ -46,6 +52,10 @@ reshaped_data <- collapsed_data %>%
     sp_case = fct_rev(as.factor(sp_case))
     )
 
+# Printing the first five rows of the data to visualize its structure after data wrangling
+head(reshaped_data)
+
+# Saving the ggplot object p
 p <- ggplot(reshaped_data, aes(x = key, y = value, fill = sp_case)) + 
   geom_dotplot(
     binaxis = "y", position = "dodge",
@@ -65,6 +75,10 @@ p <- ggplot(reshaped_data, aes(x = key, y = value, fill = sp_case)) +
     )
 
 dots_xaxis <- (ggplot_build(p)$data[[1]]["xmin"] + ggplot_build(p)$data[[1]]["xmax"]) / 2
+
+# Create a graph ---------------
+
+# Adding geom_vline (vertical line) to the p ggplot ojbect
 p + geom_vline(xintercept = as.numeric(dots_xaxis[,1]), size = 0.1, alpha = 0.5, lty = 2)
 
 ```

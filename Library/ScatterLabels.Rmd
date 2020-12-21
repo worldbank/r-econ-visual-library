@@ -23,6 +23,11 @@ pacman::p_load(packages, character.only = TRUE, install = FALSE)
 
 # Load an example dataset ---------------
 data <- WDI(indicator = "NY.GDP.PCAP.KD", start = 1980, end = 2012)
+
+# Printing the first five rows of the data to visualize its structure before data wrangling
+head(data)
+
+# Data wrangling ---------------
 country_code <- as_tibble(WDI_data$country)
 
 data <- data %>%
@@ -33,9 +38,15 @@ data <- data %>%
   pivot_wider(names_from = "year", values_from = "GDP") %>%
   ungroup()
 
+# Printing the first five rows of the data to visualize its structure after data wrangling
+head(data)
+
+# Saving the list of countries to stress for visualization 
 country_stress <- c("USA", "CHN", "BRA", "RWA")
 
-ggplot(data, aes(x = `1980`, y = `2012`)) + 
+# Create a graph ---------------
+
+ggplot(data, aes(x = `1980`, y = `2012`)) + # backticks used to variables written in numbers
   geom_point(aes(alpha = 0.8, color = (iso3c %in% country_stress)), show.legend = FALSE) +
   geom_abline(slope = 1, color = "gray") +
   geom_text_repel(aes(label = ifelse(iso3c %in% country_stress, iso3c, ""))) +
@@ -50,8 +61,10 @@ ggplot(data, aes(x = `1980`, y = `2012`)) +
     labels = expression(10^2, 10^3, 10^4, 10^5)
   ) +
   scale_color_manual(values = c("gray", "red")) +
-  xlab("GDP per capita (constant 2000 US$) in 1980") +
-  ylab("GDP per capita (constant 2000 US$) in 2012") +
+  labs(
+    x = "GDP per capita (constant 2000 US$) in 1980",
+    y = "GDP per capita (constant 2000 US$) in 2012"
+  ) +
   theme_classic() +
   theme(
     axis.text = element_text(size = 12),

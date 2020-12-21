@@ -10,6 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r HorizontalBarMultipleVars, fig.path = '../docs/figure/'}
 # Install and load packages ---------------
+
 packages <- c(
   "tidyverse",
   "haven",
@@ -23,6 +24,12 @@ pacman::p_load(packages, character.only = TRUE, install = FALSE)
 
 # Load an example dataset ---------------
 data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/HorizontalBarMultipleVars.dta", encoding = "latin1")
+
+# Printing the first five rows of the data to visualize its structure before data wrangling
+head(data)
+
+# Data wrangling ---------------
+
 data_varlabel <- unlist(var_label(data))
 
 # Vector of variables used in the figure
@@ -43,7 +50,11 @@ reshaped_data <- collapsed_data %>%
                   pivot_longer(all_of(var_list), names_to = "key", values_to = "value") %>%
                   mutate(key = as.factor(data_varlabel[.$key]))
 
-# Plot
+# Printing the first five rows of the data to visualize its structure after data wrangling
+head(data)
+
+# Create a plot ---------------
+
 ggplot(reshaped_data, aes(x = reorder(key, value), y = value, fill = rev(facility_type))) +
   geom_bar(
     width = 0.8, position = position_dodge(width = 0.8), 
@@ -60,17 +71,20 @@ ggplot(reshaped_data, aes(x = reorder(key, value), y = value, fill = rev(facilit
     breaks = rev(facility_val), 
     labels = facility_label
     ) +
-  coord_flip(ylim = c(0, 1)) +
-  geom_hline(yintercept = 0, alpha = 0.5) +
-  scale_y_continuous(labels = percent) +
+  # # coord_flip flips the x and y axes. This is useful when the graph is too long (horizontally) or too tall (vertically)
+  coord_flip(ylim = c(0, 1)) + 
+  geom_hline(yintercept = 0, alpha = 0.5) + # setting alpha parameters to 0.5 changes the transparenct of the line
+  scale_y_continuous(labels = percent) + # setting labels to percent changes the labels into percent forms
   theme_classic() +
   theme(
+    # element_blank() removes the given visualization. 
+    # For instance, axis.line.y = element_blank removes the axis.line.y
     axis.line.y = element_blank(),
     axis.title = element_blank(),
     axis.ticks.y = element_blank(),
     axis.text = element_text(size = 10),
     legend.title = element_blank(),
-    legend.position = "bottom"
+    legend.position = "bottom" # Moves the position of the legend to the bottom
     )
 
 ```

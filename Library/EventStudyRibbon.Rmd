@@ -10,6 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r EventStudyRibbon, fig.path = '../docs/figure/', warning = FALSE}
 # Install and load packages ---------------
+
 packages <- c(
   "tidyverse",
   "tidymodels",
@@ -24,6 +25,10 @@ pacman::p_load(packages, character.only = TRUE, install = FALSE)
 # Autor (2003): "Outsourcing at Will: The Contribution of Unjust Dismissal Doctrine to the Growth of Employment Outsourcing"
 data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/autor-jole-2003.dta")
 
+# Printing the first five rows of the data to visualize its structure before data wrangling
+head(data)
+
+# Data wrangling ---------------
 admico_list <- c("admico_2", "admico_1", "admico0", "admico1", "admico2", "admico3", "mico4")
 
 analysis_data <- data %>%
@@ -42,6 +47,10 @@ analysis_data <- data %>%
     year = as.factor(year)
     )
 
+# Printing the first five rows of the data to visualize its structure after data wrangling
+head(data)
+
+# felm function is used to fit linear models with multiple group fixed effects 
 res <- felm(lnths ~ factor(year_since_adoption) | state + year | 0 | state, data = analysis_data)
 
 labels <- c()
@@ -53,6 +62,7 @@ for (num in seq(-9, 15)){
   }
 }
 
+# Creating fig_data from the regression results
 fig_data <- tibble(
   label = labels,
   coef = summary(res)$coef[var_list, "Estimate"] * 100,
@@ -60,8 +70,11 @@ fig_data <- tibble(
   ) %>%
   add_row(label = -1, coef = 0, se = 0)
 
+# Create a graph ---------------
+
 ggplot(fig_data, aes(x = label, y = coef)) +
   geom_point() +
+  # Be extra careful in setting ymin and ymax parameters with respect to the critical value when using geom_ribbon
   geom_ribbon(aes(ymin = coef - 1.645 * se, ymax = coef + 1.645 * se, fill = "90%"), alpha = 0.4) +
   geom_ribbon(aes(ymin = coef - 1.96 * se, ymax = coef + 1.96 * se, fill = "95%"), alpha = 0.2) +
   geom_vline(xintercept = -0.5, alpha = 0.3, linetype = "dashed", size = 0.3) +
@@ -69,8 +82,10 @@ ggplot(fig_data, aes(x = label, y = coef)) +
   geom_hline(yintercept = 0, alpha = 0.5, size = 0.5) +
   scale_fill_manual(name = "Confidence Intervals", values = c("90%" = "grey12", "95%" = "grey12")) +
   guides(fill = guide_legend(override.aes = list(alpha = c(0.4, 0.2)))) +
-  ylab("Coefficient estimates & Confidence Intervals") +
-  xlab("Year relative to adoption of implied contract exception") +
+  labs(
+    x = "Year relative to adoption of implied contract exception",
+    y = "Coefficient estimates & Confidence Intervals"
+  ) +
   theme(
     axis.text = element_text(size = 12),
     axis.title = element_text(size = 14),

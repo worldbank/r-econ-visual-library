@@ -23,6 +23,10 @@ pacman::p_load(packages, character.only = TRUE, install = FALSE)
 # https://openknowledge.worldbank.org/handle/10986/25030
 data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/evaluation.dta")
 
+# Printing the first five rows of the data to visualize its structure before data wrangling
+head(data)
+
+# Data wrangling ---------------
 analysis_data <- data %>%
   filter(eligible == 1) %>%
   mutate(group = interaction(round, treatment_locality),
@@ -31,15 +35,21 @@ analysis_data <- data %>%
                                `0.1` = "Before & Treated",
                                `1.0` = "After & Control",
                                `1.1` = "After & Treated"
-                               ))
+                               ))  # Using backticks to specify the name of observations written in numbers
 
+# Printing the first five rows of the data to visualize its structure after data wrangling
+head(data)
+
+# Create a graph ---------------
 ggplot(analysis_data, aes(x = health_expenditures, y = group)) +
   stat_density_ridges(alpha = 0.6, bandwidth = 0.2) +
   theme_ridges() +
-  xlab("Health Expenditures ($)") +
-  ylab("Group") +
+  labs(
+    x = "Health Expenditures ($)",
+    y = "Group"
+  ) +
   xlim(c(0, 50)) +
-  theme(legend.position = "none")
+  theme(legend.position = "none") # Setting the legend.position to none to get rid of the legend
 
 ```
 
