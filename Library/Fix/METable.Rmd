@@ -24,13 +24,6 @@ pacman::p_load(packages, character.only = TRUE, install = FALSE)
 
 # Load an example dataset ---------------
 data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/METable.dta")
-
-# Printing the first five rows of the data to visualize its structure before data wrangling
-head(data)
-
-# Data wrangling ---------------
-
-# unlist variables
 data_varlabel <- unlist(var_label(data))
 
 var_list <- c(colnames(data)[grepl("??_correct$", colnames(data))], "refer", "med_any", "med_class_any_6", "med_class_any_16")
@@ -38,7 +31,6 @@ var_list <- c(colnames(data)[grepl("??_correct$", colnames(data))], "refer", "me
 df_result <- tibble(y_var = var_list) %>%
   mutate(
     model_logit = map(y_var, ~ tryCatch({
-      # tryCatch evaluates code and assigns exception handlers
       glm(as.formula(paste(.x, "~ facility_private + factor(case_code)")), data = data, family = "binomial")
       }, error  = function(cond) {
         glm(as.formula(paste(.x, "~ facility_private")), data = data, family = "binomial")
@@ -51,10 +43,9 @@ df_coef_logit <- df_result %>%
   dplyr::select(y_var, tidied_logit) %>%
   unnest(cols = tidied_logit) %>%
   mutate(
-    # Choose appropriate critical vaulue for lower and upper bounds
     lower_bound = exp(estimate - 1.96 * std.error),
     upper_bound = exp(estimate + 1.96 * std.error),
-    OR = exp(estimate), # exp is used for euler's number 
+    OR = exp(estimate),
     p_value = 2 * pnorm(- abs(estimate / std.error))
     )  %>%
   mutate_if(is.double, round, digits = 2) %>%
@@ -62,12 +53,6 @@ df_coef_logit <- df_result %>%
   mutate(y_var = as.factor(data_varlabel[.$y_var])) %>%
   mutate(y_var = fct_rev(factor(y_var, levels = data_varlabel[var_list])))
 
-# Printing the first five rows of the data to visualize its structure before data wrangling
-head(df_coef_logit)
-
-# Data wrangling ---------------
-
-# Saving a ggplot object to p
 p <- ggplot(df_coef_logit, aes(x = y_var, y = OR)) + 
   geom_linerange(
     aes(ymin = lower_bound, ymax = upper_bound), 
@@ -83,17 +68,14 @@ p <- ggplot(df_coef_logit, aes(x = y_var, y = OR)) +
   geom_hline(yintercept = 1, size = 0.1, alpha = 0.5) +
   scale_y_log10(breaks = c(0.01, 0.1, 1, 10, 100)) +
   theme_classic() +
-  # TeX is used to display characters in LaTeX
   ylab(TeX("$\\leftarrow$ Favors Public $\\;\\;\\;\\;\\;\\;$  Favors Privte $\\rightarrow$ \n")) +
   theme(
-    # element_blank() removes the given visualization. 
-    # For instance, axis.line.y = element_blank removes the axis.line.y
     axis.line = element_blank(),
     axis.ticks.y = element_blank(),
     legend.title = element_blank(),
     axis.title.y = element_blank(),
     axis.title.x = element_text(hjust = -0.1),
-    legend.position = "bottom" # setting the position of the legend to the bottom
+    legend.position = "bottom"
     )
     
 ci_str <- c()
@@ -102,10 +84,7 @@ for (i in seq_along(df_coef_logit$lower_bound)){
 }
 
 dots_xaxis <- ggplot_build(p)$data[[1]]['x']
-
-# Create a graph ------------
-
-# Using the ggplot object p with annotate function to add extra labels
+## `stat_bindot()` using `bins = 30`. Pick better value with `binwidth`.
 p + annotate(
   "text", x = dots_xaxis$x, y = 500,
   label = as.character(df_coef_logit$OR), size = 4
@@ -130,6 +109,5 @@ p + annotate(
     "text", x = max(dots_xaxis$x) + 0.5, y = 1e+6,
     label = "P-value", size = 4
     )
-
 ```
 
