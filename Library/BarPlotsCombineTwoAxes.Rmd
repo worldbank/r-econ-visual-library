@@ -61,7 +61,7 @@ ggplot(fig_data) +
             alpha = .6, # transparency
             width = .4 # bar width
             ) +
-  geom_line(aes(x = int1mo, y = total_exp / 1000)) + #Add line to visualize expenditures
+  geom_line(aes(x = int1mo, y = total_exp / 1000)) + # Add line to visualize expenditures
   scale_y_continuous(
     # sec.axis is a convenient option to create a second axis
     sec.axis = sec_axis(~.*1000,  name = "Total Value of Exp. 1,000 Real Tz Sh. (line)"), 
