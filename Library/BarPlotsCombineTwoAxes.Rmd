@@ -57,7 +57,7 @@ ggplot(fig_data) +
 # fine tuning the graph using alpha and width options
   geom_bar(aes(x = int1mo,
                y = number_group), 
-            stat = "identity", #Data is already in mean format
+            stat = "identity", # Data is already in mean format
             alpha = .6, # transparency
             width = .4 # bar width
             ) +
