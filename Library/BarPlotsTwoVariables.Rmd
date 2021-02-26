@@ -8,6 +8,8 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r BarPlotsTwoVariables, fig.path = '../docs/figure/'}
+# Objective ---------------
+  # Create clustered bar charts displaying the percent of healthcare providers ordering correct treatment types by location and different observation types. 
 
 # Install and load packages ---------------
 packages <- c(
@@ -24,6 +26,14 @@ data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/
 
 # Printing the first five rows of the data to visualize its structure
 head(data)
+
+# Data Dictionary ---------------
+
+
+# No Data wrangling needed ---------------
+
+
+# Data is collapsed by location and observation type already
 
 # Create a graph ---------------
 ggplot(data, aes(fill = type, y = treat_correct, x = interaction(study, case))) +  

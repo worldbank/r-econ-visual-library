@@ -9,6 +9,8 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r BoxPlot, fig.path = '../docs/figure/'}
+# Objective ---------------
+# Create color-coded boxplots comparing distributions of reported competence between nurses and medical officers across countries. 
 
 # Install and load packages ---------------
 packages <- c(
@@ -23,40 +25,47 @@ pacman::p_load(packages, character.only = TRUE, install = FALSE)
 
 # Load an example dataset ---------------
 data <- read.dta13("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/BoxPlot.dta")
-data_varlabel <- varlabel(data)
 
 # Printing the first five rows of the data to visualize its structure before data wrangling
 head(data)
 
+
+# Data Dictionary ---------------
+
+
 # Data wrangling ---------------
 
-# setting & changing the country variable to factor to make ordered visualizations
-data$country <- fct_rev(as.factor(data$country)) 
-data$provider_cadre <- fct_rev(as.factor(data$provider_cadre))
-xlab <- levels(data$country)
+data_varlabel <- varlabel(data) # Save variable labels
 
+# setting & changing the country variable to factor to make ordered visualizations
+data$country <- fct_rev(as.factor(data$country)) # Reverse order of factor levels 
+data$provider_cadre <- fct_rev(as.factor(data$provider_cadre))  
+xlab <- levels(data$country) # Set xlabels as country labels 
+
+# Add sample size counts to labels for each country 
 for (i in seq_along(xlab)){
   xlab[i] = str_interp("${xlab[i]} (N = ${sum(data$country == xlab[i])})")
   # Using str_interp function from the stringr package (included inside the tidyverse library), 
-  # Anyhing inside the '$curly brackets', ${xlab[i]} for instance, is understood as a variable
+  # Anything inside the '$curly brackets', ${xlab[i]} for instance, is understood as a variable
   # This is a convenient way to customize your plots
 }
 
+# Save median competence statistic for graph
 med_competence_mle <- median(data$competence_mle)
 
 # Printing the first five rows of the data to visualize its structure after data wrangling
 head(data)
 
 # Create a graph ---------------
-ggplot(data, aes(x = country, y = competence_mle, fill = provider_cadre)) +
-  geom_boxplot(outlier.shape = NA) +
-  coord_flip(ylim = c(-2.5, 3.5)) +
-  scale_x_discrete(labels = xlab) +
-  geom_hline(yintercept = med_competence_mle, linetype = "dashed", size = 0.3) +
-  scale_fill_discrete(name = 'Provider Cadre', breaks = rev(levels(data$provider_cadre))) +
+ggplot(data, aes(x = country, y = competence_mle, fill = provider_cadre)) + # Set axes, color code by provider cadre
+  geom_boxplot(outlier.shape = NA) + # Set boxplot as plot type
+  coord_flip(ylim = c(-2.5, 3.5)) + # Flip x and y cooordinates, set y-axis range 
+  scale_x_discrete(labels = xlab) + # Apply x-labels
+  geom_hline(yintercept = med_competence_mle, linetype = "dashed", size = 0.3) + # Add median competence statistic as vertical line 
+  scale_fill_discrete(name = 'Provider Cadre', breaks = rev(levels(data$provider_cadre))) + 
   scale_y_continuous(breaks = c(-2, -1, 0, 1, 2, 3),
                      labels = c("-2 SD", "-1 SD", "Mean", "1 SD", "2 SD", "3 SD")) +
-  theme_classic() +
+  theme_classic() + # Set theme
   theme(
         axis.line.y = element_blank(), 
         axis.title = element_blank(),

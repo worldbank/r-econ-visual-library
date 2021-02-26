@@ -10,6 +10,9 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r BarPlotsCombineTwoAxes, fig.path = '../docs/figure/'}
 
+# Objective ---------------
+  # Create a food-group wise set of bar plots, displaying average number of foods from each group consumed last month on one axis, and total value of expenditures on the other, by month. 
+
 # Install and load packages ---------------
 packages <- c(
   "tidyverse",
@@ -28,6 +31,10 @@ data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/
 
 # Printing the first five rows of the data to visualize its structure before data wrangling
 head(data)
+
+# Data Dictionary ---------------
+
+
 
 # Data wrangling ---------------
 
@@ -53,15 +60,37 @@ fig_data <- data %>%
 head(fig_data)
 
 # Create a graph ---------------
+
+# Basic Graph of Bar Plots by Food Group 
 ggplot(fig_data) +
-# fine tuning the graph using alpha and width options
-  geom_bar(aes(x = int1mo,
+   geom_bar(aes(x = int1mo,
                y = number_group), 
             stat = "identity", #Data is already in mean format
             alpha = .6, # transparency
             width = .4 # bar width
             ) +
-  geom_line(aes(x = int1mo, y = total_exp / 1000)) + #Add line to visualize expenditures
+   geom_hline(yintercept = 0, alpha = 0.5) + 
+  coord_cartesian(ylim = c(0, 3.3)) + # Set Y-axis scale
+  scale_x_continuous(breaks = c(3, 6, 9, 12)) + # Set X-axis intervals 
+  theme_classic() +
+  facet_wrap(~food_group, strip.position = "top") + # Separate graphs by by food groups 
+labs(
+    title = "",
+    x = "Month of Interview",
+    y = "Avg. Number of Foods from \n Group Consumed Last Month (bar)"
+    )
+
+
+# Refined graph including a second axis of total expenditures and cleaner labeling 
+ggplot(fig_data) +
+# fine tuning the graph using alpha and width options
+  geom_bar(aes(x = int1mo,
+               y = number_group), 
+            stat = "identity", # Data is already in mean format
+            alpha = .6, # transparency
+            width = .4 # bar width
+            ) +
+  geom_line(aes(x = int1mo, y = total_exp / 1000)) + # Add line to visualize expenditures
   scale_y_continuous(
     # sec.axis is a convenient option to create a second axis
     sec.axis = sec_axis(~.*1000,  name = "Total Value of Exp. 1,000 Real Tz Sh. (line)"), 
@@ -69,15 +98,15 @@ ggplot(fig_data) +
     expand = c(0, 0)
     ) +
   geom_hline(yintercept = 0, alpha = 0.5) +
-  coord_cartesian(ylim = c(0, 3.3)) +
-  scale_x_continuous(breaks = c(3, 6, 9, 12)) +
+  coord_cartesian(ylim = c(0, 3.3)) + # Set Y-axis scale 
+  scale_x_continuous(breaks = c(3, 6, 9, 12)) + # Set X-axis intervals 
   theme_classic() +
   labs(
     title = "",
     x = "Month of Interview",
     y = "Avg. Number of Foods from \n Group Consumed Last Month (bar)"
     ) +
-  facet_wrap(~food_group, strip.position = "top") +
+  facet_wrap(~food_group, strip.position = "top") + # Separate graphs by by food groups 
   theme(
     plot.title = element_text(hjust = 0.5),
     axis.ticks = element_blank(),

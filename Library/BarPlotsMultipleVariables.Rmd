@@ -10,6 +10,8 @@ knitr::opts_chunk$set(echo = TRUE)
 
 
 ```{r}
+# Objective ---------------
+# Create clustered horizontal bar charts displaying baseline and midline outcomes for treatment and control groups. Include clustered bars for Summer Maize, Spring Winter Potato, and Main Paddy crops. 
 
 # Install and load packages ---------------
 packages <- c(
@@ -27,25 +29,33 @@ data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/
 # Printing the first five rows of the data to visualize its structure before data wrangling
 head(data)
 
+
+# Data Dictionary ---------------
+
+
 # Data wrangling ---------------
 
 # Collapse the dataset across each treatment group
 collapsed_data <- data %>%
                   group_by(treatment_group) %>%
-                  summarise_at(vars(starts_with(c("bl_", "ml_"))), 
-                             list(~ mean(., na.rm = T))) %>%
+                  summarise_at(vars(starts_with(c("bl_", "ml_"))), # Select baseline and midline variables
+                             list(~ mean(., na.rm = T))) %>% # Collapse at mean level, remove NAs
                   ungroup()
 
-# Reshape data
-reshaped_data <- collapsed_data %>%
-                  pivot_longer(
-                    starts_with(c("bl_", "ml_")), 
+
+# Printing the first five rows of the data to visualize its structure after collapsing
+head(collapsed_data)
+
+# Reshape data to long format 
+reshaped_data <- collapsed_data %>% # Reshape long by treatment status
+                  pivot_longer( 
+                    starts_with(c("bl_", "ml_")),
                     names_to = "key", 
-                    values_to = "value"
-                    ) %>%
-                  extract(key, c("colname", "crop"),
-                          regex = "(^bl_|^ml_)(.*)") %>%
-                  mutate(colname = fct_rev(as.factor(paste0(colname, treatment_group)))) %>%
+                    values_to = "value" 
+                    ) %>% # Rename columns
+                  extract(key, c("colname", "crop"), 
+                          regex = "(^bl_|^ml_)(.*)") %>% # Add identifying column 
+                  mutate(colname = fct_rev(as.factor(paste0(colname, treatment_group)))) %>% # Remove extra columns
                   select(-c(treatment_group)) 
 
 # Keep Summer Maize, Spring-Winter Potato, and Main Paddy
@@ -60,30 +70,29 @@ fig_data <- reshaped_data %>%
 # Printing the first five rows of the data to visualize its structure after data wrangling
 head(fig_data)
 
-```
 
-```{r BarPlotsMultipleVariables, fig.path = '../docs/figure/'}
+# Create a Graph ---------------
 ggplot(fig_data, aes(x = crop, y = value, fill = colname)) +
-  geom_bar(
+  geom_bar( # Format bars 
     width = 0.6, 
     position = position_dodge(width = 0.6),
-    stat = "identity", 
-    alpha = .8
+    stat = "identity", # Graph data as is
+    alpha = .8 # Set transparency 
     ) +
-  geom_text(
+  geom_text( # Add bar labels 
     aes(label = format(round(value, 1), nsmall = 1)), 
     position = position_dodge(width = 0.6), 
     hjust = -0.35
     ) +
-  coord_flip(ylim = c(0, 150)) +
+  coord_flip(ylim = c(0, 150)) + # Make bars horizontal 
   geom_hline(yintercept = 0, alpha = 0.5) +
   scale_x_discrete(
-    labels = c(
+    labels = c( 
       "w_Summer_Maize_Prod" = "Summer Maize Prod", 
       "w_Spring_Winter_Potato_Prod" = "Spring Winter Potato Prod",
       "w_Main_Paddy_Prod" = "Main Paddy Prod"
       )) +
-  scale_fill_brewer(
+  scale_fill_brewer( # Set color scheme 
     palette = "Set2",
     breaks = c("bl_0", "bl_1", "ml_0", "ml_1"),
     labels = c("Baseline-Control", "Baseline-Treatment", "Midline-Control", "Midline-Treatment")
@@ -98,7 +107,10 @@ ggplot(fig_data, aes(x = crop, y = value, fill = colname)) +
     axis.text = element_text(size = 11),
     legend.title = element_blank(),
     legend.text = element_text(size = 10),
-    legend.position = "bottom"
+    legend.position = c(.84, .85), # Set legend to top right position 
+    legend.box.background = element_rect(colour = "black")
+    
     )
 
 ```
+
