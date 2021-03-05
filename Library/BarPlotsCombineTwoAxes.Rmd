@@ -34,6 +34,17 @@ head(data)
 
 # Data Dictionary ---------------
 
+  ## Data Source: (Mock Data) The code was developed based on Christian, Paul, and Brian Dillon. 2018.
+
+  ## Tidy format? Yes
+
+  ## Unit of Observation: Group-level mean, collapsed by month of interview and food type
+
+  ## Variables of interest:
+    # int1mo: Month of interview identifier 
+    # food_group: Food group identifier 
+    # number_group: Mean number of food type consumed in given month 
+    # total_exp: Total expenditures on food group in given month
 
 
 # Data wrangling ---------------

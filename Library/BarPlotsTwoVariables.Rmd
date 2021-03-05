@@ -28,6 +28,14 @@ data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/
 head(data)
 
 # Data Dictionary ---------------
+  ## Data Source: Das, Jishnu, Liana Woskie, Ruma Rajbhandari, Kamran Abbasi, and Ashish Jha (2018). 
+  ## Tidy format? Yes
+  ## Unit of Observation: Group-level mean, collapsed by month observation type and study region
+  ## Variables of interest:
+    # study: Region of data collection
+    # case: Medical treatment case identifier 
+    # type: Observation type identifier
+    # treat_correct: Mean of correctly-administered treatments by observation type in given region 
 
 
 # No Data wrangling needed ---------------
