@@ -10,6 +10,8 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r DensityPlotAverage, fig.path = '../docs/figure/'}
+# Objective ---------------
+  # Create a two-way color-coded density plot comparing agricultural revenue before and after treatment
 
 # Install and load packages ---------------
 packages <- c(
@@ -26,6 +28,8 @@ data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/
 # Printing the first five rows of the data to visualize its structure before data wrangling
 head(data)
 
+# Data Dictionary ---------------
+
 # Data wrangling ---------------
 data <- data %>%
   mutate(post = as.factor(.$post)) %>% 
@@ -38,9 +42,9 @@ data <- data %>%
 head(data)
 
 # Create a graph ---------------
-ggplot(data, aes(x = revenue, colour = post)) +
+ggplot(data, aes(x = revenue, colour = post)) + # Use color instead of fill for the density plot
   geom_density(alpha = 0.1) +
-  geom_vline(
+  geom_vline( # Add dashed vertical lines to indicate means
     aes(xintercept = mean_revenue, colour = post), 
     linetype = "dashed", size = 0.3
     ) +

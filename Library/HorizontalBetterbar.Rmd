@@ -9,6 +9,9 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r HorizontalBetterbar, fig.path = '../docs/figure/'}
+# Objective ---------------
+  #
+
 # Install and load packages ---------------
 packages <- c(
   "tidyverse",
@@ -26,6 +29,8 @@ data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/
 # Printing the first five rows of the data to visualize its structure before data wrangling
 head(data)
 
+# Data Dictionary ---------------
+
 # Data wrangling ---------------
 
 # Unlist var_label
@@ -34,7 +39,7 @@ data_varlabel <- unlist(var_label(data))
 # Make vector of variables to be used
 var_group_1 <- c()
 for (i in 1:21){
-  if (i == 6){
+  if (i == 6){ # 6 is missing in data, so skip it
     next
   } else {
     var_group_1 <- c(var_group_1, paste0("sp1_h", i)) # using paste0 to concatenate "sp1_h" and i
@@ -42,7 +47,7 @@ for (i in 1:21){
 }
 
 var_group_2 <- c()
-for (i in 1:6){
+for (i in 1:6){  # 4 is missing in data, so skip it
   if (i == 4){
     next
   } else {
@@ -65,13 +70,13 @@ fig_data <- mean_data %>%
     ) %>%
   mutate(
     key_label = data_varlabel[.$key],
-    group = ifelse(.$key %in% all_of(var_group_1), 1, 0),
+    group = ifelse(.$key %in% all_of(var_group_1), 1, 0), # Group variables according to lists made earlier
     key_label = fct_reorder(key_label, value)
     )
 
 # Label for each variable
 x_label <- as.character(sort(interaction(fig_data$key_label, fig_data$group))) %>%
-  str_replace("\\.\\d", "")
+  str_replace("\\.\\d", "") # Remove decimals from label suffix
 
 # Printing the first five rows of the data to visualize its structure after data wrangling
 head(fig_data)
@@ -80,7 +85,7 @@ head(fig_data)
 ggplot(fig_data, aes(x = interaction(key_label, group), y = value, label = key_label)) +
   geom_bar(
     stat = "identity", 
-    # Seeting position_dodge2 preserve argument to "single" maintains the total width of a single element
+    # Setting position_dodge2 preserve argument to "single" maintains the total width of a single element
     width = 0.6, position = position_dodge2(width = 0.6, preserve = "single")
     ) +
   # coord_flip flips the x and y axes. This is useful when the graph is too long (horizontally) or too tall (vertically)

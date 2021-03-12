@@ -10,6 +10,8 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r DensityCDF, fig.path = '../docs/figure/'}
+# Objective ---------------
+  # Create a two-way color-coded cumulative distribution function comparing agricultural revenue before and after treatment
 
 # Install and load packages ---------------
 packages <- c(
@@ -27,6 +29,9 @@ data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/
 # Printing the first five rows of the data to visualize its structure before data wrangling
 head(data)
 
+# Data Dictionary ---------------
+
+
 # Data wrangling ---------------
 data <- data %>%
   mutate(post = as.factor(post)) %>%
@@ -38,8 +43,8 @@ data <- data %>%
 head(data)
 
 # Create a graph ---------------
-ggplot(data, aes(x = revenue, color = post)) +
-  geom_vline(
+ggplot(data, aes(x = revenue, color = post)) + # Use color instead of fill for the CDF
+  geom_vline( # Add dashed vertical lines to indicate means
     aes(xintercept = mean_revenue, color = post), 
     linetype = "dashed", size = 0.3
     ) +
@@ -52,7 +57,7 @@ ggplot(data, aes(x = revenue, color = post)) +
     x = "Agriculture Revenue (BRL thousands)",
     y = "Cumulative Density"
   ) +
-  scale_colour_discrete(labels = c("Pre-treatment", "Post-treatment")) +
+  scale_colour_discrete(labels = c("Pre-treatment", "Post-treatment")) + # Color-code by treatment status
   theme(
     axis.text = element_text(size = 12),
     axis.title = element_text(size = 15),
