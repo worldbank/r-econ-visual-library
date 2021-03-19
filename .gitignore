@@ -78,7 +78,7 @@
 # project, but we strongly recommend that you only include these files in
 # a subset of the folders where you are certain no private data is ever stored.
 !/**/Output/**/*.txt
-!/**/Output/**/*.csv
+!/**/*.csv
 !/**/Output/**/*.xml
 !/**/Output/**/*.eps
 !/**/Output/**/*.svg
