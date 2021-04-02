@@ -11,7 +11,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r}
 # Objective ---------------
-# Create clustered horizontal bar charts displaying baseline and midline outcomes for treatment and control groups. Include clustered bars for Summer Maize, Spring Winter Potato, and Main Paddy crops. 
+# Create clustered horizontal bar charts displaying baseline and midline outcomes for treatment and control groups. Include clustered bars for Papayas, Pineapples, and Coconuts.
 
 # Install and load packages ---------------
 packages <- c(
@@ -24,12 +24,22 @@ packages <- c(
 pacman::p_load(packages, character.only = TRUE, install = FALSE)
 
 # Load an example dataset ---------------
-data <- readRDS("~/Downloads/BarPlotsMultipleVariables.rds")
+data <- readRDS("~/Documents/GitHub/DIME/Code_Reviews/CodeReview_r-econ-visual-library/r-econ-visual-library/Library/BarPlotsMultipleVariables.rds")
 
 # Printing the first five rows of the data to visualize its structure before data wrangling
 head(data)
 
 # Data Dictionary ---------------
+  ## Data Source: This graph uses fictional data created for the purpose of this graph. The fictional data comes from an imagined survey of tropical farmers participating in a fictional randomized control trial. 
+  ## Tidy format? Yes
+  ## Unit of Observation: Households
+  ## Variables of interest
+    # hh_id: Household identifier
+    # round: Survey round id (baseline or midline) 
+    # treatment_group: Treatment status id
+    # w_Papaya: Annual Papaya Production
+    # w_Pineapple: Annual Pineapple Production
+    # w_Coconut: Annual Coconut Production 
 
 
 # Data wrangling ---------------
@@ -77,9 +87,9 @@ ggplot(reshaped_data, aes(x = key, y = value, fill = round)) +
   geom_hline(yintercept = 0, alpha = 0.5) +
   scale_x_discrete(
     labels = c( 
-      "w_Summer_Maize_Prod" = "Summer Maize Prod", 
-      "w_Spring_Winter_Potato_Prod" = "Spring Winter Potato Prod",
-      "w_Main_Paddy_Prod" = "Main Paddy Prod"
+      "w_Papaya" = "Papaya Prod", 
+      "w_Pineapple" = "Pineapple Prod",
+      "w_Coconut" = "Coconut Prod"
       )) +
   scale_fill_brewer( # Set color scheme 
     palette = "Set2",
