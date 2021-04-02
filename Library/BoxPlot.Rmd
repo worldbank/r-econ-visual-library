@@ -31,7 +31,15 @@ head(data)
 
 
 # Data Dictionary ---------------
-
+  ## Data Source: Data from Das, Jishnu, Liana Woskie, Ruma Rajbhandari, Kamran Abbasi, and Ashish Jha. “Rethinking assumptions about delivery of healthcare: implications for universal health coverage.” Bmj 361 (2018). Code was based on https://worldbank.github.io/stata-visual-library/boxplot-pctile.html
+  ## Tidy format? Yes
+  ## Unit of Observation: Individual (medical-professionals)
+  ## Variables of Interest
+    # country: Country identifier
+    # temp: Survey location identifier
+    # provider_cadre: Medical professional type identifier
+    # competence_mle: Maximum Likelihood Estimation competence estimate
+  
 
 # Data wrangling ---------------
 

@@ -32,7 +32,7 @@ head(data1)
 head(data2)
 
 # Data Dictionary (data1) ---------------
-  ## Data Source:
+  ## Data Source: Data Source: Das, Jishnu, Liana Woskie, Ruma Rajbhandari, Kamran Abbasi, and Ashish Jha. “Rethinking assumptions about delivery of healthcare: implications for universal health coverage.” Bmj 361 (2018).
   ## Tidy format? Yes
   ## Unit of Observation: Individual clinics
     # study: Clinic type identifier
@@ -42,6 +42,7 @@ head(data2)
   ## Data Source:
   ## Tidy format? Yes
   ## Unit of Observation: Individual clinics
+  ## Variables of Interest
      # study: Clinic type identifier
      # totime: Total daily time seeing patients (minutes)
 

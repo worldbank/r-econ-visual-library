@@ -10,7 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r HorizontalGroupSE, fig.path = '../docs/figure/'}
 # Objective ---------------
-  # Createa clustered horizontal bar chart of different medical outcome variables by location, with standard error bars. 
+  # Create a clustered horizontal bar chart of different medical outcome variables by location, with standard error bars. 
 
 # Install and load packages ---------------
 
@@ -33,6 +33,23 @@ data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/
 head(data)
 
 # Data Dictionary ---------------
+  ## Data Source: Data from: Satyanarayana S, Kwan A, Daniels B, Subbaraman R, McDowell A, Bergkvist S, Das RK, Das V, Das J, Pai M. Use of standardised patients to assess antibiotic dispensing for tuberculosis by pharmacies in urban India: A cross-sectional study. The Lancet Infectious Diseases. 2016 Nov 30;16(11):1261-8. Code was based on https://worldbank.github.io/stata-visual-library/bar-better-ci.html
+  ## Tidy format? No
+  ## Unit of Observation: Medical Facilities
+  ## Variables of Interest
+    # case: Standardized patient identifier
+    # city: Location of medical facility
+    # dr_3: Dummy for whether a referral was given to SP
+    # correct_treatment: Dummy for whether correct treatment was given to SP
+    # med_b2_any_antibiotic: Dummy for whether an antibiotic was given to SP
+    # med_b2_any_steroid: Dummy for whether a steroid was given to SP
+    # med_b2_any_antister: Dummy for whether an antibiotic or steroid was given to SP
+    # med_l_any_2: Dummy for whether any fluoroquinolone was given to SP
+    # med_b2_any_schedule_h: Dummy for whether any schedule H drug was given to SP
+    # med_b2_any_schedule_h1: Dummy for whether any schedule H1 drug was given to SP
+    # med_b2_any_schedule_x: Dummy for whether any schedule X drug was given to SP
+    # med_l_any_1: Dummy for whether any anti-TB medicine was given to SP
+
 
 # Data wrangling ---------------
 
@@ -50,7 +67,7 @@ for (i in seq_along(city_label)){ # Add sample size counts to city labels
 var_list <- c("dr_3", "correct_treatment", "med_b2_any_antibiotic", "med_b2_any_steroid", "med_b2_any_antister", 
               "med_l_any_2", "med_b2_any_schedule_h", "med_b2_any_schedule_h1", "med_b2_any_schedule_x", "med_l_any_1")
 
-# Collapse the dataset across each treatment group
+# Collapse the dataset across each variable of interest
 collapsed_data <- data %>%
   mutate(city = fct_rev(as.factor(city))) %>%
   group_by(city) %>%

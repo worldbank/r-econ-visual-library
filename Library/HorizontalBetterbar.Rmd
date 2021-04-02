@@ -10,7 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r HorizontalBetterbar, fig.path = '../docs/figure/'}
 # Objective ---------------
-  #
+# Create a group of horizontal bar charts displaying the proportion of providers that asked different questions about medical history and performed different medical exams. Stack the bar charts for questions on top of the bar charts for medical exams. 
 
 # Install and load packages ---------------
 packages <- c(
@@ -30,13 +30,19 @@ data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/
 head(data)
 
 # Data Dictionary ---------------
+  ## Data Source: Das, Jishnu et al. “Use of standardised patients to assess quality of tuberculosis care: a pilot, cross-sectional study.” The Lancet. Infectious diseases vol. 15,11 (2015): 1305-13. doi:10.1016/S1473-3099(15)00077-8
+  ## Tidy format? Yes
+  ## Unit of Observation: Individual clinics
+  ## Variables of interest
+    # sp1_h: Dummy variable indicating whether question was asked on particular subject
+    # sp1_e: Dummy variable indicating whether test was performed on particular subject
 
 # Data wrangling ---------------
 
-# Unlist var_label
+# Save variable labels in list 
 data_varlabel <- unlist(var_label(data))
 
-# Make vector of variables to be used
+# Make lists of variables to be used
 var_group_1 <- c()
 for (i in 1:21){
   if (i == 6){ # 6 is missing in data, so skip it
@@ -62,14 +68,14 @@ mean_data <- data %>%
     list(~ mean(., na.rm = TRUE)) 
     )
 
-# Reshape the data and create group variable
+# Reshape the data to longer format, identifying question/exam type, and grouping questions and exams together.
 fig_data <- mean_data %>%
   pivot_longer(
     all_of(c(var_group_1, var_group_2)), 
-    names_to = "key", values_to = "value"
+    names_to = "key", values_to = "value" # This extracts the value in each cell and assigns it an identifier from the name of the variable it comes from
     ) %>%
   mutate(
-    key_label = data_varlabel[.$key],
+    key_label = data_varlabel[.$key], # This assigns a label to each variable from the label list we saved earlier
     group = ifelse(.$key %in% all_of(var_group_1), 1, 0), # Group variables according to lists made earlier
     key_label = fct_reorder(key_label, value)
     )

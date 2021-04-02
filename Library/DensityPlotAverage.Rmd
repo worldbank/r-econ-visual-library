@@ -29,6 +29,13 @@ data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/
 head(data)
 
 # Data Dictionary ---------------
+  ## Data Source: 
+  ## Tidy format? YesY
+  ## Unit of Observation: Households
+  ## Variables of interest: 
+    # hh_id: Household identifier
+    # post: Timing variable (pre/post treatment)
+    # revenue: Agricultural Revenue
 
 # Data wrangling ---------------
 data <- data %>%
