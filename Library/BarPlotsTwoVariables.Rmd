@@ -40,7 +40,6 @@ head(data)
 
 
 
-# Data is collapsed by location and observation type already
 
 # Create a graph ---------------
 ggplot(data, aes(fill = type, y = treat_correct, x = interaction(study, case))) +  
