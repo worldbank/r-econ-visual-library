@@ -7,9 +7,9 @@ date: ""
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-# Overview 
+# Overview
 
-Create clustered bar charts displaying the percent of healthcare providers ordering correct treatment types by location and different observation types. 
+Create clustered bar charts displaying the percent of healthcare providers ordering correct treatment types by location and different observation types.
 
 ```{r}
 # Install and load packages
@@ -22,14 +22,14 @@ packages <- c(
 pacman::p_load(packages, character.only = TRUE, install = FALSE)
 ```
 
-# Data 
+# Data
 
 This graph comes from Das, Jishnu, Liana Woskie, Ruma Rajbhandari, Kamran Abbasi, and Ashish Jha. “Rethinking assumptions about delivery of healthcare: implications for universal health coverage.” Bmj 361 (2018).
 
 - `study`: Region of data collection
-- `case`: Medical treatment case identifier 
+- `case`: Medical treatment case identifier
 - `type`: Observation type identifier
-- `treat_correct`: Mean of correctly-administered treatments by observation type in given region 
+- `treat_correct`: Mean of correctly-administered treatments by observation type in given region
 
 ```{r}
 # Load data
@@ -39,14 +39,14 @@ head(data)
 ```
 
 ```{r}
-# Create a graph 
+# Create a graph
 
 ggplot(data, aes(fill = type, y = treat_correct, x = interaction(study, case))) +  
   # using the interaction function computes a factor that represents the interaction of the given factors (study and case in this example)
   geom_bar(width = 0.6, position = position_dodge(width = 0.8), stat = "identity") +
   geom_text(
     aes(label = format(round(treat_correct, 2), nsmall = 2)),  
-    position = position_dodge(width = 0.8), 
+    position = position_dodge(width = 0.8),
     size = 4.5,
     vjust = -0.35
     ) +
@@ -58,10 +58,10 @@ ggplot(data, aes(fill = type, y = treat_correct, x = interaction(study, case))) 
   annotate(
     "text", x = c(1, 2.5), y = -0.08,
     label = levels(factor((data$case))), size = 5
-    ) + 
+    ) +
   theme_classic() +
   scale_fill_brewer(palette = "Set2", name = "Measurement") +
-  ylab(TeX("Providers ordering correct treatment $\\rightarrow$")) + 
+  ylab(TeX("Providers ordering correct treatment $\\rightarrow$")) +
   theme(
     legend.position = 'bottom',
     legend.title = element_text(size = 15),
@@ -73,6 +73,5 @@ ggplot(data, aes(fill = type, y = treat_correct, x = interaction(study, case))) 
     axis.line = element_blank(),
     axis.title.y = element_text(size = 15)
     )
-  
-```
 
+```
