@@ -7,43 +7,40 @@ date: ""
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r BarPlotsTwoVariables, fig.path = '../docs/figure/'}
-# Objective ---------------
-  # Create clustered bar charts displaying the percent of healthcare providers ordering correct treatment types by location and different observation types. 
+# Overview 
 
-# Install and load packages ---------------
+Create clustered bar charts displaying the percent of healthcare providers ordering correct treatment types by location and different observation types. 
+
+```{r}
+# Install and load packages
 packages <- c(
   "tidyverse",
   "haven",
   "latex2exp"
 )
-
-# Change to install = TRUE to install the required packages
+# Change to install TRUE to install the required packages
 pacman::p_load(packages, character.only = TRUE, install = FALSE)
+```
 
-# Load an example dataset ---------------
+# Data 
+
+This graph comes from Das, Jishnu, Liana Woskie, Ruma Rajbhandari, Kamran Abbasi, and Ashish Jha. “Rethinking assumptions about delivery of healthcare: implications for universal health coverage.” Bmj 361 (2018).
+
+- `study`: Region of data collection
+- `case`: Medical treatment case identifier 
+- `type`: Observation type identifier
+- `treat_correct`: Mean of correctly-administered treatments by observation type in given region 
+
+```{r}
+# Load data
 data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/BarPlotsTwoVariables.dta")
-
 # Printing the first five rows of the data to visualize its structure
 head(data)
+```
 
-# Data Dictionary ---------------
-  ## Data Source: Das, Jishnu, Liana Woskie, Ruma Rajbhandari, Kamran Abbasi, and Ashish Jha. “Rethinking assumptions about delivery of healthcare: implications for universal health coverage.” Bmj 361 (2018).
-  ## Tidy format? Yes
-  ## Unit of Observation: Group-level mean, collapsed by month observation type and study region
-  ## Variables of interest:
-    # study: Region of data collection
-    # case: Medical treatment case identifier 
-    # type: Observation type identifier
-    # treat_correct: Mean of correctly-administered treatments by observation type in given region 
+```{r}
+# Create a graph 
 
-
-# No Data wrangling needed ---------------
-
-
-# Data is collapsed by location and observation type already
-
-# Create a graph ---------------
 ggplot(data, aes(fill = type, y = treat_correct, x = interaction(study, case))) +  
   # using the interaction function computes a factor that represents the interaction of the given factors (study and case in this example)
   geom_bar(width = 0.6, position = position_dodge(width = 0.8), stat = "identity") +

@@ -8,41 +8,43 @@ date: ""
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+# Overview
+
+Create clustered horizontal bar charts displaying baseline and midline outcomes for treatment and control groups. Include clustered bars for Papayas, Pineapples, and Coconuts.
 
 ```{r}
-# Objective ---------------
-# Create clustered horizontal bar charts displaying baseline and midline outcomes for treatment and control groups. Include clustered bars for Papayas, Pineapples, and Coconuts.
-
-# Install and load packages ---------------
+# Install and load packages
 packages <- c(
   "tidyverse",
   "haven",
   "forcats"
 )
-
 # Change to install = TRUE to install the required packages
 pacman::p_load(packages, character.only = TRUE, install = FALSE)
+```
 
-# Load an example dataset ---------------
+
+# Data
+
+This graph uses fictional data created for the purpose of this graph. The fictional data comes from an imagined survey of tropical farmers participating in a fictional randomized control trial. 
+
+- `hh_id`: Household identifier
+- `round`: Survey round id (baseline or midline) 
+- `treatment_group`: Treatment status id
+- `w_Papaya`: Annual Papaya Production
+- `w_Pineapple`: Annual Pineapple Production
+- `w_Coconut`: Annual Coconut Production 
+
+```{r}
+# Load data
 data <- readRDS("~/Documents/GitHub/DIME/Code_Reviews/CodeReview_r-econ-visual-library/r-econ-visual-library/Library/BarPlotsMultipleVariables.rds")
 
 # Printing the first five rows of the data to visualize its structure before data wrangling
 head(data)
+```
 
-# Data Dictionary ---------------
-  ## Data Source: This graph uses fictional data created for the purpose of this graph. The fictional data comes from an imagined survey of tropical farmers participating in a fictional randomized control trial. 
-  ## Tidy format? Yes
-  ## Unit of Observation: Households
-  ## Variables of interest
-    # hh_id: Household identifier
-    # round: Survey round id (baseline or midline) 
-    # treatment_group: Treatment status id
-    # w_Papaya: Annual Papaya Production
-    # w_Pineapple: Annual Pineapple Production
-    # w_Coconut: Annual Coconut Production 
-
-
-# Data wrangling ---------------
+```{r}
+# Data wrangling
 
 # Collapse the dataset across each treatment group
 collapsed_data <- 
@@ -69,8 +71,13 @@ reshaped_data <- collapsed_data %>% # Reshape crop variables to long format
                     round = replace(round, round == 2, "ml_"),
                     round = fct_rev(as.factor(paste0(round, treatment_group))))
 
+# Printing the first five rows of the data to visualize its structure after reshaping
+head(collapsed_data)
+```
 
-# Create a Graph ---------------
+```{r}
+# Create a Graph 
+
 ggplot(reshaped_data, aes(x = key, y = value, fill = round)) +
   geom_bar( # Format bars 
     width = 0.6, 
@@ -110,6 +117,5 @@ ggplot(reshaped_data, aes(x = key, y = value, fill = round)) +
     legend.box.background = element_rect(colour = "black")
     
     )
-
 ```
 

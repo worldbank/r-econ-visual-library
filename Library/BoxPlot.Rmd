@@ -8,40 +8,41 @@ date: ""
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r BoxPlot, fig.path = '../docs/figure/'}
-# Objective ---------------
-# Create color-coded boxplots comparing distributions of reported competence between nurses and medical officers across countries. 
+# Overview 
 
-# Install and load packages ---------------
+Create color-coded boxplots comparing distributions of reported competence between nurses and medical officers across countries. 
+
+```{r}
+# Install and load packages
 packages <- c(
   "tidyverse",
   "ggplot2",
   "readstata13",
   "forcats"
 )
-
-# Change to install = TRUE to install the required packages
+# Change to install TRUE to install the required packages
 pacman::p_load(packages, character.only = TRUE, install = FALSE)
+```
 
-# Load an example dataset ---------------
-data <- read.dta13("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/BoxPlot.dta")
+# Data 
 
-# Printing the first five rows of the data to visualize its structure before data wrangling
-head(data)
+This graph comes from Das, Jishnu, Liana Woskie, Ruma Rajbhandari, Kamran Abbasi, and Ashish Jha. “Rethinking assumptions about delivery of healthcare: implications for universal health coverage.” Bmj 361 (2018).
 
-
-# Data Dictionary ---------------
-  ## Data Source: Data from Das, Jishnu, Liana Woskie, Ruma Rajbhandari, Kamran Abbasi, and Ashish Jha. “Rethinking assumptions about delivery of healthcare: implications for universal health coverage.” Bmj 361 (2018). Code was based on https://worldbank.github.io/stata-visual-library/boxplot-pctile.html
-  ## Tidy format? Yes
-  ## Unit of Observation: Individual (medical-professionals)
-  ## Variables of Interest
-    # country: Country identifier
-    # temp: Survey location identifier
-    # provider_cadre: Medical professional type identifier
-    # competence_mle: Maximum Likelihood Estimation competence estimate
+- `country`: Country identifier
+- `temp`: Survey location identifier
+- `provider_cadre`: Medical professional type identifier
+- `competence_mle`: Maximum Likelihood Estimation competence estimate
   
 
-# Data wrangling ---------------
+```{r}
+# Load data 
+data <- read.dta13("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/BoxPlot.dta")
+# Printing the first five rows of the data to visualize its structure before data wrangling
+head(data)
+```
+
+```{r}
+# Data wrangling 
 
 data_varlabel <- varlabel(data) # Save variable labels
 
@@ -63,7 +64,9 @@ med_competence_mle <- median(data$competence_mle)
 
 # Printing the first five rows of the data to visualize its structure after data wrangling
 head(data)
+```
 
+```{r}
 # Create a graph ---------------
 ggplot(data, aes(x = country, y = competence_mle, fill = provider_cadre)) + # Set axes, color code by provider cadre
   geom_boxplot(outlier.shape = NA) + # Set boxplot as plot type
@@ -79,6 +82,5 @@ ggplot(data, aes(x = country, y = competence_mle, fill = provider_cadre)) + # Se
         axis.title = element_blank(),
         legend.position = "bottom" 
   )
-
 
 ```

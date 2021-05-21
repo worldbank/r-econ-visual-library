@@ -9,37 +9,39 @@ date: ""
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r DensityCDF, fig.path = '../docs/figure/'}
-# Objective ---------------
-  # Create a two-way color-coded cumulative distribution function comparing agricultural revenue before and after treatment
+# Overview 
 
-# Install and load packages ---------------
+Create a two-way color-coded cumulative distribution function comparing agricultural revenue before and after treatment.
+
+
+```{r}
+# Install and load packages
 packages <- c(
   "tidyverse",
   "haven",
   "labelled"
 )
-
-# Change to install = TRUE to install the required packages
+# Change to install TRUE to install the required packages
 pacman::p_load(packages, character.only = TRUE, install = FALSE)
+```
 
+# Data 
+
+- `hh_id`: Household identifier
+- `post`: Timing variable (pre/post treatment)
+- `revenue`: Agricultural Revenue
+
+```{r}
 # Load an example dataset ---------------
 data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/DensityCDF.dta")
 
 # Printing the first five rows of the data to visualize its structure before data wrangling
 head(data)
+```
 
-# Data Dictionary ---------------
-  ## Data Source: 
-  ## Tidy format? Yes
-  ## Unit of Observation: Households
-  ## Variables of interest: 
-    # hh_id: Household identifier
-    # post: Timing variable (pre/post treatment)
-    # revenue: Agricultural Revenue
+```{r}
+# Data wrangling
 
-
-# Data wrangling ---------------
 data <- data %>%
   mutate(post = as.factor(post)) %>%
   group_by(post) %>%
@@ -48,8 +50,10 @@ data <- data %>%
 
 # Printing the first five rows of the data to visualize its structure after data wrangling
 head(data)
+```
 
-# Create a graph ---------------
+```{r}
+# Create a graph 
 ggplot(data, aes(x = revenue, color = post)) + # Use color instead of fill for the CDF
   geom_vline( # Add dashed vertical lines to indicate means
     aes(xintercept = mean_revenue, color = post), 

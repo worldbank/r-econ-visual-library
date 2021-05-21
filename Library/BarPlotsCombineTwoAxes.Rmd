@@ -8,11 +8,12 @@ date: ''
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r BarPlotsCombineTwoAxes, fig.path = '../docs/figure/'}
-# Objective ---------------
-  # Create a food-group wise set of bar plots, displaying average number of foods from each group consumed last month on one axis, and total value of expenditures on the other, by month. 
+# Overview
 
-# Install and load packages ---------------
+Create a food-group wise set of bar plots, displaying average number of foods from each group consumed last month on one axis, and total value of expenditures on the other, by month. 
+
+```{r}
+# Install and load packages
 packages <- c(
   "tidyverse",
   "haven",
@@ -20,29 +21,31 @@ packages <- c(
   "gridExtra",
   "cowplot"
 )
-
 # Change to install = TRUE to install the required packages
 pacman::p_load(packages, character.only = TRUE, install = FALSE)
+```
 
+# Data
 
-# Load an example dataset ---------------
+This graph is based on Christian, Paul, and Brian Dillon. 2018. "Growing and Learning When Consumption Is Seasonal: Long-Term Evidence From Tanzania." Demography 55 (3): 1091–1118. doi:10.1007/s13524-018-0669-4. 
+
+The dataset used is a mock dataset based on the original paper's data. It contains data at the food type-month level. The relevant variables are:
+
+- `int1mo`: Month of interview identifier 
+- `food_group`: Food group identifier 
+- `number_group`: Mean number of food type consumed in given month 
+- `total_exp`: Total expenditures on food group in given month
+
+```{r}
+# Load data
 data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/BarPlotsCombineTwoAxes.dta")
 
 # Printing the first five rows of the data to visualize its structure before data wrangling
 head(data)
+```
 
-# Data Dictionary ---------------
-  ## Data Source: Christian, Paul, and Brian Dillon. 2018. “Growing and Learning When Consumption Is Seasonal: Long-Term Evidence From Tanzania.” Demography 55 (3): 1091–1118. doi:10.1007/s13524-018-0669-4.
-  ## Tidy format? Yes
-  ## Unit of Observation: Group-level mean, collapsed by month of interview and food type
-  ## Variables of interest:
-    # int1mo: Month of interview identifier 
-    # food_group: Food group identifier 
-    # number_group: Mean number of food type consumed in given month 
-    # total_exp: Total expenditures on food group in given month
-
-
-# Data wrangling ---------------
+```{r}
+# Data wrangling
 
 # Creating a vector of observations with appropriate labels 
 food_group_list = c('animal', 'fruit', 'grain', 'veg', 'starch', 'processed_sugar')
@@ -62,10 +65,14 @@ fig_data <- data %>%
 
 # 72 observations of 144 were kept 
 
+
+
 # Printing the first five rows of the data to visualize its structure after data wrangling
 head(fig_data)
+```
 
-# Create a graph ---------------
+```{r}
+# Create a graph 
 
 # Basic Graph of Bar Plots by Food Group 
 ggplot(fig_data) +
