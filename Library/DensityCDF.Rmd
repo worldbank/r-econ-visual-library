@@ -57,7 +57,8 @@ head(data)
 ggplot(data, aes(x = revenue, color = post)) + # Use color instead of fill for the CDF
   geom_vline( # Add dashed vertical lines to indicate means
     aes(xintercept = mean_revenue, color = post), 
-    linetype = "dashed", size = 0.3
+    linetype = "dashed", 
+    size = 0.3
     ) +
   # Add empirical cumulative density function
   stat_ecdf() + 
