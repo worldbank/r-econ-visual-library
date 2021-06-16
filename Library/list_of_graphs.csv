@@ -1,38 +1,41 @@
-Name,Link,Following the tidyverse style guide?
-Bar Plot Combining Two Axes,https://worldbank.github.io/r-econ-visual-library/BarPlotsCombineTwoAxes.html,Yes
-Bar Plot Multiple Variables,https://worldbank.github.io/r-econ-visual-library/BarPlotsMultipleVariables.html,Yes
-Bar Plot Two Variables,https://worldbank.github.io/r-econ-visual-library/BarPlotsTwoVariables.html,Yes
-Horizontal Bar Plot – Multiple Variables,https://worldbank.github.io/r-econ-visual-library/HorizontalBarMultipleVars.html,Yes
-Horizontal Bar Plot – Ordered Multiple Variables,https://worldbank.github.io/r-econ-visual-library/HorizontalBarOrderGroup.html,Yes
-Horizontal Bar Plot  ,https://worldbank.github.io/r-econ-visual-library/HorizontalBarPlot.html,Yes
-Horizontal Better Bar,https://worldbank.github.io/r-econ-visual-library/HorizontalBetterbar.html,Yes
-Horizontal Group SE,https://worldbank.github.io/r-econ-visual-library/HorizontalGroupSE.html,Yes
-Stacked Bar Graphs,https://worldbank.github.io/r-econ-visual-library/StackBarGraphs.html,Yes
-Density CDF,https://worldbank.github.io/r-econ-visual-library/DensityCDF.html,Yes
-Density Plot Average,https://worldbank.github.io/r-econ-visual-library/DensityPlotAverage.html,Yes
-Density Ridgeline,https://worldbank.github.io/r-econ-visual-library/DensityRidgeline.html,Yes
-Density Ridgeline Rounds,https://worldbank.github.io/r-econ-visual-library/DensityRidgelineRounds.html,Yes
-Density With Data,https://worldbank.github.io/r-econ-visual-library/DensityWithData.html,No – Random code in the middle
-Scatter CI,https://worldbank.github.io/r-econ-visual-library/ScatterCI.html,Yes
-Scatter Fitted Line,https://worldbank.github.io/r-econ-visual-library/ScatterFittedLine.html,Yes
-Scatter Plot with Labels,https://worldbank.github.io/r-econ-visual-library/ScatterLabels.html,Yes
-Scatter Plots Stratified,https://worldbank.github.io/r-econ-visual-library/ScatterPlotsStratified.html,Yes
-Scatter Polynomial,https://worldbank.github.io/r-econ-visual-library/ScatterPolynomial.html,Yes
- ME Table,https://worldbank.github.io/r-econ-visual-library/METable.html,No – Uncommented code blocks
-ME Table 2,https://worldbank.github.io/r-econ-visual-library/METable2data.html,No – Uncommented code blocks
-Regression Coefficient Graded,https://worldbank.github.io/r-econ-visual-library/METable2data.html,No – Uncommented code blocks
-Regression Coefficient ME,https://worldbank.github.io/r-econ-visual-library/RegCoefME.html,No- Uncommented code blocks
-Regression Coefficient Multiple Outcomes,https://worldbank.github.io/r-econ-visual-library/RegCoefMultipleOutcomes.html,Yes
-Regression Coefficient Rounds,https://worldbank.github.io/r-econ-visual-library/RegCoefRounds.html,Yes
-Difference in Difference HISP,https://worldbank.github.io/r-econ-visual-library/DiffinDiff_HISP.html,Yes
-Difference in Difference MHE,https://worldbank.github.io/r-econ-visual-library/DiffinDiff_MHE.html,Yes – but there is a typo “Autor” → “Author”
-Event Study Ribbon,https://worldbank.github.io/r-econ-visual-library/EventStudyRibbon.html,Yes – but there is a typo “Autor” → “Author”
-Randomization Inference,https://worldbank.github.io/r-econ-visual-library/RandomizationInference.html,Yes
-Regression Discontinuity D2D Bins,https://worldbank.github.io/r-econ-visual-library/RDD2Dbins.html,Yes
-Regression Discontinuity Black & White,https://worldbank.github.io/r-econ-visual-library/RDDBW.html,Yes
-Regression Discontinuity Color,https://worldbank.github.io/r-econ-visual-library/RDDCI.html,Yes
-Regression Discontinuity Color Points,https://worldbank.github.io/r-econ-visual-library/RDDCIPoints.html,Yes
-Regression Discontinuity Estimate,https://worldbank.github.io/r-econ-visual-library/RDDEstimate.html,Yes
-Regression Discontinuity Histogram,https://worldbank.github.io/r-econ-visual-library/RDDHist.html,Yes
-Regression Discontinuity Local Linear,https://worldbank.github.io/r-econ-visual-library/RDDLocalLinear.html,Yes
-Regression Discontinuity Points,https://worldbank.github.io/r-econ-visual-library/RDDPoints.html,Yes
+Graph Name,Graph Type,Link,Data Source,Data Citation?,Tidyverse?,Well-Commented?,Notes
+Bar Plot Combining Two Axes,Bar Plot,https://worldbank.github.io/r-econ-visual-library/BarPlotsCombineTwoAxes.html,,No,Yes,Yes,Personally would add a couple of more comments explaining the why for certain code blocks. Nothing super detailed.
+Bar Plot Multiple Variables,Bar Plot,https://worldbank.github.io/r-econ-visual-library/BarPlotsMultipleVariables.html,,No,Yes,Yes,
+Bar Plot Two Variables,Bar Plot,https://worldbank.github.io/r-econ-visual-library/BarPlotsTwoVariables.html,,No,Yes,Yes,
+Horizontal Bar Plot – Multiple Variables,Bar Plot,https://worldbank.github.io/r-econ-visual-library/HorizontalBarMultipleVars.html,,No,Yes,Yes,
+Horizontal Bar Plot – Ordered Multiple Variables,Bar Plot,https://worldbank.github.io/r-econ-visual-library/HorizontalBarOrderGroup.html,,No,Yes,Yes,Personally would add a couple of more comments explaining the why for certain code blocks. Nothing super detailed.
+Horizontal Bar Plot  ,Bar Plot,https://worldbank.github.io/r-econ-visual-library/HorizontalBarPlot.html,,No,Yes,Yes,
+Horizontal Better Bar,Bar Plot,https://worldbank.github.io/r-econ-visual-library/HorizontalBetterbar.html,,No,Yes,Yes,
+Horizontal Group SE,Bar Plot,https://worldbank.github.io/r-econ-visual-library/HorizontalGroupSE.html,,No,Yes,Yes,
+Stacked Bar Graphs,Bar Plot,https://worldbank.github.io/r-econ-visual-library/StackBarGraphs.html,,No,Yes,Yes,Add a space between “var_list” and  “# Function…”
+Density CDF,Density Plot,https://worldbank.github.io/r-econ-visual-library/DensityCDF.html,,No,Yes,Yes,Personally would add a couple of more comments explaining the why for certain code blocks. Nothing super detailed.
+Density Plot Average,Density Plot,https://worldbank.github.io/r-econ-visual-library/DensityPlotAverage.html,,No,Yes,Yes,
+Density Ridgeline,Density Plot,https://worldbank.github.io/r-econ-visual-library/DensityRidgeline.html,https://openknowledge.worldbank.org/handle/10986/25030,No,Yes,Yes,
+Density Ridgeline Rounds,Density Plot,https://worldbank.github.io/r-econ-visual-library/DensityRidgelineRounds.html,Original data is available at https://microdata.worldbank.org/index.php/catalog/2249.,No,Yes,Yes,There is a random code block at the end (## Picking joint bandwidth of 18.3) but I am not sure if that is something the graph generated itself.
+Density With Data,Density Plot,https://worldbank.github.io/r-econ-visual-library/DensityWithData.html,,No,No,No,There is random code in the middle (head( )) as well as for loop that isn’t commented on.
+Scatter CI,Scatter Plot,https://worldbank.github.io/r-econ-visual-library/ScatterCI.html,,No,Yes,Yes,Personally would add a couple of more comments explaining the why for certain code blocks. Nothing super detailed.
+Scatter Fitted Line,Scatter Plot,https://worldbank.github.io/r-econ-visual-library/ScatterFittedLine.html,,No,Yes,Yes,
+Scatter Plot with Labels,Scatter Plot,https://worldbank.github.io/r-econ-visual-library/ScatterLabels.html,,No,Yes,Yes,Personally would add a couple of more comments explaining the why for certain code blocks. Nothing super detailed.
+Scatter Plots Stratified,Scatter Plot,https://worldbank.github.io/r-econ-visual-library/ScatterPlotsStratified.html,,No,Yes,Yes,Personally would add a couple of more comments explaining the why for certain code blocks. Nothing super detailed.
+Scatter Polynomial,Scatter Plot,https://worldbank.github.io/r-econ-visual-library/ScatterPolynomial.html,,No,Yes,Yes,
+ME Table,Regression Coefficients,https://worldbank.github.io/r-econ-visual-library/METable.html,,No,Yes,No,Uncommented code blocks. 
+ME Table 2,Regression Coefficients,https://worldbank.github.io/r-econ-visual-library/METable2data.html,,No,Yes,No,Uncommented code blocks. 
+Regression Coefficient Graded,Regression Coefficients,https://worldbank.github.io/r-econ-visual-library/METable2data.html,,No,Yes,No,Uncommented code blocks. 
+Regression Coefficient ME,Regression Coefficients,https://worldbank.github.io/r-econ-visual-library/RegCoefME.html,,No,Yes,No,Uncommented code blocks. 
+Regression Coefficient Multiple Outcomes,Regression Coefficients,https://worldbank.github.io/r-econ-visual-library/RegCoefMultipleOutcomes.html,See https://microdata.worldbank.org/index.php/catalog/2249,No,Yes,No,Uncommented code blocks. 
+Regression Coefficient Rounds,Regression Coefficients,https://worldbank.github.io/r-econ-visual-library/RegCoefRounds.html,See https://microdata.worldbank.org/index.php/catalog/2249,No,Yes,No,Uncommented code blocks. 
+Difference in Difference HISP,Difference In Difference,https://worldbank.github.io/r-econ-visual-library/DiffinDiff_HISP.html,https://openknowledge.worldbank.org/handle/10986/25030,No,Yes,Yes,Personally would add a couple of more comments explaining the why for certain code blocks. Nothing super detailed.
+Difference in Difference MHE,Difference In Difference,https://worldbank.github.io/r-econ-visual-library/DiffinDiff_MHE.html,"Autor (2003): ""Outsourcing at Will: The Contribution of Unjust Dismissal Doctrine to the Growth of Employment Outsourcing""",Yes,Yes,No,Uncommented code blocks. 
+Event Study Ribbon,Event Study,https://worldbank.github.io/r-econ-visual-library/EventStudyRibbon.html,"Autor (2003): ""Outsourcing at Will: The Contribution of Unjust Dismissal Doctrine to the Growth of Employment Outsourcing""",Yes,Yes,No,Uncommented code blocks. 
+Event Study Difference in Difference,Event Study,https://worldbank.github.io/r-econ-visual-library/EventStudyDinD.html,"Autor (2003): ""Outsourcing at Will: The Contribution of Unjust Dismissal Doctrine to the Growth of Employment Outsourcing""",Yes,Yes,Yes,
+Randomization Inference,Randomization Inference,https://worldbank.github.io/r-econ-visual-library/RandomizationInference.html,https://openknowledge.worldbank.org/handle/10986/25030,No,Yes,No,Uncommented code blocks. 
+Regression Discontinuity D2D Bins,Regression Discontinuity,https://worldbank.github.io/r-econ-visual-library/RDD2Dbins.html,https://openknowledge.worldbank.org/handle/10986/25030,No,Yes,Yes,Personally would add a couple of more comments explaining the why for certain code blocks. Nothing super detailed.
+Regression Discontinuity Black & White,Regression Discontinuity,https://worldbank.github.io/r-econ-visual-library/RDDBW.html,,No,Yes,No,Uncommented code blocks (for loop).
+Regression Discontinuity Color,Regression Discontinuity,https://worldbank.github.io/r-econ-visual-library/RDDCI.html,,No,No,Yes,"There is a random code block at the very end ( # This is easier but less customizable
+#rdd_res <- RDestimate(tmt_status ~ pmt_score, data = data, cutpoint = cutoff)
+#plot(rdd_res) )"
+Regression Discontinuity Color Points,Regression Discontinuity,https://worldbank.github.io/r-econ-visual-library/RDDCIPoints.html,,No,Yes,Yes,
+Regression Discontinuity Estimate,Regression Discontinuity,https://worldbank.github.io/r-econ-visual-library/RDDEstimate.html,https://openknowledge.worldbank.org/handle/10986/25030,No,No,Yes,The code block with pipes needs to have whitespaces; and personally I would add a couple of more comments explaining the why for certain code blocks.
+Regression Discontinuity Histogram,Regression Discontinuity,https://worldbank.github.io/r-econ-visual-library/RDDHist.html,,No,Yes,Yes,
+Regression Discontinuity Local Linear,Regression Discontinuity,https://worldbank.github.io/r-econ-visual-library/RDDLocalLinear.html,,No,Yes,Yes,
+Regression Discontinuity Points,Regression Discontinuity,https://worldbank.github.io/r-econ-visual-library/RDDPoints.html,https://openknowledge.worldbank.org/handle/10986/25030,No,Yes,Yes,
