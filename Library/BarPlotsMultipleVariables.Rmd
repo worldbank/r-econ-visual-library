@@ -8,84 +8,99 @@ date: ""
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+# Overview
+
+Create clustered horizontal bar charts displaying baseline and midline outcomes for treatment and control groups. Include clustered bars for Papayas, Pineapples, and Coconuts.
 
 ```{r}
-
-# Install and load packages ---------------
+# Install and load packages
 packages <- c(
   "tidyverse",
   "haven",
   "forcats"
 )
-
 # Change to install = TRUE to install the required packages
 pacman::p_load(packages, character.only = TRUE, install = FALSE)
+```
 
-# Load an example dataset ---------------
-data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/BarPlotsMultipleVariables.dta")
+
+# Data
+
+This graph uses fictional data created for the purpose of this graph. The fictional data comes from an imagined survey of tropical farmers participating in a fictional randomized control trial. 
+
+- `hh_id`: Household identifier
+- `round`: Survey round id (baseline or midline) 
+- `treatment_group`: Treatment status id
+- `w_Papaya`: Annual Papaya Production
+- `w_Pineapple`: Annual Pineapple Production
+- `w_Coconut`: Annual Coconut Production 
+
+```{r}
+# Load data
+data <- readRDS("~/Documents/GitHub/DIME/Code_Reviews/CodeReview_r-econ-visual-library/r-econ-visual-library/Library/BarPlotsMultipleVariables.rds")
 
 # Printing the first five rows of the data to visualize its structure before data wrangling
 head(data)
-
-# Data wrangling ---------------
-
-# Collapse the dataset across each treatment group
-collapsed_data <- data %>%
-                  group_by(treatment_group) %>%
-                  summarise_at(vars(starts_with(c("bl_", "ml_"))), 
-                             list(~ mean(., na.rm = T))) %>%
-                  ungroup()
-
-# Reshape data
-reshaped_data <- collapsed_data %>%
-                  pivot_longer(
-                    starts_with(c("bl_", "ml_")), 
-                    names_to = "key", 
-                    values_to = "value"
-                    ) %>%
-                  extract(key, c("colname", "crop"),
-                          regex = "(^bl_|^ml_)(.*)") %>%
-                  mutate(colname = fct_rev(as.factor(paste0(colname, treatment_group)))) %>%
-                  select(-c(treatment_group)) 
-
-# Keep Summer Maize, Spring-Winter Potato, and Main Paddy
-fig_data <- reshaped_data %>%
-            filter(
-              crop %in% c(
-                "w_Summer_Maize_Prod", 
-                "w_Spring_Winter_Potato_Prod", 
-                "w_Main_Paddy_Prod"
-              ))
-
-# Printing the first five rows of the data to visualize its structure after data wrangling
-head(fig_data)
-
 ```
 
-```{r BarPlotsMultipleVariables, fig.path = '../docs/figure/'}
-ggplot(fig_data, aes(x = crop, y = value, fill = colname)) +
-  geom_bar(
+```{r}
+# Data wrangling
+
+# Collapse the dataset across each treatment group
+collapsed_data <- 
+  data %>% 
+  group_by(treatment_group, 
+           round) %>%
+  summarise_at(vars(starts_with("w_")),
+               ~ mean(., na.rm = T)) %>%
+  ungroup()
+
+
+# Printing the first five rows of the data to visualize its structure after collapsing
+head(collapsed_data)
+
+# Reshape data to long format 
+reshaped_data <- collapsed_data %>% # Reshape crop variables to long format
+                  pivot_longer( 
+                    starts_with(c("w_")), # Select crop variables
+                    names_to = "key", # Create crop identifiers
+                    values_to = "value" # Record values in single column
+                    ) %>%
+                   mutate( # Merge data collection round and treatment variables together
+                    round = replace(round, round == 1, "bl_"),
+                    round = replace(round, round == 2, "ml_"),
+                    round = fct_rev(as.factor(paste0(round, treatment_group))))
+
+# Printing the first five rows of the data to visualize its structure after reshaping
+head(collapsed_data)
+```
+
+```{r}
+# Create a Graph 
+
+ggplot(reshaped_data, aes(x = key, y = value, fill = round)) +
+  geom_bar( # Format bars 
     width = 0.6, 
     position = position_dodge(width = 0.6),
-    stat = "identity", 
-    alpha = .8
+    stat = "identity", # Graph data as is
+    alpha = .8 # Set transparency 
     ) +
-  geom_text(
+  geom_text( # Add bar labels 
     aes(label = format(round(value, 1), nsmall = 1)), 
     position = position_dodge(width = 0.6), 
     hjust = -0.35
     ) +
-  coord_flip(ylim = c(0, 150)) +
+  coord_flip(ylim = c(0, 150)) + # Make bars horizontal 
   geom_hline(yintercept = 0, alpha = 0.5) +
   scale_x_discrete(
-    labels = c(
-      "w_Summer_Maize_Prod" = "Summer Maize Prod", 
-      "w_Spring_Winter_Potato_Prod" = "Spring Winter Potato Prod",
-      "w_Main_Paddy_Prod" = "Main Paddy Prod"
+    labels = c( 
+      "w_Papaya" = "Papaya Prod", 
+      "w_Pineapple" = "Pineapple Prod",
+      "w_Coconut" = "Coconut Prod"
       )) +
-  scale_fill_brewer(
+  scale_fill_brewer( # Set color scheme 
     palette = "Set2",
-    breaks = c("bl_0", "bl_1", "ml_0", "ml_1"),
+    breaks = c("bl_0", "bl_1", "ml_0", "ml_1"), # Color bar clusters by data collection round and treatment status
     labels = c("Baseline-Control", "Baseline-Treatment", "Midline-Control", "Midline-Treatment")
     ) +
   ylab("Value") +
@@ -98,7 +113,9 @@ ggplot(fig_data, aes(x = crop, y = value, fill = colname)) +
     axis.text = element_text(size = 11),
     legend.title = element_blank(),
     legend.text = element_text(size = 10),
-    legend.position = "bottom"
+    legend.position = c(.84, .85), # Set legend to top right position 
+    legend.box.background = element_rect(colour = "black")
+    
     )
-
 ```
+

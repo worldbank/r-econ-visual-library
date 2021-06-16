@@ -14,36 +14,51 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r SameNameAsYourScript, fig.path = '../docs/figure/', warning = FALSE}
+# Objective ---------------
+  # Create group-wise density plots (Control, Cash, In-Kind) of firms' profit measurements by rounds of data collection
 
 # Install and load packages ===========================================================
-
 packages <- 
   c("tidyverse",
     "haven",
     "ggridges")
 
+# Change to install = TRUE to install the required packages
 pacman::p_load(packages, 
                character.only = TRUE, 
-               install = FALSE) # Change to install = TRUE to install the required packages
+               install = FALSE)
 
 # Data wrangling =====================================================================
 
 # Original data is available at https://microdata.worldbank.org/index.php/catalog/2249.
-# Only relevant variables are kept in the dataset used here.
 data <- 
   read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/ReplicationDataGhanaJDE_short.dta")
 
-# For simpliticity, we will includes only those who received treatment 
-# between 2nd and 3rd waves in the treatment group.
+# Printing the first five rows of the data to visualize its structure before data wrangling
+head(data)
+
+# Data Dictionary ---------------
+  ## Data Source: 
+  ## Tidy format? No
+  ## Unit of Observation: Households
+  ## Variables of interest: 
+    # sheno: Firm ID 
+    # wave: Survey wave identifier 
+    # timetreat: Treatment identifier 
+    # control: Timing (baseline or follow-up) identifier 
+    # realfinalprofit: Firm profit 
+
+
+# For simplicity, we will include only those who received treatment between 2nd and 3rd waves in the treatment group.
 analysis_data <- 
   data %>%
-  filter(wave >= 2) %>%
-  group_by(sheno) %>%
-  mutate(treatment = max((wave == 3) & (timetreat == 1)),
-         control = all(control == 1)) %>%
-  filter(treatment == TRUE | control == TRUE) %>%
+  filter(wave >= 2) %>% # Only keep survey waves 2 and higher 
+  group_by(sheno) %>% # Group observations by firm 
+  mutate(treatment = max((wave == 3) & (timetreat == 1)), # Define treatment. "max" allows you to take the larger of two different values 
+         control = all(control == 1)) %>% # Set control variable 
+  filter(treatment == TRUE | control == TRUE) %>% # Keep observations defined as control & treatment 
   ungroup() %>%
-  mutate(treatment_group = ifelse(cashtreat == 1, 
+  mutate(treatment_group = ifelse(cashtreat == 1, # Add labels to treatment types 
                                   "Cash",
                                   ifelse(equiptreat == 1,
                                          "In-kind", 
@@ -53,12 +68,12 @@ analysis_data <-
 
 ggplot(analysis_data, 
        aes(x = realfinalprofit,
-           y = fct_rev(factor(wave)),
+           y = fct_rev(factor(wave)), 
        color = factor(treatment_group), 
        fill = factor(treatment_group))) +
   geom_density_ridges(alpha = 0.1, 
                       scale = 1) +
-  theme_ridges() +
+  theme_ridges() + # Set theme to ridgelines 
   xlab("3-month Real Profit (cedi)") +
   ylab("Rounds") +
   scale_color_brewer(palette = "Set2", 

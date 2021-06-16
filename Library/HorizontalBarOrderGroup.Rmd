@@ -9,6 +9,9 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r HorizontalBarOrderGroup, fig.path = '../docs/figure/', warning = FALSE}
+# Objective ---------------
+# Create an ascending horizontal bar chart of GDP per-capita  of the 30 countries with the lowest values, color-coded by region. 
+
 # Install and load packages ---------------
 packages <- c(
   "tidyverse",
@@ -21,25 +24,50 @@ pacman::p_load(packages, character.only = TRUE, install = FALSE)
 
 # Load example datasets ---------------
 data <- WDI(indicator = "NY.GDP.PCAP.KD", start = 2018, end = 2018)
-country_code <- as_tibble(WDI_data$country)
+
+country_code <- as_tibble(WDI_data$country) # Load tibble of all countries in WDI database
 
 # Printing the first five rows of the data to visualize its structure before data wrangling
 head(data)
+head(country_code)
+
+# Data Dictionary (data) ---------------
+  ## Data Source: The World Bank's World Development Indicators, pulled from the internet directly using the "WDI" package. 
+  ## Tidy format? Yes
+  ## Unit of Observation: Country-wise Gross Domestic Product Per Capita (2018).
+  ## Variables of interest:
+    # iso2c: Country code
+    # country: Country identifier
+    # NY.GDP.PCAP.KD: GDP Per Capita (constant 2010 US$)
+
+# Data Dictionary (country_code) ---------------
+  ## Data Source: The World Bank's World Development Indicators, pulled from the internet directly using the "WDI" package. 
+  ## Tidy format? Yes
+  ## Unit of Observation: WDI Country Codes.
+  ## Variables of interest:
+    # iso2c: Country code
+    # country: Country identifier
+    # Region: Regional identifier
+   
+   
 
 # Data wrangling ---------------
+
+# We merge the 2 datasets to drop the un-needed aggregate measures easily.
 data <- data %>%
-  rename(GDP = NY.GDP.PCAP.KD) %>%
-  inner_join(country_code, by = "iso2c") %>%
-  filter(region != "Aggregates") %>%
-  top_n(-30, GDP) %>%
-  mutate(country = fct_reorder(country.x, GDP))
+  rename(GDP = NY.GDP.PCAP.KD) %>% 
+  inner_join(country_code, by = "iso2c") %>% # Merge datasets by country code
+  filter(region != "Aggregates") %>% # Drop aggregates 
+  top_n(-30, GDP) %>% # Select countries with bottom 30 GDP per-capita
+  mutate(country = fct_reorder(country.x, GDP)) # Order countries by GDP (ascending)
 
 # Printing the first five rows of the data to visualize its structure after data wrangling
 head(data)
 
 # Create a plot ---------------
 ggplot(data, aes(x = country, y = GDP, fill = region)) +
-  geom_bar(stat = "identity", alpha = .6, width = .4) +
+  geom_bar(stat = "identity", alpha = .6, width = .4) + 
+  # stat ="identity" tells R to use the value as recorded in the dataframe
   geom_text(
     # Using format(round(GDP, 1)) rounds the numbers to the first decimal point
     aes(label = format(round(GDP, 1), nsmall = 1)), 
@@ -48,13 +76,13 @@ ggplot(data, aes(x = country, y = GDP, fill = region)) +
     ) +
   # coord_flip flips the x and y axes. This is useful when the graph is too long (horizontally) or too tall (vertically)
   coord_flip(ylim = c(0, 1500)) +
-  geom_hline(yintercept = 0, alpha = 0.5) +
+  geom_hline(yintercept = 0, alpha = 0.5) + # Add line at zero mark for visualization
   labs(
     x = "",
     y = "GDP per capita (constant 2000 US$) in 2018"
   ) + 
   theme_classic() +
-  scale_fill_brewer(palette = "Set2", name = "Region") +
+  scale_fill_brewer(palette = "Set2", name = "Region") + # Set color scheme, color code by region
   theme(
     # element_blank() removes the given visualization. 
     # For instance, axis.line.y = element_blank removes the axis.line.y

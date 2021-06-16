@@ -8,9 +8,12 @@ date: ''
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r BarPlotsCombineTwoAxes, fig.path = '../docs/figure/'}
+# Overview
 
-# Install and load packages ---------------
+Create a food-group wise set of bar plots, displaying average number of foods from each group consumed last month on one axis, and total value of expenditures on the other, by month. 
+
+```{r}
+# Install and load packages
 packages <- c(
   "tidyverse",
   "haven",
@@ -18,18 +21,31 @@ packages <- c(
   "gridExtra",
   "cowplot"
 )
-
 # Change to install = TRUE to install the required packages
 pacman::p_load(packages, character.only = TRUE, install = FALSE)
+```
 
+# Data
 
-# Load an example dataset ---------------
+This graph is based on Christian, Paul, and Brian Dillon. 2018. "Growing and Learning When Consumption Is Seasonal: Long-Term Evidence From Tanzania." Demography 55 (3): 1091–1118. doi:10.1007/s13524-018-0669-4. 
+
+The dataset used is a mock dataset based on the original paper's data. It contains data at the food type-month level. The relevant variables are:
+
+- `int1mo`: Month of interview identifier 
+- `food_group`: Food group identifier 
+- `number_group`: Mean number of food type consumed in given month 
+- `total_exp`: Total expenditures on food group in given month
+
+```{r}
+# Load data
 data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/BarPlotsCombineTwoAxes.dta")
 
 # Printing the first five rows of the data to visualize its structure before data wrangling
 head(data)
+```
 
-# Data wrangling ---------------
+```{r}
+# Data wrangling
 
 # Creating a vector of observations with appropriate labels 
 food_group_list = c('animal', 'fruit', 'grain', 'veg', 'starch', 'processed_sugar')
@@ -49,10 +65,36 @@ fig_data <- data %>%
 
 # 72 observations of 144 were kept 
 
+
+
 # Printing the first five rows of the data to visualize its structure after data wrangling
 head(fig_data)
+```
 
-# Create a graph ---------------
+```{r}
+# Create a graph 
+
+# Basic Graph of Bar Plots by Food Group 
+ggplot(fig_data) +
+   geom_bar(aes(x = int1mo,
+               y = number_group), 
+            stat = "identity", #Data is already in mean format
+            alpha = .6, # transparency
+            width = .4 # bar width
+            ) +
+   geom_hline(yintercept = 0, alpha = 0.5) + 
+  coord_cartesian(ylim = c(0, 3.3)) + # Set Y-axis scale
+  scale_x_continuous(breaks = c(3, 6, 9, 12)) + # Set X-axis intervals 
+  theme_classic() +
+  facet_wrap(~food_group, strip.position = "top") + # Separate graphs by by food groups 
+labs(
+    title = "",
+    x = "Month of Interview",
+    y = "Avg. Number of Foods from \n Group Consumed Last Month (bar)"
+    )
+
+
+# Refined graph including a second axis of total expenditures and cleaner labeling 
 ggplot(fig_data) +
 # fine tuning the graph using alpha and width options
   geom_bar(aes(x = int1mo,
@@ -69,15 +111,15 @@ ggplot(fig_data) +
     expand = c(0, 0)
     ) +
   geom_hline(yintercept = 0, alpha = 0.5) +
-  coord_cartesian(ylim = c(0, 3.3)) +
-  scale_x_continuous(breaks = c(3, 6, 9, 12)) +
+  coord_cartesian(ylim = c(0, 3.3)) + # Set Y-axis scale 
+  scale_x_continuous(breaks = c(3, 6, 9, 12)) + # Set X-axis intervals 
   theme_classic() +
   labs(
     title = "",
     x = "Month of Interview",
     y = "Avg. Number of Foods from \n Group Consumed Last Month (bar)"
     ) +
-  facet_wrap(~food_group, strip.position = "top") +
+  facet_wrap(~food_group, strip.position = "top") + # Separate graphs by by food groups 
   theme(
     plot.title = element_text(hjust = 0.5),
     axis.ticks = element_blank(),
