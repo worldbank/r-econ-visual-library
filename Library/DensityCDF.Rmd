@@ -54,7 +54,8 @@ head(data)
 
 ```{r}
 # Create a graph 
-ggplot(data, aes(x = revenue, color = post)) + # Use color instead of fill for the CDF
+ggplot(data, aes(x = revenue, 
+                           color = post)) + # Use color instead of fill for the CDF
   geom_vline( # Add dashed vertical lines to indicate means
     aes(xintercept = mean_revenue, color = post), 
     linetype = "dashed", 
