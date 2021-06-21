@@ -32,7 +32,7 @@ This graph comes from Das, Jishnu, Liana Woskie, Ruma Rajbhandari, Kamran Abbasi
 - `treat_correct`: Mean of correctly-administered treatments by observation type in given region
 
 ```{r}
-# Load data
+# Load data ---------------------------
 data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/BarPlotsTwoVariables.dta")
 # Printing the first five rows of the data to visualize its structure
 head(data)
