@@ -12,7 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 Create clustered bar charts displaying the percent of healthcare providers ordering correct treatment types by location and different observation types.
 
 ```{r}
-# Install and load packages
+# Install and load packages ---------------------------
 packages <- c(
   "tidyverse",
   "haven",
@@ -39,7 +39,7 @@ head(data)
 ```
 
 ```{r}
-# Create a graph
+# Create a graph ---------------------------
 
 ggplot(data, aes(fill = type, y = treat_correct, x = interaction(study, case))) +  
   # using the interaction function computes a factor that represents the interaction of the given factors (study and case in this example)
@@ -63,7 +63,7 @@ ggplot(data, aes(fill = type, y = treat_correct, x = interaction(study, case))) 
   scale_fill_brewer(palette = "Set2", name = "Measurement") +
   ylab(TeX("Providers ordering correct treatment $\\rightarrow$")) +
   theme(
-    legend.position = 'bottom',
+    legend.position = "bottom",
     legend.title = element_text(size = 15),
     legend.text = element_text(size = 15),
     axis.title.x = element_blank(),
