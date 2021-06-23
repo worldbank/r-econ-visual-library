@@ -8,6 +8,10 @@ date: ""
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+# Overview
+
+Create a stratified scatter plot displaying the percent of healthcare providers ordering correct treatment types by location and different observation types.
+
 ```{r ScatterPlotsStratified, fig.path = '../docs/figure/', warning = FALSE}
 # Install and load packages ---------------
 packages <- c(
@@ -20,13 +24,23 @@ packages <- c(
 
 # Change to install = TRUE to install the required packages
 pacman::p_load(packages, character.only = TRUE, install = FALSE)
+```
 
+# Data
+
+This graph comes from Das, Jishnu, Liana Woskie, Ruma Rajbhandari, Kamran Abbasi, and Ashish Jha. “Rethinking assumptions about delivery of healthcare: implications for universal health coverage.” Bmj 361 (2018).
+
+- `sp_case`: case number
+
+```{r ScatterPlotsStratified, fig.path = '../docs/figure/', warning = FALSE}
 # Load an example dataset ---------------
 data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/ScatterPlotsStratified.dta")
 
 # Printing the first five rows of the data to visualize its structure before data wrangling
 head(data)
+```
 
+```{r ScatterPlotsStratified, fig.path = '../docs/figure/', warning = FALSE}
 # Data wrangling ---------------
 
 data_varlabel <- unlist(var_label(data))
@@ -54,6 +68,10 @@ reshaped_data <- collapsed_data %>%
 
 # Printing the first five rows of the data to visualize its structure after data wrangling
 head(reshaped_data)
+```
+
+```{r ScatterPlotsStratified, fig.path = '../docs/figure/', warning = FALSE}
+# Create a graph ---------------
 
 # Saving the ggplot object p
 p <- ggplot(reshaped_data, aes(x = key, y = value, fill = sp_case)) + 
@@ -76,12 +94,8 @@ p <- ggplot(reshaped_data, aes(x = key, y = value, fill = sp_case)) +
 
 dots_xaxis <- (ggplot_build(p)$data[[1]]["xmin"] + ggplot_build(p)$data[[1]]["xmax"]) / 2
 
-# Create a graph ---------------
-
 # Adding geom_vline (vertical line) to the p ggplot ojbect
 p + geom_vline(xintercept = as.numeric(dots_xaxis[,1]), size = 0.1, alpha = 0.5, lty = 2)
 
 ```
-
-
 
