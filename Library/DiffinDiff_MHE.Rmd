@@ -8,11 +8,12 @@ date: ""
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+# Overview
+
 ```{r DiffinDiff_MHE, fig.path = '../docs/figure/'}
 # Install and load packages ---------------
 packages <- c(
   "tidyverse",
-  "tidymodels",
   "haven",
   "lfe"
 )
@@ -20,13 +21,30 @@ packages <- c(
 # Change to install = TRUE to install the required packages
 pacman::p_load(packages, character.only = TRUE, install = FALSE)
 
+```
+
+# Data 
+This graph is based on David H. Autor, 2003. "Outsourcing at Will: The Contribution of Unjust Dismissal Doctrine to the Growth of Employment Outsourcing," Journal of Labor Economics, University of Chicago Press, vol. 21(1), pages 1-42, January.
+
+DOI: 10.1086/344122
+
+- `year`: 2 digit year
+- `state`: CPS state code
+- `annemp`: 
+- `lnths`: in THS emp
+
+- Unit of Observation:
+
+```{r DiffinDiff_MHE, fig.path = '../docs/figure/'}
 # Load an example dataset ---------------
 # Autor (2003): "Outsourcing at Will: The Contribution of Unjust Dismissal Doctrine to the Growth of Employment Outsourcing"
 data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/autor-jole-2003.dta")
 
 # Printing the first five rows of the data to visualize its structure before data wrangling
 head(data)
+```
 
+```{r DiffinDiff_MHE, fig.path = '../docs/figure/'}
 # Data wrangling ---------------
 
 admico_list <- c("admico_2", "admico_1", "admico0", "admico1", "admico2", "admico3", "mico4")
@@ -46,10 +64,12 @@ data <- data %>%
 
 # Printing the first five rows of the data to visualize its structure before data wrangling
 head(data)
+```
 
+```{r DiffinDiff_MHE, fig.path = '../docs/figure/'}
 eq <- "lnths ~ log(annemp)"
-for (list in list(admico_list, admppa_list, admgfa_list)){
-  for (item in list){
+for (list in list(admico_list, admppa_list, admgfa_list)) {
+  for (item in list) {
     eq <- paste(eq, "+", item) # using paste function to concatenate two variables, separated by "+" in this case
   }
 }
@@ -68,7 +88,9 @@ fig_data <- tibble(
 
 # Printing the first five rows of the fig_data to visualize its structrue
 print(fig_data)
+```
 
+```{r DiffinDiff_MHE, fig.path = '../docs/figure/'}
 # Create a graph ---------------
 
 ggplot(fig_data, aes(x = label, y = coef)) +
