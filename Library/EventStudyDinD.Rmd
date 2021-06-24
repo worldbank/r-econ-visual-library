@@ -8,26 +8,42 @@ date: ""
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+# Overview
+
 ```{r EventStudyDinD, fig.path = '../docs/figure/', warning = FALSE}
 # Install and load packages ---------------
 
 packages <- c(
   "tidyverse",
-  "tidymodels",
   "haven",
   "lfe"
 )
 
 # Change to install = TRUE to install the required packages
 pacman::p_load(packages, character.only = TRUE, install = FALSE)
+```
 
+# Data 
+This graph is based on David H. Autor, 2003. "Outsourcing at Will: The Contribution of Unjust Dismissal Doctrine to the Growth of Employment Outsourcing," Journal of Labor Economics, University of Chicago Press, vol. 21(1), pages 1-42, January.
+
+DOI: 10.1086/344122
+
+- `year`: 2 digit year
+- `state`: CPS state code
+- `annemp`: 
+- `lnths`: in THS emp
+
+- Unit of Observation:
+
+```{r EventStudyDinD, fig.path = '../docs/figure/', warning = FALSE}
 # Load an example dataset ---------------
-# Autor (2003): "Outsourcing at Will: The Contribution of Unjust Dismissal Doctrine to the Growth of Employment Outsourcing"
 data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/autor-jole-2003.dta")
 
 # Printing the first five rows of the data to visualize its structure before data wrangling
 head(data)
+```
 
+```{r EventStudyDinD, fig.path = '../docs/figure/', warning = FALSE}
 # Data wrangling ---------------
 
 admico_list <- c("admico_2", "admico_1", "admico0", "admico1", "admico2", "admico3", "mico4")
@@ -52,6 +68,9 @@ analysis_data <- data %>%
 # Printing the first five rows of the data to visualize its structure after data wrangling
 head(data)
 
+```
+
+```{r EventStudyDinD, fig.path = '../docs/figure/', warning = FALSE}
 # Saving regression results
 res_es <- felm(lnths ~ factor(year_since_adoption) | state + year | 0 | state, data = analysis_data)
 res_dind <- felm(lnths ~ after | state + year | 0 | state, data = analysis_data)
@@ -59,8 +78,8 @@ res_dind <- felm(lnths ~ after | state + year | 0 | state, data = analysis_data)
 # Variable label
 labels <- c()
 var_list <- c()
-for (num in seq(-9, 15)){
-  if (num != -1){
+for (num in seq(-9, 15)) {
+  if (num != -1) {
     labels <- c(labels, num)
     var_list <- c(var_list, paste0("factor(year_since_adoption)", as.character(num)))
   }
@@ -80,6 +99,9 @@ fig_data <- tibble(
     dind_se = ifelse(label >= 0, dind_se, 0)
     )
 
+```
+
+```{r EventStudyDinD, fig.path = '../docs/figure/', warning = FALSE}
 # Create a graph ---------------
 
 ggplot(fig_data, aes(x = label, y = es_coef)) +
@@ -92,8 +114,8 @@ ggplot(fig_data, aes(x = label, y = es_coef)) +
   theme_classic() +
   geom_hline(yintercept = 0, alpha = 0.5, size = 0.5) +
   labs(
-    x = "Coefficient estimates & 95% CI",
-    y = "Year relative to adoption of implied contract exception"
+    x = "Year relative to adoption of implied contract exception",
+    y = "Coefficient estimates & 95% CI"
   ) +
   theme(
     axis.text = element_text(size = 12),
