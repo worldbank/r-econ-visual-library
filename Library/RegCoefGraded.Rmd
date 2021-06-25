@@ -4,15 +4,18 @@ author: ""
 date: ""
 ---
 
-Largely based on Figure 16.7 in [Fundamentals of Data Visualization](https://serialmentor.com/dataviz/visualizing-uncertainty.html).
-
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+# Overview
+
+Largely based on Figure 16.7 in [Fundamentals of Data Visualization](https://serialmentor.com/dataviz/visualizing-uncertainty.html).
+
+
 ```{r RegCoefGraded, fig.path = '../docs/figure/', warning = FALSE}
 # Install and load packages ---------------
-#devtools::install_github("wilkelab/ungeviz")
+# devtools::install_github("wilkelab/ungeviz")
 packages <- c(
   "tidyverse",
   "tidymodels",
@@ -28,14 +31,31 @@ packages <- c(
 # Change to install = TRUE to install the required packages
 pacman::p_load(packages, character.only = TRUE, install = FALSE)
 
+```
+
+# Data
+This graph comes from David McKenzie, World Bank; Marcel Fafchamps, Stanford University; Simon Quinn, University of Oxford; Christopher Woodruff, University of Warwick. Ghana Microenterprise Growth and the Flypaper Effect, Randomized Experiment (MGFERE) 2008-2010. 
+
+https://microdata.worldbank.org/index.php/catalog/2249
+
+- `wave`: Survey wave identifier 
+- `cashtreat`: assignment to the cash treatment
+- `timetreat`: 
+- `sheno`: Firm ID
+- `control`: 
+
+- Unit of Observation: Households
+
+```{r RegCoefGraded, fig.path = '../docs/figure/', warning = FALSE}
 # Load an example dataset ---------------
-# See https://microdata.worldbank.org/index.php/catalog/2249
-# Only relevant variables are kept in the dataset
 data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/ReplicationDataGhanaJDE_short.dta")
 
 # Printing the first five rows of the data to visualize its structure before data wrangling
 head(data)
 
+```
+
+```{r RegCoefGraded, fig.path = '../docs/figure/', warning = FALSE}
 # Data wrangling ---------------
 
 # Treatment group includes only those who received in-kind treatment 
@@ -86,6 +106,9 @@ df_coef <- df_result %>%
 # Printing the first five rows of the data to visualize its structure after data wrangling
 head(df_coef)
 
+```
+
+```{r RegCoefGraded, fig.path = '../docs/figure/', warning = FALSE}
 # Create a graph ---------------
 
 ggplot(df_coef, aes(x = estimate, y = rev(y_var))) + 
