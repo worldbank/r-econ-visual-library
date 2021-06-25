@@ -1,0 +1,63 @@
+---
+pagetitle: "Area Plot"
+author: ""
+date: ""
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Overview
+
+Creating a stacked area plot outlining the number of companies that were founded in a 20 year period split by gender. 
+
+```{r AreaPlot, fig.path = '../docs/figure/'}
+# Install and load packages ---------------
+packages <- c(
+  "tidyverse"
+)
+
+# Change to install = TRUE to install the required packages
+pacman::p_load(packages, character.only = TRUE, install = FALSE)
+```
+
+# Data
+
+This graph uses fictional data created for the purpose of this graph.
+
+- `founded`: year a company was founded
+- `n_gender`: the number of companies that were founded in that year by gender
+
+
+```{r AreaPlot, fig.path = '../docs/figure/'}
+# Load an example dataset ---------------
+data <- read_csv("../Library/Data/gender.csv")
+
+# Printing the first five rows of the data to visualize its structure before data wrangling
+head(data)
+```
+
+```{r AreaPlot, fig.path = '../docs/figure/'}
+# Creating a graph ---------------
+
+gender_colors <- c("#F4BA3B", "#730B6D")
+data %>%
+  ggplot() +
+  geom_area(aes(x = founded, y = n_gender, fill = gender)) +
+  labs(x = "Year firm was founded", y = "Number of firms",
+       title = "Year firm was founded, by gender of leaders") +
+  scale_fill_manual(values = gender_colors, na.value = "gray") +
+  theme_classic() +
+  theme(
+    legend.position = "top",
+    legend.title = element_blank(),
+    plot.title = element_text(hjust = 0.5),
+    axis.line = element_blank(),
+    axis.ticks = element_blank(),
+    panel.grid.major = element_line()
+  )
+
+```
+
