@@ -9,10 +9,10 @@ date: ""
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r DensityPlotAverage, fig.path = '../docs/figure/'}
-# Objective ---------------
-  # Create a two-way color-coded density plot comparing agricultural revenue before and after treatment
+# Overview
+Create a two-way color-coded density plot comparing agricultural revenue before and after treatment.
 
+```{r DensityPlotAverage, fig.path = '../docs/figure/'}
 # Install and load packages ---------------
 packages <- c(
   "tidyverse",
@@ -22,21 +22,28 @@ packages <- c(
 # Change to install = TRUE to install the required packages
 pacman::p_load(packages, character.only = TRUE, install = FALSE)
 
+```
+
+# Data
+
+This graph uses fictional data created for the purpose of this graph. 
+
+- `hh_id`: Household identifier
+- `post`: Timing variable (pre/post treatment)
+- `revenue`: Agricultural Revenue
+
+- Unit of Observation: Households
+
+```{r DensityPlotAverage, fig.path = '../docs/figure/'}
 # Load an example dataset ---------------
 data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/DensityPlotAverage.dta")
 
 # Printing the first five rows of the data to visualize its structure before data wrangling
 head(data)
 
-# Data Dictionary ---------------
-  ## Data Source: 
-  ## Tidy format? YesY
-  ## Unit of Observation: Households
-  ## Variables of interest: 
-    # hh_id: Household identifier
-    # post: Timing variable (pre/post treatment)
-    # revenue: Agricultural Revenue
+```
 
+```{r DensityPlotAverage, fig.path = '../docs/figure/'}
 # Data wrangling ---------------
 data <- data %>%
   mutate(post = as.factor(.$post)) %>% 
@@ -48,6 +55,9 @@ data <- data %>%
 # Printing the first five rows of the data to visualize its structure after data wrangling
 head(data)
 
+```
+
+```{r DensityPlotAverage, fig.path = '../docs/figure/', message = FALSE, warning = FALSE}
 # Create a graph ---------------
 ggplot(data, aes(x = revenue, colour = post)) + # Use color instead of fill for the density plot
   geom_density(alpha = 0.1) +
@@ -61,6 +71,7 @@ ggplot(data, aes(x = revenue, colour = post)) + # Use color instead of fill for 
     y = "Density"
   ) +
   scale_colour_discrete(labels = c("Pre-treatment", "Post-treatment")) +
+  scale_color_brewer(palette = "Set2") + 
   theme(
     axis.text = element_text(size = 12),
     axis.title = element_text(size = 15),
@@ -68,5 +79,6 @@ ggplot(data, aes(x = revenue, colour = post)) + # Use color instead of fill for 
     legend.text = element_text(size = 12),
     legend.position = "bottom"
     )
+
 ```
 
