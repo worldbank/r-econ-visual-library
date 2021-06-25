@@ -13,7 +13,7 @@ knitr::opts_chunk$set(echo = TRUE)
 Create clustered horizontal bar charts displaying baseline and midline outcomes for treatment and control groups. Include clustered bars for Papayas, Pineapples, and Coconuts.
 
 ```{r}
-# Install and load packages
+# Install and load packages ---------------
 packages <- c(
   "tidyverse",
   "haven",
@@ -22,7 +22,6 @@ packages <- c(
 # Change to install = TRUE to install the required packages
 pacman::p_load(packages, character.only = TRUE, install = FALSE)
 ```
-
 
 # Data
 
@@ -36,7 +35,7 @@ This graph uses fictional data created for the purpose of this graph. The fictio
 - `w_Coconut`: Annual Coconut Production 
 
 ```{r}
-# Load data
+# Load data ---------------
 data <- readRDS("~/Documents/GitHub/DIME/Code_Reviews/CodeReview_r-econ-visual-library/r-econ-visual-library/Library/BarPlotsMultipleVariables.rds")
 
 # Printing the first five rows of the data to visualize its structure before data wrangling
@@ -44,7 +43,7 @@ head(data)
 ```
 
 ```{r}
-# Data wrangling
+# Data wrangling ---------------
 
 # Collapse the dataset across each treatment group
 collapsed_data <- 
@@ -59,10 +58,12 @@ collapsed_data <-
 # Printing the first five rows of the data to visualize its structure after collapsing
 head(collapsed_data)
 
+```
+
+```{r}
 # Reshape data to long format 
 reshaped_data <- collapsed_data %>% # Reshape crop variables to long format
-                  pivot_longer( 
-                    starts_with(c("w_")), # Select crop variables
+                  pivot_longer(starts_with(c("w_")), # Select crop variables
                     names_to = "key", # Create crop identifiers
                     values_to = "value" # Record values in single column
                     ) %>%
@@ -73,10 +74,11 @@ reshaped_data <- collapsed_data %>% # Reshape crop variables to long format
 
 # Printing the first five rows of the data to visualize its structure after reshaping
 head(collapsed_data)
+
 ```
 
 ```{r}
-# Create a Graph 
+# Create a Graph ---------------
 
 ggplot(reshaped_data, aes(x = key, y = value, fill = round)) +
   geom_bar( # Format bars 
@@ -93,9 +95,7 @@ ggplot(reshaped_data, aes(x = key, y = value, fill = round)) +
   coord_flip(ylim = c(0, 150)) + # Make bars horizontal 
   geom_hline(yintercept = 0, alpha = 0.5) +
   scale_x_discrete(
-    labels = c( 
-      "w_Papaya" = "Papaya Prod", 
-      "w_Pineapple" = "Pineapple Prod",
+    labels = c("w_Papaya" = "Papaya Prod", "w_Pineapple" = "Pineapple Prod",
       "w_Coconut" = "Coconut Prod"
       )) +
   scale_fill_brewer( # Set color scheme 
