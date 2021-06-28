@@ -4,10 +4,13 @@ author: ""
 date: ""
 ---
 
-
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+
+# Overview
+
+Create a stacked bar charts assessing the whether there was a medical referral and drug dispensing practices of pharmacies for standardized patients with presumed (Case 1) and confirmed (Case 2) tuberculosis in India.
 
 ```{r DensityWithData, fig.path = '../docs/figure/'}
 # Install and load packages ---------------
@@ -19,12 +22,26 @@ packages <- c(
 # Change to install = TRUE to install the required packages
 pacman::p_load(packages, character.only = TRUE, install = FALSE)
 
+```
+
+# Data
+
+- `theta_mle`: theta (MLE)
+- `roster_6a8`: higest level of education
+
+- Unit of Observation: 
+
+
+```{r DensityWithData, fig.path = '../docs/figure/'}
 # Load an example dataset ---------------
-data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/DensityWithData.dta")
+data <- read_dta("https://github.com/worldbank/stata-visual-library/raw/master/Library/data/density-data.dta")
 
 # Printing the first five rows of the data to visualize its structure before data wrangling
 head(data)
 
+```
+
+```{r DensityWithData, fig.path = '../docs/figure/', warning = FALSE, message = FALSE}
 # Data wrangling ---------------
 data <- data %>%
   filter(!(is.na(theta_mle) | is.na(roster_6a8))) %>% 
@@ -36,15 +53,14 @@ data <- data %>%
   mutate(tot_num = n()) %>%
   ungroup()
 
-
-bw = 0.1 # setting the bandwith variable separetly for later uses 
+bw <- 0.1 # setting the bandwith variable separetly for later uses 
 
 # Using for loop to customize the dataset
-for (i in c(0, 1)){
+for (i in c(0, 1)) {
   sub_data <- data %>% filter(bach == i)
   hist_graph <- ggplot(sub_data, aes(x = score)) + geom_histogram(binwidth = bw)
   hist_data <- ggplot_build(hist_graph)$data[[1]]
-  hist_breaks = c(hist_data$xmin, tail(hist_data$xmax, n = 1))
+  hist_breaks <- c(hist_data$xmin, tail(hist_data$xmax, n = 1))
   
   data$bin_score[data$bach == i] <- hist_data$count[findInterval(sub_data$score, hist_breaks)]
 }
@@ -52,11 +68,14 @@ for (i in c(0, 1)){
 # Printing the first five rows of the data to visualize its structure after data wrangling
 head(data)
 
+```
+
+```{r DensityWithData, fig.path = '../docs/figure/'}
 # Create a graph ---------------
 ggplot(data, aes(x = score, colour = bach)) +
-  #geom_density(aes(y = ..density.. * tot_num * bw)) +
   geom_density(aes(y = ..count.. * bw)) +
   geom_density() +
+  scale_color_brewer(palette = "Set2") +
   geom_point(aes(y = bin_score), size = 0.5) 
 
 ```
