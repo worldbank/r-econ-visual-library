@@ -8,10 +8,10 @@ date: ""
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r HorizontalBarOrderGroup, fig.path = '../docs/figure/', warning = FALSE}
-# Objective ---------------
-# Create an ascending horizontal bar chart of GDP per-capita  of the 30 countries with the lowest values, color-coded by region. 
+# Overview
+Create an ascending horizontal bar chart of GDP per-capita  of the 30 countries with the lowest values, color-coded by region. 
 
+```{r HorizontalBarOrderGroup, fig.path = '../docs/figure/', warning = FALSE}
 # Install and load packages ---------------
 packages <- c(
   "tidyverse",
@@ -22,6 +22,27 @@ packages <- c(
 # Change to install = TRUE to install the required packages
 pacman::p_load(packages, character.only = TRUE, install = FALSE)
 
+```
+
+# Data
+
+The graph comes from the World Bank's World Development Indicators, pulled from the internet directly using the "WDI" package. 
+
+https://datacatalog.worldbank.org/dataset/world-development-indicators
+
+- data
+  - `iso2c`: Country code
+  - `country`: Country identifier
+  - `NY.GDP.PCAP.KD`: GDP Per Capita (constant 2010 US$)
+  - Unit of Observation: Country-wise Gross Domestic Product Per Capita (2018)
+
+- country_code
+  - `iso2c`: Country code
+  - `country`: Country identifier
+  - `Region`: Regional identifier
+  - Unit of Observation: WDI Country Codes
+
+```{r HorizontalBarOrderGroup, fig.path = '../docs/figure/', warning = FALSE}
 # Load example datasets ---------------
 data <- WDI(indicator = "NY.GDP.PCAP.KD", start = 2018, end = 2018)
 
@@ -31,26 +52,9 @@ country_code <- as_tibble(WDI_data$country) # Load tibble of all countries in WD
 head(data)
 head(country_code)
 
-# Data Dictionary (data) ---------------
-  ## Data Source: The World Bank's World Development Indicators, pulled from the internet directly using the "WDI" package. 
-  ## Tidy format? Yes
-  ## Unit of Observation: Country-wise Gross Domestic Product Per Capita (2018).
-  ## Variables of interest:
-    # iso2c: Country code
-    # country: Country identifier
-    # NY.GDP.PCAP.KD: GDP Per Capita (constant 2010 US$)
-
-# Data Dictionary (country_code) ---------------
-  ## Data Source: The World Bank's World Development Indicators, pulled from the internet directly using the "WDI" package. 
-  ## Tidy format? Yes
-  ## Unit of Observation: WDI Country Codes.
-  ## Variables of interest:
-    # iso2c: Country code
-    # country: Country identifier
-    # Region: Regional identifier
+```
    
-   
-
+```{r HorizontalBarOrderGroup, fig.path = '../docs/figure/', warning = FALSE}
 # Data wrangling ---------------
 
 # We merge the 2 datasets to drop the un-needed aggregate measures easily.
@@ -64,6 +68,9 @@ data <- data %>%
 # Printing the first five rows of the data to visualize its structure after data wrangling
 head(data)
 
+```
+
+```{r HorizontalBarOrderGroup, fig.path = '../docs/figure/', warning = FALSE}
 # Create a plot ---------------
 ggplot(data, aes(x = country, y = GDP, fill = region)) +
   geom_bar(stat = "identity", alpha = .6, width = .4) + 
