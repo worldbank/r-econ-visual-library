@@ -26,6 +26,8 @@ pacman::p_load(packages, character.only = TRUE, install = FALSE)
 
 # Data
 
+This graph comes from Das, Jishnu, Liana Woskie, Ruma Rajbhandari, Kamran Abbasi, and Ashish Jha. “Rethinking assumptions about delivery of healthcare: implications for universal health coverage.” Bmj 361 (2018).
+
 - `theta_mle`: theta (MLE)
 - `roster_6a8`: higest level of education
 
