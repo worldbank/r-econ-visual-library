@@ -8,6 +8,9 @@ date: ""
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+# Overview
+
+
 ```{r ScatterCI, fig.path = '../docs/figure/', warning = FALSE}
 # Install and load packages ---------------
 packages <- c(
@@ -21,13 +24,26 @@ packages <- c(
 
 # Change to install = TRUE to install the required packages
 pacman::p_load(packages, character.only = TRUE, install = FALSE)
+```
 
+# Data
+
+This graph uses fictional data that is based on Christian, Paul, and Brian Dillon. 2018. "Growing and Learning When Consumption Is Seasonal: Long-Term Evidence From Tanzania." Demography 55 (3): 1091–1118. doi:10.1007/s13524-018-0669-4. 
+
+- `cons_pae_m_sine`: M per AE (sine)
+
+- Unit of Observation: 
+
+```{r ScatterCI, fig.path = '../docs/figure/', warning = FALSE}
 # Load an example dataset ---------------
 data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/ScatterCI.dta")
 
 # Printing the first five rows of the data to visualize its structure before data wrangling
 head(data)
 
+```
+
+```{r ScatterCI, fig.path = '../docs/figure/', warning = FALSE}
 # Data wrangling ---------------
 
 # Setting the seed to enhance the reproducibility of the work
@@ -43,6 +59,9 @@ subdata <- data %>%
 # Printing the first five rows of the data to visualize its structure after data wrangling
 head(subdata)
 
+```
+
+```{r ScatterCI, fig.path = '../docs/figure/', warning = FALSE, message = FALSE}
 # Create a graph ---------------
 
 ggplot(subdata, aes(x = cons_pae_m_sine, y = cons_pae_sd_sine)) +
