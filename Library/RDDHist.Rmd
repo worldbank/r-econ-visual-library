@@ -8,6 +8,8 @@ date: ""
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+# Overview
+
 ```{r RDDHist, fig.path = '../docs/figure/', warning = FALSE}
 # Install and load packages ---------------
 packages <- c(
@@ -20,12 +22,29 @@ packages <- c(
 # Change to install = TRUE to install the required packages
 pacman::p_load(packages, character.only = TRUE, install = FALSE)
 
+```
+
+# Data
+This graph comes from Gertler, Paul J.; Martinez, Sebastian; Premand, Patrick; Rawlings, Laura B.; Vermeersch, Christel M. J.. 2016. "Impact Evaluation in Practice, Second Edition" Washington, DC: Inter-American Development Bank and World Bank. 
+
+https://openknowledge.worldbank.org/handle/10986/25030
+
+- `pmt_score`: PMT; total weighted score
+- `cutoff`: priority test cutoff; hhs with higher scores are priority
+- `treatment`: whether or not the household received a treatment
+
+- Unit of Observation: 
+
+```{r RDDHist, fig.path = '../docs/figure/', warning = FALSE}
 # Load an example dataset ---------------
 data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/RDD_data.dta")
 
 # Printing the first five rows of the data to visualize its structure before data wrangling
 head(data)
 
+```
+
+```{r RDDHist, fig.path = '../docs/figure/', warning = FALSE}
 # Data wrangling ---------------
 data <- data %>%
   mutate(treatment = (pmt_score >= cutoff))
@@ -65,6 +84,9 @@ hist_top = -0.3
 # Printing the first five rows of the data to visualize its structure after data wrangling
 head(fig_data)
 
+```
+
+```{r RDDHist, fig.path = '../docs/figure/', warning = FALSE}
 # Create a graph ---------------
 
 ggplot(fig_data, aes(color = treatment, fill = treatment)) +
