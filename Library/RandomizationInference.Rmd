@@ -8,12 +8,13 @@ date: ""
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+# Overview
+
 ```{r RandomizationInference, fig.path = '../docs/figure/'}
 # Install and load packages ---------------
 
 packages <- c(
   "tidyverse",
-  "tidymodels",
   "haven",
   "ri2"
 )
@@ -21,6 +22,24 @@ packages <- c(
 # Change to install = TRUE to install the required packages
 pacman::p_load(packages, character.only = TRUE, install = FALSE)
 
+```
+
+# Data
+
+This graph comes from Gertler, Paul J.; Martinez, Sebastian; Premand, Patrick; Rawlings, Laura B.; Vermeersch, Christel M. J.. 2016. "Impact Evaluation in Practice, Second Edition" Washington, DC: Inter-American Development Bank and World Bank. 
+
+https://openknowledge.worldbank.org/handle/10986/25030
+
+- `household_identifier`: Household identifier
+- `treatment_locality`: Timing variable (pre/post treatment)
+- `locality_identifier`: Locality identifier
+- `eligible`: Identifier for households eligible for program of interest
+- `round`: Timing (baseline or follow-up) identifier
+- `health_expenditures`: Annualized out of pocket health expenditures
+
+- Unit of Observation: Households
+
+```{r RandomizationInference, fig.path = '../docs/figure/'}
 # Load an example dataset ---------------
 
 # https://openknowledge.worldbank.org/handle/10986/25030
@@ -29,6 +48,9 @@ data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/
 # Printing the first five rows of the data to visualize its structure before data wrangling
 head(data)
 
+```
+
+```{r RandomizationInference, fig.path = '../docs/figure/'}
 # Data wrangling ---------------
 
 analysis_data <- data %>%
@@ -40,23 +62,25 @@ num_treated_cluster <- length(unique((analysis_data %>% filter(treatment_localit
 # Setting seed to enhance the reproducibility of the work
 set.seed(42949)
 
-
 num_sim <- 1000
 sim_est <- rep(0, num_sim)
-for (i in 1:num_sim){
+for (i in 1:num_sim) {
   treated_locality_sim <- sample(unique(analysis_data$locality_identifier), num_treated_cluster)
   
   sim_data <- analysis_data %>%
     mutate(treat_sim = ifelse(locality_identifier %in% treated_locality_sim, 1, 0))
   
   res <- lm(health_expenditures ~ treat_sim, data = sim_data)
-  sim_est[i] <- res$coefficients['treat_sim']
+  sim_est[i] <- res$coefficients["treat_sim"]
 }
 
 # Regression results 
 res <- lm(health_expenditures ~ treatment_locality, data = analysis_data)
 point_est <- res$coefficients["treatment_locality"]
 
+```
+
+```{r RandomizationInference, fig.path = '../docs/figure/'}
 # Create a graph ---------------
 
 ggplot() +

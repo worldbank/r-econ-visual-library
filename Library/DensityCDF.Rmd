@@ -26,6 +26,7 @@ pacman::p_load(packages, character.only = TRUE, install = FALSE)
 ```
 
 # Data 
+This graph uses fictional data created for the purpose of this graph.
 
 - `hh_id`: Household identifier
 - `post`: Timing variable (pre/post treatment)
@@ -52,7 +53,7 @@ data <- data %>%
 head(data)
 ```
 
-```{r}
+```{r, message = FALSE, error = FALSE }
 # Create a graph 
 ggplot(data, aes(x = revenue, 
                            color = post)) + # Use color instead of fill for the CDF
@@ -71,6 +72,7 @@ ggplot(data, aes(x = revenue,
     y = "Cumulative Density"
   ) +
   scale_colour_discrete(labels = c("Pre-treatment", "Post-treatment")) + # Color-code by treatment status
+  scale_color_brewer(palette = "Set2") +
   theme(
     axis.text = element_text(size = 12),
     axis.title = element_text(size = 15),

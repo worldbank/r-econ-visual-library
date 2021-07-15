@@ -8,11 +8,14 @@ date: ""
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+# Objective 
+
+Create a Difference in Difference model comparing the the effect of the control and treatment on health expenditures. 
+
 ```{r DiffinDiff_HISP, fig.path = '../docs/figure/'}
 # Install and load packages ---------------
 packages <- c(
   "tidyverse",
-  "tidymodels",
   "haven",
   "ggrepel",
   "directlabels",
@@ -21,7 +24,22 @@ packages <- c(
 
 # Change to install = TRUE to install the required packages
 pacman::p_load(packages, character.only = TRUE, install = FALSE)
+```
 
+# Data
+
+This graph comes from Gertler, Paul J.; Martinez, Sebastian; Premand, Patrick; Rawlings, Laura B.; Vermeersch, Christel M. J.. 2016. "Impact Evaluation in Practice, Second Edition" Washington, DC: Inter-American Development Bank and World Bank. 
+
+https://openknowledge.worldbank.org/handle/10986/25030
+
+- `treatment_locality`: Timing variable (pre/post treatment)
+- `round`: Timing (baseline or follow-up) identifier
+- `health_expenditures`: Annualized out of pocket health expenditures
+- `enrolled`: household enrolled in HISP
+
+- Unit of Observation: Households
+
+```{r DiffinDiff_HISP, fig.path = '../docs/figure/'}
 # Load an example dataset ---------------
 # https://openknowledge.worldbank.org/handle/10986/25030
 data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/evaluation.dta")
@@ -29,6 +47,9 @@ data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/
 # Printing the first five rows of the data to visualize its structure before data wrangling
 head(data)
 
+```
+
+```{r DiffinDiff_HISP, fig.path = '../docs/figure/'}
 # Data wrangling ---------------
 data <- data %>%
   filter(treatment_locality == 1) %>%
@@ -40,10 +61,12 @@ data <- data %>%
   ungroup() %>%
   mutate(label = ifelse(enrolled == 1, "Treatment", "Control"))
 
-
 # Printing the first five rows of the data to visualize its structure after data wrangling
 head(data)  
 
+```
+
+```{r DiffinDiff_HISP, fig.path = '../docs/figure/'}
 # Create a graph ---------------
 ggplot(data, aes(x = factor(round), y = mean, group = enrolled, colour = enrolled)) +
   geom_pointrange(aes(ymin = mean - sd, ymax = mean + sd), position = position_dodge(width = 0.03)) +  
@@ -62,7 +85,8 @@ ggplot(data, aes(x = factor(round), y = mean, group = enrolled, colour = enrolle
     axis.title.y = element_text(size = 14),
     legend.title = element_blank(),
     legend.position = "none"
-    )
+    ) + 
+  scale_color_brewer(palette = "Set2")
 
 ```
 

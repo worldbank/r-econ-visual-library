@@ -1,54 +1,51 @@
 ---
-# Use a description of your plot here to facilitate search
 pagetitle: "Density Plots: Density by rounds and by group with ridgelines"
-
-# Add your GitHub handle to get credit for your contribution
-author: "@mizuhirosuzuki"
-
-# Date is optional
-date: ""
+author:
+date: 
 ---
 
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+# Overview
 
-```{r SameNameAsYourScript, fig.path = '../docs/figure/', warning = FALSE}
-# Objective ---------------
-  # Create group-wise density plots (Control, Cash, In-Kind) of firms' profit measurements by rounds of data collection
+Create group-wise density plots (Control, Cash, In-Kind) of firms' profit measurements by rounds of data collection.
 
-# Install and load packages ===========================================================
+```{r, fig.path = '../docs/figure/', warning = FALSE}
+# Install and load packages ---------------
 packages <- 
   c("tidyverse",
     "haven",
     "ggridges")
 
 # Change to install = TRUE to install the required packages
-pacman::p_load(packages, 
-               character.only = TRUE, 
-               install = FALSE)
+pacman::p_load(packages, character.only = TRUE, install = FALSE)
+```
 
-# Data wrangling =====================================================================
+# Data
 
-# Original data is available at https://microdata.worldbank.org/index.php/catalog/2249.
+This graph comes from David McKenzie, World Bank; Marcel Fafchamps, Stanford University; Simon Quinn, University of Oxford; Christopher Woodruff, University of Warwick. Ghana Microenterprise Growth and the Flypaper Effect, Randomized Experiment (MGFERE) 2008-2010.
+
+https://microdata.worldbank.org/index.php/catalog/2249
+
+- `sheno`: Firm ID
+- `wave`: Survey wave identifier 
+- `timetreat`: Treatment identifier 
+- `control`: Timing (baseline or follow-up) identifier 
+- `realfinalprofit`: Firm profit
+
+- Unit of Observation: Households
+
+```{r, fig.path = '../docs/figure/', warning = FALSE}
+# Data wrangling ---------------
 data <- 
   read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/ReplicationDataGhanaJDE_short.dta")
 
 # Printing the first five rows of the data to visualize its structure before data wrangling
 head(data)
+```
 
-# Data Dictionary ---------------
-  ## Data Source: 
-  ## Tidy format? No
-  ## Unit of Observation: Households
-  ## Variables of interest: 
-    # sheno: Firm ID 
-    # wave: Survey wave identifier 
-    # timetreat: Treatment identifier 
-    # control: Timing (baseline or follow-up) identifier 
-    # realfinalprofit: Firm profit 
-
-
+```{r, fig.path = '../docs/figure/', warning = FALSE}
 # For simplicity, we will include only those who received treatment between 2nd and 3rd waves in the treatment group.
 analysis_data <- 
   data %>%
@@ -63,9 +60,10 @@ analysis_data <-
                                   ifelse(equiptreat == 1,
                                          "In-kind", 
                                          "Control")))
+```
 
-# Create graph ====================================================================
-
+```{r, fig.path = '../docs/figure/', message = FALSE, warning = FALSE}
+# Create graph ---------------
 ggplot(analysis_data, 
        aes(x = realfinalprofit,
            y = fct_rev(factor(wave)), 

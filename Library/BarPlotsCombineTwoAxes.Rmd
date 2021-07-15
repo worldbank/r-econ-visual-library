@@ -6,6 +6,7 @@ date: ''
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+
 ```
 
 # Overview
@@ -13,7 +14,7 @@ knitr::opts_chunk$set(echo = TRUE)
 Create a food-group wise set of bar plots, displaying average number of foods from each group consumed last month on one axis, and total value of expenditures on the other, by month. 
 
 ```{r}
-# Install and load packages
+# Install and load packages ---------------------------
 packages <- c(
   "tidyverse",
   "haven",
@@ -37,7 +38,7 @@ The dataset used is a mock dataset based on the original paper's data. It contai
 - `total_exp`: Total expenditures on food group in given month
 
 ```{r}
-# Load data
+# Load data  ---------------------------
 data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/BarPlotsCombineTwoAxes.dta")
 
 # Printing the first five rows of the data to visualize its structure before data wrangling
@@ -45,17 +46,17 @@ head(data)
 ```
 
 ```{r}
-# Data wrangling
+# Data wrangling ---------------------------
 
 # Creating a vector of observations with appropriate labels 
-food_group_list = c('animal', 'fruit', 'grain', 'veg', 'starch', 'processed_sugar')
-food_label_list = c(
-  animal = 'Animal Sourced',
-  fruit = 'Fruit',
-  grain = 'Grain',
-  veg = 'Vegetable',
+food_group_list <- c("animal", "fruit", "grain", "veg", "starch", "processed_sugar")
+food_label_list <- c(
+  animal = "Animal Sourced",
+  fruit = "Fruit",
+  grain = "Grain",
+  veg = "Vegetable",
   starch = "Starchy Foods",
-  processed_sugar = 'Processed Sugar'
+  processed_sugar = "Processed Sugar"
   )
 
 # Filtering data to the observations of interests
@@ -65,14 +66,12 @@ fig_data <- data %>%
 
 # 72 observations of 144 were kept 
 
-
-
 # Printing the first five rows of the data to visualize its structure after data wrangling
 head(fig_data)
 ```
 
 ```{r}
-# Create a graph 
+# Create a graph ---------------------------
 
 # Basic Graph of Bar Plots by Food Group 
 ggplot(fig_data) +
@@ -92,8 +91,9 @@ labs(
     x = "Month of Interview",
     y = "Avg. Number of Foods from \n Group Consumed Last Month (bar)"
     )
+```
 
-
+```{r}
 # Refined graph including a second axis of total expenditures and cleaner labeling 
 ggplot(fig_data) +
 # fine tuning the graph using alpha and width options

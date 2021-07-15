@@ -8,6 +8,8 @@ date: ""
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+# Overview
+
 ```{r ScatterFittedLine, fig.path = '../docs/figure/', warning = FALSE}
 # Install and load packages ---------------
 packages <- c(
@@ -20,30 +22,49 @@ packages <- c(
 # Change to install = TRUE to install the required packages
 pacman::p_load(packages, character.only = TRUE, install = FALSE)
 
+```
+
+# Data
+This graph uses fictional data created for the purpose of this graph.
+
+- `post`: households to recieve the kit
+
+- Units of Observation: 
+
+
+```{r ScatterFittedLine, fig.path = '../docs/figure/', warning = FALSE}
 # Load an example dataset ---------------
 data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/ScatterFittedLine.dta")
 
 # Printing the first five rows of the data to visualize its structure before data wrangling
 head(data)
 
+```
+
+```{r ScatterFittedLine, fig.path = '../docs/figure/', warning = FALSE}
 # Data wrangling ---------------
 
 # Changing the post variable to factor to facilitate visualization
-data <- data %>% mutate(post = as.factor(post))
+data <- data %>% 
+  mutate(post = as.factor(post))
 
 # Printing the first five rows of the data to visualize its structure after data wrangling
 head(data)
 
+```
+
+```{r ScatterFittedLine, fig.path = '../docs/figure/', warning = FALSE, message = FALSE}
 # Create a graph ---------------
 ggplot(data, aes(x = area_cult, y = revenue, colour = post)) +
   geom_point(aes(alpha = 0.2), show.legend = FALSE) +
   geom_smooth(aes(group = post, colour = post), method = "lm", se = FALSE) +
   theme_classic() +
   labs(
-    x = "Agriculture revenue (BRL thousands)",
-    y = "Cultivated area (ha)"
+    x = "Cultivated area (ha)",
+    y = "Agriculture revenue (BRL thousands)"
   ) +
   scale_color_discrete(name = "", labels = c("Pre-treatment", "Post-treatment")) + 
+  scale_color_brewer(palette = "Set2") + 
   theme(
     axis.text = element_text(size = 12),
     axis.title = element_text(size = 14),

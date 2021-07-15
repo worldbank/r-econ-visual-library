@@ -8,6 +8,8 @@ date: ""
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+# Overview
+
 ```{r RDD2Dbins, fig.path = '../docs/figure/', warning = FALSE}
 # Install and load packages ---------------
 packages <- c(
@@ -20,6 +22,21 @@ packages <- c(
 # Change to install = TRUE to install the required packages
 pacman::p_load(packages, character.only = TRUE, install = FALSE)
 
+```
+
+# Data
+
+This graph comes from Gertler, Paul J.; Martinez, Sebastian; Premand, Patrick; Rawlings, Laura B.; Vermeersch, Christel M. J.. 2016. "Impact Evaluation in Practice, Second Edition" Washington, DC: Inter-American Development Bank and World Bank. 
+
+https://openknowledge.worldbank.org/handle/10986/25030
+
+- `poverty_index`: poverty index 1-100
+- `treatment_locality`: Timing variable (pre/post treatment)
+- `health_expenditures`: Annualized out of pocket health expenditures
+
+- Unit of Observation: Households
+
+```{r RDD2Dbins, fig.path = '../docs/figure/', warning = FALSE}
 # Load an example dataset ---------------
 
 # https://openknowledge.worldbank.org/handle/10986/25030
@@ -28,6 +45,9 @@ data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/
 # Printing the first five rows of the data to visualize its structure before data wrangling
 head(data)
 
+```
+
+```{r RDD2Dbins, fig.path = '../docs/figure/', warning = FALSE}
 # Data wrangling ---------------
 
 cutoff <- 58 # setting the cutoff level
@@ -89,6 +109,9 @@ fig_data <- data %>%
 # Printing the first five rows of the data to visualize its structure after data wrangling
 head(data)
 
+```
+
+```{r RDD2Dbins, fig.path = '../docs/figure/', warning = FALSE, message = FALSE}
 # Create a graph ---------------
 
 ggplot(fig_data, aes(x = poverty_index, y = health_expenditures, color = treatment)) +
@@ -104,23 +127,14 @@ ggplot(fig_data, aes(x = poverty_index, y = health_expenditures, color = treatme
     x = "Baseline Poverty Index",
     y = "Health Expenditures ($)"
   ) +
-#  scale_color_brewer(name = "Eligibility",
-#                     palette = "Set2", 
-#                     labels = c("Not eligible", "Eligible")) +
-#  scale_color_manual(name = "Eligibility",
-#                     values = c("#56B4E9", "#E69F00"),
-#                     labels = c("Not eligible", "Eligible")) +
-#  scale_fill_gradient(name = "Counts",
-#                      low = "gray50", high = "gray30") +
-  scale_color_manual(
-    name = "Eligibility",
-    values = c("#F0E442", "#CC79A7"),
-    labels = c("Not eligible", "Eligible")
-    ) +
-  scale_fill_gradient(
-    name = "Counts",
-    low = "#56B4E9", high = "#0072B2"
-    ) +
+ scale_color_brewer(name = "Eligibility",
+                    palette = "Set2",
+                    labels = c("Not eligible", "Eligible")) +
+ scale_color_manual(name = "Eligibility",
+                    values = c("#56B4E9", "#E69F00"),
+                    labels = c("Not eligible", "Eligible")) +
+ scale_fill_gradient(name = "Counts",
+                     low = "gray50", high = "gray30") +
   guides(color = guide_legend(override.aes = list(fill = NA))) +
   theme_classic() +
   theme(
