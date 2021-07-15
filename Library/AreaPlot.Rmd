@@ -34,6 +34,7 @@ This graph uses fictional data created for the purpose of this graph.
 ```{r AreaPlot, fig.path = '../docs/figure/'}
 # Load an example dataset ---------------
 data <- read_csv("../Library/Data/gender.csv")
+data <- read_csv("https://github.com/worldbank/r-econ-visual-library/tree/develop/Library/Data/gender.csv")
 
 # Printing the first five rows of the data to visualize its structure before data wrangling
 head(data)
