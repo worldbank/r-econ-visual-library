@@ -1,0 +1,148 @@
+---
+pagetitle: "Regression Coefficients: With point estimates"
+author: ""
+date: ""
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Overview
+
+
+```{r RegCoefPoints, fig.path = '../docs/figure/', warning = FALSE}
+# Install and load packages ---------------
+packages <- c(
+  "tidyverse",
+  "ggpubr",
+  "foreign",
+  "rstatix",
+  "glue",
+  "estimatr",
+  "ggplot2",
+  "haven", 
+  "lfe",
+  "gmodels"
+)
+
+# Change to install = TRUE to install the required packages
+pacman::p_load(packages, character.only = TRUE, install = FALSE)
+
+```
+
+# Data
+This graph comes from Gertler, Paul J.; Martinez, Sebastian; Premand, Patrick; Rawlings, Laura B.; Vermeersch, Christel M. J.. 2016. "Impact Evaluation in Practice, Second Edition" Washington, DC: Inter-American Development Bank and World Bank. 
+
+https://openknowledge.worldbank.org/handle/10986/25030
+
+- `treatment_locality`: Timing variable (pre/post treatment)
+- `round`: Timing (baseline or follow-up) identifier
+- `health_expenditures`: Annualized out of pocket health expenditures
+- `enrolled`: household enrolled in HISP
+
+- Unit of Observation: Households
+
+```{r DiffinDiff_HISP, fig.path = '../docs/figure/'}
+# Load an example dataset ---------------
+data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/evaluation.dta")
+
+# Printing the first five rows of the data to visualize its structure before data wrangling
+head(data)
+
+```
+
+```{r RegCoefVertical, fig.path = '../docs/figure/', warning = FALSE}
+# Data wrangling ---------------
+
+# Regress average health expenditure on time if in control group
+control <- data %>%
+  select(enrolled, round, health_expenditures) %>%
+  filter(enrolled == 0) %>% 
+  t_test(health_expenditures ~ round, detailed = TRUE)
+# Add the y position
+control <- control %>%
+  add_xy_position(x = "enrolled", dodge = 0.8, fun = "mean_se")
+# Format the p-values and estimates nicely
+control <- control %>%
+  mutate(prounded = round(p, digits=3),
+         est = round(estimate, digits=3),
+         y.position = c(22))
+
+# Regress average health expenditure on time if in treatment group
+treatment <- data %>%
+  select(enrolled, round, health_expenditures) %>%
+  filter(enrolled == 1) %>% 
+  t_test(health_expenditures ~ round, detailed = TRUE)
+# Add the y position
+treatment <- treatment %>%
+  add_xy_position(x = "enrolled", dodge = 0.8, fun = "mean_se")
+# Format the p-values and estimates nicely
+treatment <- treatment %>%
+  mutate(prounded = round(p, digits=3),
+         est = round(estimate, digits=3),
+         xmin = c(1.8),
+         xmax = c(2.2),
+         y.position = c(22))
+
+# Difference-in-difference
+did_lm <- data %>% 
+  select(enrolled, round, health_expenditures) %>%
+  lm(formula = health_expenditures ~ enrolled * round)
+didb <- summary(did_lm)$coefficients["enrolled:round", "Estimate"] %>%
+  round(., digits=3)
+didp <- summary(did_lm)$coefficients["enrolled:round", "Pr(>|t|)"] %>% 
+  round(., digits=3)
+did <- data.frame(a = paste("DiD = ",didb," ","p = ",didp))
+
+```
+
+```{r RegCoefPoints, fig.path = '../docs/figure/', warning = FALSE}
+
+data %>%
+  group_by(enrolled, round) %>%
+  summarise(mean = ci(health_expenditures, na.rm = T)[1],
+            ll = ci(health_expenditures, na.rm = T)[2],
+            ul = ci(health_expenditures, na.rm = T)[3]) %>% 
+  ggplot() + 
+  geom_bar(aes(x = factor(enrolled), 
+               y = mean,
+               fill = factor(round)), 
+           stat = "identity",
+           position = position_dodge(width = 0.7),
+           width = 0.6) +
+  geom_errorbar(aes(x = factor(enrolled), 
+                    ymin = ll, 
+                    ymax = ul,
+                    color = factor(round)),
+                position = position_dodge(width = 0.7),
+                width = 0.2) +
+  ylim(0,30) +
+  theme_classic() +
+  labs(x = "Difference in Treatment",
+       y = "Avg. Health Expenditures") +
+  scale_color_manual(values = c("black", "black")) +
+#add in the p-values and differences
+  stat_pvalue_manual(control, label = "d = {est}; p = {p}",
+                     label.size = 3) +
+  stat_pvalue_manual(treatment, label = "d = {est}; p = {p}",
+                     label.size = 3) +
+#add the DID estimates 
+  geom_text(data = did, 
+            aes(x = 0.7,  y = 23, label = a),
+            size = 3) +
+  annotate("segment", x = 0.8, xend = 1.2, y = 16, yend = 16, size=0.25) +
+  annotate("segment", x = 0.8, xend = 0.8, y = 15.4, yend = 16, size=0.25) +
+  annotate("segment", x = 1.2, xend = 1.2, y = 15.4, yend = 16, size=0.25) +
+  annotate("segment", x = 0.2, xend = 1.2, y = 22.4, yend = 22.4, size=0.25) +
+  annotate("segment", x = 0.2, xend = 0.2, y = 21.8, yend = 22.4, size=0.25) +
+  annotate("segment", x = 1.2, xend = 1.2, y = 21.8, yend = 22.4, size=0.25) +  theme(
+    legend.position = 'top',
+    legend.title = element_blank(),
+    plot.title = element_text(hjust = 0.5),
+    axis.line = element_blank(),
+    axis.ticks = element_blank(),
+    panel.grid.major.y = element_line()
+  ) 
+ 
+```

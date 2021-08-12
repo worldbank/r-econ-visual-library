@@ -8,6 +8,9 @@ date: ""
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+# Overview
+
+
 ```{r RegCoefME, fig.path = '../docs/figure/', warning = FALSE}
 # Install and load packages ---------------
 packages <- c(
@@ -25,12 +28,27 @@ packages <- c(
 # Change to install = TRUE to install the required packages
 pacman::p_load(packages, character.only = TRUE, install = FALSE)
 
+```
+
+# Data
+
+This graph comes from Satyanarayana S, Kwan A, Daniels B, Subbaraman R, McDowell A, Bergkvist S, Das RK, Das V, Das J, Pai M. “Use of standardised patients to assess antibiotic dispensing for tuberculosis by pharmacies in urban India: A cross-sectional study.” Lancet Infect Dis. 2016 Nov;16(11):1261-1268. 
+
+Doi: 10.1016/S1473-3099(16)30215-8
+
+
+
+
+```{r RegCoefME, fig.path = '../docs/figure/', warning = FALSE}
 # Load an example dataset ---------------
 data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/RegCoefME.dta")
 
 # Printing the first five rows of the data to visualize its structure before data wrangling
 head(data)
 
+```
+
+```{r RegCoefME, fig.path = '../docs/figure/', warning = FALSE}
 # Data wrangling ---------------
 data_varlabel <- unlist(var_label(data))
 
@@ -87,6 +105,9 @@ fig_df <- rbind(df_coef_ols, df_coef_logit) %>%
 # Printing the first five rows of the data to visualize its structure after data wrangling
 head(fig_df)
 
+```
+
+```{r RegCoefME, fig.path = '../docs/figure/', warning = FALSE}
 # Create a graph ---------------
 
 ggplot(fig_df, aes(x = y_var, y = estimate, fill = model)) + 
@@ -106,7 +127,7 @@ ggplot(fig_df, aes(x = y_var, y = estimate, fill = model)) +
   scale_fill_discrete(breaks = rev(levels(fig_df$model))) +
   theme_classic() +
   # Use TeX to display special characters in the label for y-axis
-  ylab(TeX("$\\leftarrow$ Favors Public $\\;\\;\\;\\;\\;\\;$  Favors Privte $\\rightarrow$")) +
+  ylab(TeX("$\\leftarrow$ Favors Public $\\;\\;\\;\\;\\;\\;$  Favors Private $\\rightarrow$")) +
   theme(
     axis.line = element_blank(),
     axis.ticks.y = element_blank(),

@@ -8,6 +8,8 @@ date: ""
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+# Overview
+
 ```{r RDDPoints, fig.path = '../docs/figure/', warning = FALSE}
 # Install and load packages ---------------
 packages <- c(
@@ -20,13 +22,32 @@ packages <- c(
 # Change to install = TRUE to install the required packages
 pacman::p_load(packages, character.only = TRUE, install = FALSE)
 
+```
+
+# Data
+
+This graph comes from Gertler, Paul J.; Martinez, Sebastian; Premand, Patrick; Rawlings, Laura B.; Vermeersch, Christel M. J.. 2016. "Impact Evaluation in Practice, Second Edition" Washington, DC: Inter-American Development Bank and World Bank. 
+
+https://openknowledge.worldbank.org/handle/10986/25030
+
+- `household_identifier`: Household identifier
+- `treatment_locality`: Timing variable (pre/post treatment)
+- `eligible`: Identifier for households eligible for program of interest
+- `round`: Timing (baseline or follow-up) identifier
+- `health_expenditures`: Annualized out of pocket health expenditures
+
+- Unit of Observation: Households
+
+```{r RDDPoints, fig.path = '../docs/figure/', warning = FALSE}
 # Load an example dataset ---------------
-# https://openknowledge.worldbank.org/handle/10986/25030
 data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/evaluation.dta")
 
 # Printing the first five rows of the data to visualize its structure before data wrangling
 head(data)
 
+```
+
+```{r RDDPoints, fig.path = '../docs/figure/', warning = FALSE}
 # Data wrangling ---------------
 
 # Set the cutoff level
@@ -39,6 +60,9 @@ data <- data %>%
 # Printing the first five rows of the data to visualize its structure after data wrangling
 head(data)
 
+```
+
+```{r RDDPoints, fig.path = '../docs/figure/', warning = FALSE}
 # Create a graph ---------------
 
 ggplot(data, aes(x = poverty_index, y = health_expenditures, color = treatment)) +

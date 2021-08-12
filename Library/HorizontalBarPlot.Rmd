@@ -8,10 +8,10 @@ date: ""
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r HorizontalBarPlot, fig.path = '../docs/figure/', warning = FALSE}
-# Objective ---------------
-# Combine two different datasets measuring different clinics' daily time with patients, create an ascending horizontal bar chart of clinics' average daily time with patients by region and clinic types
+# Overview 
+Combine two different datasets measuring different clinics' daily time with patients, create an ascending horizontal bar chart of clinics' average daily time with patients by region and clinic types.
 
+```{r HorizontalBarPlot, fig.path = '../docs/figure/', warning = FALSE}
 # Install and load packages ---------------
 packages <- c(
   "tidyverse",
@@ -23,6 +23,23 @@ packages <- c(
 # Change to install = TRUE to install the required packages
 pacman::p_load(packages, character.only = TRUE, install = FALSE)
 
+```
+
+# Data
+This graph comes from Das, Jishnu, Liana Woskie, Ruma Rajbhandari, Kamran Abbasi, and Ashish Jha. “Rethinking assumptions about delivery of healthcare: implications for universal health coverage.” Bmj 361 (2018).
+
+- data1
+  - `study`: clinic type identifier
+  - `hours`: total daily time seeing patients (hours)
+  - Units of Observation: individual clinics 
+  
+- data2
+  - `study`: clinic type identifier
+  - `hours`: total daily time seeing patients (minutes)
+  - Units of Observation: individual clinics 
+
+
+```{r HorizontalBarPlot, fig.path = '../docs/figure/', warning = FALSE}
 # Load example datasets ---------------
 data1 <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/HorizontalBarPlot1.dta")
 data2 <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/HorizontalBarPlot2.dta")
@@ -31,23 +48,16 @@ data2 <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master
 head(data1)
 head(data2)
 
-# Data Dictionary (data1) ---------------
-  ## Data Source: Data Source: Das, Jishnu, Liana Woskie, Ruma Rajbhandari, Kamran Abbasi, and Ashish Jha. “Rethinking assumptions about delivery of healthcare: implications for universal health coverage.” Bmj 361 (2018).
-  ## Tidy format? Yes
-  ## Unit of Observation: Individual clinics
-    # study: Clinic type identifier
-    # hours: Total daily time seeing patients (hours)
+```
 
-# Data Dictionary (data2) ---------------
-  ## Data Source:
-  ## Tidy format? Yes
-  ## Unit of Observation: Individual clinics
-  ## Variables of Interest
-     # study: Clinic type identifier
-     # totime: Total daily time seeing patients (minutes)
-
-
+```{r HorizontalBarPlot, fig.path = '../docs/figure/', warning = FALSE}
 # Data wrangling ---------------
+
+# Generate hour variable from minute variable
+data2 <- data2 %>% mutate(hours = tottime / 60) # Convert time variable to hourly format 
+
+# Append two datasets
+data <- bind_rows(data1, data2) # bind_rows append the two given datasets
 
 # Generate hour variable from minute variable
 data2 <- data2 %>% mutate(hours = tottime / 60) # Convert time variable to hourly format 
@@ -58,14 +68,15 @@ data <- bind_rows(data1, data2) # bind_rows append the two given datasets
 # Printing the first five rows of the data to visualize its structure 
 head(data)
 
+``` 
+
+```{r HorizontalBarPlot, fig.path = '../docs/figure/', warning = FALSE}
+
 data_mean <- data %>% # Collapse data by mean time spent with each patient by each clinic type
   group_by(study) %>% # Select study as unit of observation
   summarise(hours = mean(hours)) %>% # Collapse variable of interest to mean of hours
   ungroup() %>%
   mutate(study = fct_reorder(study, desc(hours))) 
-
-# Printing the first five rows of the data to visualize its structure 
-head(data_mean)
 
 # Drop unnecessary quotes from group labels 
 data_mean$study <- factor(str_replace_all(levels(data_mean$study), "\\\"", ""))
@@ -75,6 +86,10 @@ data_mean$study <- factor(str_replace_all(levels(data_mean$study), " \\(", "\n\\
 # Printing the first five rows of the data to visualize its structure after data wrangling
 head(data_mean)
 
+```
+
+
+```{r HorizontalBarPlot, fig.path = '../docs/figure/', warning = FALSE}
 # Create a Graph ---------------
 data_mean %>%
   mutate(study = fct_reorder(study, desc(hours))) %>% # Order by hours (descending)
@@ -95,7 +110,7 @@ data_mean %>%
   scale_y_continuous(
     breaks = c(0, 1, 2, 3), # Set y-axis range 
     # setting labels (in accordance with the breaks) to easily interpretable labels 
-    label = c('0', '1 Hour', '2 Hours', '3 Hours') 
+    label = c("0", "1 Hour", "2 Hours", "3 Hours") 
     ) + 
   theme_classic() +
   theme(

@@ -8,6 +8,9 @@ date: ""
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+# Overview
+
+
 ```{r ScatterPolynomial, fig.path = '../docs/figure/', warning = FALSE}
 # Install and load packages ---------------
 packages <- c(
@@ -22,12 +25,30 @@ packages <- c(
 # Change to install = TRUE to install the required packages
 pacman::p_load(packages, character.only = TRUE, install = FALSE)
 
+```
+
+# Data
+
+This graph is based on Christian, Paul, and Brian Dillon. 2018. "Growing and Learning When Consumption Is Seasonal: Long-Term Evidence From Tanzania." Demography 55 (3): 1091–1118.
+doi:10.1007/s13524-018-0669-4. 
+
+The dataset used is a mock dataset based on the original paper's data. It contains data at the food type-month level. The relevant variables are:
+
+- `cons_pae_m_sine`: M per AE (sine)
+- `cons_pae_sd_sine`: standard deviation per AE (sine) 
+
+- Unit of Observation:
+
+```{r ScatterPolynomial, fig.path = '../docs/figure/', warning = FALSE}
 # Load an example dataset ---------------
 data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/ScatterPolynomial.dta")
 
 # Printing the first five rows of the data to visualize its structure before data wrangling
 head(data)
 
+```
+
+```{r ScatterPolynomial, fig.path = '../docs/figure/', warning = FALSE}
 # Data wrangling ---------------
 subdata <- data %>%
   filter(cons_pae_m_sine < quantile(.$cons_pae_m_sine, 0.99) & cons_pae_m_sine > quantile(.$cons_pae_m_sine, 0.01))
@@ -35,6 +56,9 @@ subdata <- data %>%
 # Printing the first five rows of the data to visualize its structure after data wrangling
 head(subdata)
 
+```
+
+```{r ScatterPolynomial, fig.path = '../docs/figure/', message = FALSE, warning = FALSE}
 # Create a graph ---------------
 
 # Saving the ggplot object p1
@@ -56,8 +80,6 @@ p2 <- ggplot(subdata, aes(x = cons_pae_m_sine, y = cv)) +
       # Use TeX to allow for LaTeX characters 
       xlab(TeX("$\\widehat{m}$")) +
       ylab(TeX("$\\widehat{s} / \\widehat{m}$"))
-
-# Create a graph ---------------
 
 # Use grid_arrange to display two plots
 grid_arrange_shared_legend(p1, p2, position = "bottom")

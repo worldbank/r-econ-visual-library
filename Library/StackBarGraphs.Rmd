@@ -8,6 +8,10 @@ date: ""
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+# Overview
+
+Create a stacked bar charts assessing the whether there was a medical referral and drug dispensing practices of pharmacies for standardized patients with presumed (Case 1) and confirmed (Case 2) tuberculosis in India.
+
 ```{r StackBarGraphs, fig.path = '../docs/figure/', warning = FALSE}
 # Install and load packages ---------------
 packages <- c(
@@ -22,24 +26,41 @@ packages <- c(
 
 # Change to install = TRUE to install the required packages
 pacman::p_load(packages, character.only = TRUE, install = FALSE)
+```
 
+# Data
+
+This graph comes from Satyanarayana S, Kwan A, Daniels B, Subbaraman R, McDowell A, Bergkvist S, Das RK, Das V, Das J, Pai M. “Use of standardised patients to assess antibiotic dispensing for tuberculosis by pharmacies in urban India: A cross-sectional study.” Lancet Infect Dis. 2016 Nov;16(11):1261-1268.
+doi: 10.1016/S1473-3099(16)30215-8
+
+- `case`: Medical treatment case identifier
+- `dr_3`: Referral
+
+- Unit of Observation: 
+
+
+```{r StackBarGraphs, fig.path = '../docs/figure/', warning = FALSE}
 # Load an example dataset ---------------
 data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/StackBarGraphs.dta")
 
 # Printing the first five rows of the data to visualize its structure before data wrangling
 head(data)
-
+```
+```{r StackBarGraphs, fig.path = '../docs/figure/', warning = FALSE}
 # Data wrangling ---------------
 
+# Return a vector of column headers and labels
 data_varlabel <- unlist(var_label(data))
-data <- data %>% mutate(case = ifelse(case == 5, "Case 1", "Case 2"))
+
+# Filter for a specific case and recoding as "Case 1" or "Case 2"
+data <- data %>% 
+  mutate(case = ifelse(case == 5, "Case 1", "Case 2"))
 
 var_list <- colnames(data)[grepl("^med_b2_antister_cat.{2}$", colnames(data))]
 
 # Function to make a bar graph, with referral label as an argument
-# Function to create multiple plots (reducing the codeload)
-make_bar <- function(idx){
-  
+# Function to create multiple plots (reducing the code load)
+make_bar <- function(idx) {
   value_labels <- val_labels(data$dr_3)
   referral_label <- names(value_labels)[idx]
   
@@ -47,7 +68,7 @@ make_bar <- function(idx){
     filter(dr_3 == value_labels[idx])
   
   x_label <- c("Case 1", "Case 2")
-  for (i in seq_along(x_label)){
+  for (i in seq_along(x_label)) {
     # Use str_interp (String Interpolation) where expressions within the curly brackets can be evaluated 
     x_label[i] <- str_interp(
     "${x_label[i]}\n(${sum(sub_data$case == x_label[i])}/${sum(data$case == x_label[i])})"
@@ -66,36 +87,38 @@ make_bar <- function(idx){
       key = data_varlabel[.$key],
       key = fct_reorder(key, desc(num))
       )
-
-  # Saving the ggplot object p
-  p <- ggplot(reshaped_data, aes(x = case, y = value, fill = key)) + 
-    geom_bar(position = "fill", stat = "identity", width = 0.4) +
-    scale_x_discrete(labels = x_label) +
-    ggtitle(referral_label) +
-    theme_classic() +
-    scale_y_continuous(labels = percent, expand = c(0, 0)) +
-    scale_fill_viridis_d(labels = c("No Medication", levels(reshaped_data$key)[2:5])) +
-    theme(
-      axis.line.y = element_blank(),
-      axis.title = element_blank(),
-      axis.text.y = element_text(size = 10),
-      axis.text.x = element_text(size = 12),
-      legend.title = element_blank(),
-      legend.text = element_text(size = 10),
-      legend.position = "bottom"
-      )
-    
-  return(p)
+  
+# Saving the ggplot object p
+p <- ggplot(reshaped_data, aes(x = case, y = value, fill = key)) + 
+  geom_bar(position = "fill", stat = "identity", width = 0.4) +
+  scale_x_discrete(labels = x_label) +
+  ggtitle(referral_label) +
+  theme_classic() +
+  scale_y_continuous(labels = percent, expand = c(0, 0)) +
+  scale_fill_viridis_d(labels = c("No Medication", levels(reshaped_data$key)[2:5])) +
+  theme(
+    axis.line.y = element_blank(),
+    axis.title = element_blank(),
+    axis.text.y = element_text(size = 10),
+    axis.text.x = element_text(size = 12),
+    legend.title = element_blank(),
+    legend.text = element_text(size = 10),
+    legend.position = "bottom"
+    )
+  
+return(p)
 }
+
+```
+
+```{r StackBarGraphs, fig.path = '../docs/figure/', warning = FALSE}
+# Create a graph ---------------
 
 # Saving ggplot objects p1 and p2 using the function make_bar
 p1 <- make_bar(1)
 p2 <- make_bar(2)
 
-# Create a graph ---------------
-
 # Using grid_arrange to display two plots
 grid_arrange_shared_legend(p1, p2, position = "right")
-
 
 ```

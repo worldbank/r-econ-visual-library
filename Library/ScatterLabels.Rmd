@@ -6,7 +6,10 @@ date: ""
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+
 ```
+
+# Overview
 
 ```{r ScatterLabels, fig.path = '../docs/figure/', warning = FALSE}
 # Install and load packages ---------------
@@ -21,12 +24,29 @@ packages <- c(
 # Change to install = TRUE to install the required packages
 pacman::p_load(packages, character.only = TRUE, install = FALSE)
 
+```
+
+# Data
+The graph comes from the World Bank's World Development Indicators, pulled from the internet directly using the "WDI" package. 
+
+https://datacatalog.worldbank.org/dataset/world-development-indicators
+
+- `NY.GDP.PCAP.KD`: GDP per capita (constant 2010 US$)
+- `iso2c`: ISO 3166-1 alpha-2 country code
+- `year`: year
+
+- Units of Observations: GDP per capita for each country per year
+
+```{r ScatterLabels, fig.path = '../docs/figure/', warning = FALSE}
 # Load an example dataset ---------------
 data <- WDI(indicator = "NY.GDP.PCAP.KD", start = 1980, end = 2012)
 
 # Printing the first five rows of the data to visualize its structure before data wrangling
 head(data)
 
+```
+
+```{r ScatterLabels, fig.path = '../docs/figure/', warning = FALSE}
 # Data wrangling ---------------
 country_code <- as_tibble(WDI_data$country)
 
@@ -44,6 +64,9 @@ head(data)
 # Saving the list of countries to stress for visualization 
 country_stress <- c("USA", "CHN", "BRA", "RWA")
 
+```
+
+```{r ScatterLabels, fig.path = '../docs/figure/', warning = FALSE}
 # Create a graph ---------------
 
 ggplot(data, aes(x = `1980`, y = `2012`)) + # backticks used to variables written in numbers
@@ -70,7 +93,6 @@ ggplot(data, aes(x = `1980`, y = `2012`)) + # backticks used to variables writte
     axis.text = element_text(size = 12),
     axis.title = element_text(size = 12)
   )
-
 
 ```
 

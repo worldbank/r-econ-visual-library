@@ -8,10 +8,11 @@ date: ""
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r DensityRidgeline, fig.path = '../docs/figure/', warning = FALSE}
-# Objective ---------------
-  # Create a group of Ridgeline density plots comparing distributions of health expenditures by timing and treatment status. 
+# Overview
 
+Create a group of Ridgeline density plots comparing distributions of health expenditures by timing and treatment status. 
+
+```{r DensityRidgeline, fig.path = '../docs/figure/', warning = FALSE}
 # Install and load packages ---------------
 packages <- c(
   "tidyverse",
@@ -21,26 +22,31 @@ packages <- c(
 
 # Change to install = TRUE to install the required packages
 pacman::p_load(packages, character.only = TRUE, install = FALSE)
+```
 
+# Data
+
+This graph comes from Gertler, Paul J.; Martinez, Sebastian; Premand, Patrick; Rawlings, Laura B.; Vermeersch, Christel M. J.. 2016. "Impact Evaluation in Practice, Second Edition" Washington, DC: Inter-American Development Bank and World Bank. 
+
+https://openknowledge.worldbank.org/handle/10986/25030
+
+- `household_identifier`: Household identifier
+- `treatment_locality`: Timing variable (pre/post treatment)
+- `eligible`: Identifier for households eligible for program of interest
+- `round`: Timing (baseline or follow-up) identifier
+- `health_expenditures`: Annualized out of pocket health expenditures
+
+- Unit of Observation: Households
+
+```{r DensityRidgeline, fig.path = '../docs/figure/', warning = FALSE}
 # Load an example dataset ---------------
-# https://openknowledge.worldbank.org/handle/10986/25030
 data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/evaluation.dta")
 
 # Printing the first five rows of the data to visualize its structure before data wrangling
 head(data)
+```
 
-# Data Dictionary ---------------
-  ## Data Source: 
-  ## Tidy format? Yes
-  ## Unit of Observation: Households
-  ## Variables of interest: 
-    # household_identifier: Household identifier
-    # treatment_locality: Timing variable (pre/post treatment)
-    # eligible: Identifier for households eligible for program of interest
-    # round: Timing (baseline or follow-up) identifier 
-    # health_expenditures: Annualized out of pocket health expenditures 
-
-
+```{r DensityRidgeline, fig.path = '../docs/figure/', warning = FALSE}
 # Data wrangling ---------------
 analysis_data <- data %>%
   filter(eligible == 1) %>% # Only keep eligible observations 
@@ -54,7 +60,9 @@ analysis_data <- data %>%
 
 # Printing the first five rows of the data to visualize its structure after data wrangling
 head(data)
+```
 
+```{r DensityRidgeline, fig.path = '../docs/figure/', warning = FALSE}
 # Create a graph ---------------
 ggplot(analysis_data, aes(x = health_expenditures, y = group)) +
   stat_density_ridges(alpha = 0.6, bandwidth = 0.2) + 
