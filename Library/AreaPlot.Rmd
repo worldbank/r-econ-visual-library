@@ -11,45 +11,60 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Overview
 
-Creating a stacked area plot outlining the number of companies that were founded in a 20 year period split by gender. 
+This script creates a stacked area plot outlining the number of companies that were founded over a 20 year period split by gender. 
 
-```{r AreaPlot, fig.path = '../docs/figure/'}
-# Install and load packages ---------------
+# Load packages
+
+```{r}
+# List required packages
 packages <- c(
   "tidyverse"
 )
 
-# Change to install = TRUE to install the required packages
+# Load packages (change to install = TRUE to install the required packages)
 pacman::p_load(packages, character.only = TRUE, install = FALSE)
 ```
 
-# Data
+# Prepare data
 
 This graph uses fictional data created for the purpose of this graph.
 
 - `founded`: year a company was founded
+- `gender`: categorical variable indicating whether the company is men-led or women-led
 - `n_gender`: the number of companies that were founded in that year by gender
 
-
-```{r AreaPlot, fig.path = '../docs/figure/'}
-# Load an example dataset ---------------
+```{r, message = FALSE}
+# Load the dataset
 data <- read_csv("../Library/Data/gender.csv")
-data <- read_csv("https://github.com/worldbank/r-econ-visual-library/tree/develop/Library/Data/gender.csv")
+```
 
+Note that each row in the dataset represents a different combination of founding year and gender of leadership, mean the variables `founded` and `gender` uniquely identify the dataset.
+
+```{r}
 # Printing the first five rows of the data to visualize its structure before data wrangling
 head(data)
 ```
 
-```{r AreaPlot, fig.path = '../docs/figure/'}
-# Creating a graph ---------------
+# Create the graph
 
+```{r}
+# Define the vector of colors to be used in the graph
 gender_colors <- c("#F4BA3B", "#730B6D")
+
+# Create the graph
 data %>%
   ggplot() +
-  geom_area(aes(x = founded, y = n_gender, fill = gender)) +
-  labs(x = "Year firm was founded", y = "Number of firms",
+  geom_area(aes(x = founded, 
+                y = n_gender, 
+                fill = gender)) + # Different fill colors will indicate different gender of leadership
+  # Annotation
+  labs(x = "Year firm was founded", 
+       y = "Number of firms",
        title = "Year firm was founded, by gender of leaders") +
-  scale_fill_manual(values = gender_colors, na.value = "gray") +
+  # Colors
+  scale_fill_manual(values = gender_colors, # Use the color palette previously defined
+                    na.value = "gray") + # Missing values will be filled in gray
+  # Graph formatting
   theme_classic() +
   theme(
     legend.position = "top",

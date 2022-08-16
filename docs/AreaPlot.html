@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="" />
+
+
+<title>Area Plot</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<!-- Upper row -->
+<div class="sticky-top">
+
+  <!-- Title -->
+  <div class="jumbotron jumbotron-fluid my-0">
+    <div class="container">
+      <h1 class="display-4">R Econ Visual Library</h1>
+      <p class="lead">R code for data visualization in economics, created and maintained by DIME Analytics.</p>
+    </div>
+  </div>
+
+  <!-- Navegation bar -->
+  <nav class="navbar navbar-expand navbar-custom">
+  <div class="container">
+    <div id="navbar" class="navbar-collapse collapse navbar-custom">
+
+      <!-- Left side navegation: website content -->
+      <ul class="nav navbar-nav">
+        <a class="navbar-brand navbar-link" href="index.html">Home</a>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+            Summary Statistics
+          </a>
+          <ul class="dropdown-menu" role="menu">
+            <li> <a href="BarPlots.html">Bar Plots</a> </li>
+            <li> <a href="DensityPlots.html">Density Plots</a> </li>
+            <li> <a href="ScatterPlots.html">Scatter Plots</a> </li>
+          </ul>
+        </li>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+            Impact Evaluation
+          </a>
+          <ul class="dropdown-menu" role="menu">
+            <li> <a href="RegressionCoef.html">Regression Coefficients</a> </li>
+            <li> <a href="DiffinDiff.html">Difference-in-Differences</a> </li>
+            <li> <a href="EventStudy.html">Event Study</a> </li>
+            <li> <a href="RI.html">Randomization Inference</a> </li>
+            <li> <a href="RDD.html">Regression Discontinuity</a> </li>
+          </ul>
+        </li>
+      </ul>
+
+        <!-- Right side: Meta information -->
+        <ul class="nav navbar-nav navbar-right">
+          <li> <a href="Links.html" class="navbar-link">Useful links</a> </li>
+          <li> <a href="Contribute.html" class="navbar-link">Contribute</a> </li>
+          <li> <a href="https://github.com/worldbank/r-econ-visual-library/blob/master/LICENSE" class="navbar-link">License</a> </li>
+          <li> <a href="https://github.com/worldbank/r-econ-visual-library" class="navbar-link">GitHub</a> </li>
+        </ul>
+      </div><!--/.navbar-colapse-->
+    </div><!--/.container -->
+  </div><!--/.sticky-top -->
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+<link rel="stylesheet" href="../docs/site_libs/custom-css.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div id="header">
+
+
+
+
+</div>
+
+
+<div id="overview" class="section level1">
+<h1>Overview</h1>
+<p>This script creates a stacked area plot outlining the number of companies that were founded over a 20 year period split by gender.</p>
+</div>
+<div id="load-packages" class="section level1">
+<h1>Load packages</h1>
+<pre class="r"><code># List required packages
+packages &lt;- c(
+  &quot;tidyverse&quot;
+)
+
+# Load packages (change to install = TRUE to install the required packages)
+pacman::p_load(packages, character.only = TRUE, install = FALSE)</code></pre>
+</div>
+<div id="prepare-data" class="section level1">
+<h1>Prepare data</h1>
+<p>This graph uses fictional data created for the purpose of this graph.</p>
+<ul>
+<li><code>founded</code>: year a company was founded</li>
+<li><code>gender</code>: categorical variable indicating whether the company is men-led or women-led</li>
+<li><code>n_gender</code>: the number of companies that were founded in that year by gender</li>
+</ul>
+<pre class="r"><code># Load the dataset
+data &lt;- read_csv(&quot;../Library/Data/gender.csv&quot;)</code></pre>
+<p>Note that each row in the dataset represents a different combination of founding year and gender of leadership, mean the variables <code>founded</code> and <code>gender</code> uniquely identify the dataset.</p>
+<pre class="r"><code># Printing the first five rows of the data to visualize its structure before data wrangling
+head(data)</code></pre>
+<pre><code>## # A tibble: 6 x 7
+##   founded gender    n_gender n_total pct_gender pct_x label
+##     &lt;dbl&gt; &lt;chr&gt;        &lt;dbl&gt;   &lt;dbl&gt;      &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;
+## 1    2000 Men-led        221  102495     0.216  0.646 0.6% 
+## 2    2000 Women-led       36  102495     0.0351 0.646 0.6% 
+## 3    2000 &lt;NA&gt;           405  102495     0.395  0.646 0.6% 
+## 4    2001 Men-led        157  102495     0.153  0.466 0.5% 
+## 5    2001 Women-led       24  102495     0.0234 0.466 0.5% 
+## 6    2001 &lt;NA&gt;           297  102495     0.290  0.466 0.5%</code></pre>
+</div>
+<div id="create-the-graph" class="section level1">
+<h1>Create the graph</h1>
+<pre class="r"><code># Define the vector of colors to be used in the graph
+gender_colors &lt;- c(&quot;#F4BA3B&quot;, &quot;#730B6D&quot;)
+
+# Create the graph
+data %&gt;%
+  ggplot() +
+  geom_area(aes(x = founded, 
+                y = n_gender, 
+                fill = gender)) + # Different fill colors will indicate different gender of leadership
+  # Annotation
+  labs(x = &quot;Year firm was founded&quot;, 
+       y = &quot;Number of firms&quot;,
+       title = &quot;Year firm was founded, by gender of leaders&quot;) +
+  # Colors
+  scale_fill_manual(values = gender_colors, # Use the color palette previously defined
+                    na.value = &quot;gray&quot;) + # Missing values will be filled in gray
+  # Graph formatting
+  theme_classic() +
+  theme(
+    legend.position = &quot;top&quot;,
+    legend.title = element_blank(),
+    plot.title = element_text(hjust = 0.5),
+    axis.line = element_blank(),
+    axis.ticks = element_blank(),
+    panel.grid.major = element_line()
+  )</code></pre>
+<p><img src="AreaPlot_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
