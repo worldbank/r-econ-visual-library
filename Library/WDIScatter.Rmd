@@ -78,7 +78,7 @@ df_filtered <- rbind(df_filtered, benchmark)
 # Create graph ====================================================================
 
 for (i in 1:nrow(df_ind)){
-  df_filtered %>%
+  plot <- df_filtered %>%
   ggplot(aes(x=log(NY.GDP.PCAP.KD), y=get(df_ind[i,1]), label=iso3c)) + 
   geom_point(alpha=0.6, size=2, color="grey50") + 
   geom_smooth(method=lm, se=FALSE, col='maroon', size=0.6) +
@@ -104,6 +104,8 @@ for (i in 1:nrow(df_ind)){
   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
         axis.title = element_text(face="bold", color="grey24"),
         plot.margin = margin(1, 1, 1, 1, "cm"))
+  
+  plot
   
   ggsave(width=5, height=5, paste0("wdi_", i, ".jpg"))
 }
