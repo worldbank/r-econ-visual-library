@@ -1,0 +1,113 @@
+---
+# Use a description of your plot here to facilitate search
+pagetitle: "Scatter Plots: Plot Multiple Development Indicators against GDP Per Capita using WDI"
+
+# Add your GitHub handle to get credit for your contribution
+author: "@yining-w"
+
+# Date is optional
+date: "09/12/2022"
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r SameNameAsYourScript, fig.path = '../docs/figure/', warning = FALSE}
+
+# Install and load packages ===========================================================
+
+packages <- 
+  c("tidyverse",
+    "ggplot2",
+    "ggrepel",
+    "WDI")
+
+pacman::p_load(packages, 
+               character.only = TRUE, 
+               install = FALSE) # Change to install = TRUE to install the required packages
+
+# Data wrangling =====================================================================
+
+# Data is called directly using WDI()
+
+# Search for indicators to call in WDI
+ind <- WDIsearch(string='ENRL', field="indicator", cache=NULL)
+indicators = ind[,1]
+
+# Get indicators 
+df <- WDI(country = "all",
+  indicator = c("NY.GDP.PCAP.KD", indicators),
+  extra = TRUE,
+  cache = NULL,
+  latest = 1, 
+  start = 2012,
+  language = "en")
+
+
+# First, drop non country level aggregates
+df <- df %>% filter(!is.na(region))
+
+## Keep a list of indicators that were successfully called from WDI
+cols <- colnames(df)
+cols <- cols[-(1:5)]
+cols <- cols[-(28:34)]
+
+
+## get the variable labels of indicators successfully called, merge the data labels
+df_ind <- merge(data.frame(indicators), data.frame(cols), by.x = "indicator", by.y = "cols")
+
+## Fill in all available data 
+df <- df %>% 
+  group_by(iso3c) %>% 
+  fill(cols, .direction = "downup")
+
+# Remove duplicates
+df <- df %>% distinct(iso3c, .keep_all = TRUE)
+
+# Remove columns we won't use 
+df <- select(df, -c(lastupdated, year, status, iso2c, capital, longitude, latitude))
+
+df_filtered <- df %>% filter(region != "Aggregates")
+macao <- df %>% filter(iso3c=="MAC")
+benchmark <- df %>% filter(country=="East Asia & Pacific" | country=="High income")
+
+## Put the aggregates we're interested back in
+df_filtered <- rbind(df_filtered, benchmark)
+
+# Create graph ====================================================================
+
+for (i in 1:nrow(df_ind)){
+  df_filtered %>%
+  ggplot(aes(x=log(NY.GDP.PCAP.KD), y=get(df_ind[i,1]), label=iso3c)) + 
+  geom_point(alpha=0.6, size=2, color="grey50") + 
+  geom_smooth(method=lm, se=FALSE, col='maroon', size=0.6) +
+  geom_point(data=benchmark, 
+             aes(x=log(NY.GDP.PCAP.KD),y=get(df_ind[i,1])), 
+             color='#00798c',
+             size=3, alpha=0.8) +
+  geom_point(data=macao, 
+             aes(x=log(NY.GDP.PCAP.KD),y=get(df_ind[i,1])), 
+             color='#FFD400',
+             size=3, alpha=0.8) +
+  geom_text_repel(data=subset(df_filtered, country=="East Asia & Pacific" | country=="High income" | iso3c=="MAC"),
+                  force = 40,
+                  segment.size=0.2,
+                  segment.curvature = -0.1,
+                  segment.ncp = 3,
+                  segment.angle = 20,
+                  position=position_jitter(width = 0.3, seed = 2),
+                  fontface = 'bold') + 
+  labs(caption = "Source: World Bank WDI",
+       x = "Log GDP per capita (constant 2015 US$) ", y = df_ind[i,2]) +
+  theme_minimal() +
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+        axis.title = element_text(face="bold", color="grey24"),
+        plot.margin = margin(1, 1, 1, 1, "cm"))
+  
+  ggsave(width=5, height=5, paste0("wdi_", i, ".jpg"))
+}
+
+```
+
+
