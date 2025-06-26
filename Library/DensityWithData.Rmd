@@ -47,7 +47,7 @@ head(data)
 
 ggplot(data, aes(x = score, colour = bach)) +
   #geom_density(aes(y = ..density.. * tot_num * bw)) +
-  geom_density(aes(y = ..count.. * bw)) +
+  geom_density(aes(y = after_stat(count) * bw)) +
   geom_density() +
   geom_point(aes(y = bin_score), size = 0.5) 
 
