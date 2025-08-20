@@ -16,7 +16,7 @@ packages <- c("modelsummary",
               )
 
 if (!requireNamespace("pacman", quietly = TRUE)) install.packages("pacman")
-pacman::p_load(packages, character.only = FALSE) # switch to TRUE to install packages 
+pacman::p_load(packages, character.only = TRUE) # switch to TRUE to install packages 
 
 # Load the sample data set --------------
 data <- read_dta("/Users/koniks/Downloads/nlsw88.dta")

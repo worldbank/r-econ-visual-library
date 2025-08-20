@@ -1,7 +1,7 @@
 ---
-  title: "Balance_Table"
-author: ""
-date: ""
+title: "Balance Table"
+author: ''
+date: ''
 ---
 
 ```{r setup, include=FALSE}
@@ -15,7 +15,7 @@ packages <- c("modelsummary",
               "haven")
 
 if (!requireNamespace("pacman", quietly = TRUE)) install.packages("pacman") 
-pacman::p_load(packages, character.only = FALSE) # switch to TRUE to install packages 
+pacman::p_load(packages, character.only = TRUE) # switch to TRUE to install packages 
 
 # Load the sample data set --------------
 data <- read_dta("/Users/koniks/Downloads/nlsw88.dta")
@@ -35,10 +35,10 @@ df_balance <- data %>%
 datasummary_balance(
   ~collgrad,
   data = df_balance,
-  stars = TRUE, 
+  stars = c('*' = .05, '**' = .01, '***' = .001),
   title = "Balance by college graduation status (as treatment)",
-  note = "Comparing college graduates vs non-graduates: Includes HHs with observations for endline and baseline",
-"* p < 0.05, ** p < 0.01, *** p < 0.001", 
+  note = "Comparing college graduates vs non-graduates: Includes HHs with observations for endline and baseline,
+* p < 0.05, ** p < 0.01, *** p < 0.001", 
   output = "Outputs/balance.tex"
 )
 
