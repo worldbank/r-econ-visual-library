@@ -1,0 +1,76 @@
+---
+  title: "Summary_Table"
+author: ""
+date: ""
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+```{r balance table}
+# Load the following packages -------------
+packages <- c("modelsummary", 
+              "dplyr", 
+              "haven"
+              )
+
+if (!requireNamespace("pacman", quietly = TRUE)) install.packages("pacman")
+pacman::p_load(packages, character.only = FALSE) # switch to TRUE to install packages 
+
+# Load the sample data set --------------
+data <- read_dta("/Users/koniks/Downloads/nlsw88.dta")
+dir.create("Outputs", recursive = TRUE, showWarnings = TRUE)
+
+# Create the data frame --------------
+df_table <- data %>%
+  select('Age' = age,
+         'Married' = married, 
+         'Union' = union, 
+         'Hourly' = wage, 
+         collgrad # replace with sample or create a sample as following
+  ) %>%
+  {
+    college_grads <- filter(., collgrad == 1) %>% mutate(sample = "College Graduates")
+    non_college <- filter(., collgrad == 0) %>% mutate(sample = "Non-College Graduates")
+    bind_rows(college_grads, non_college)
+  } %>%
+  mutate(sample= factor(sample, 
+                        levels = c("College Graduates",
+                                   "Non-College Graduates")))
+
+# Note : Be careful of names with spaces as the modelsummary package is known to face errors
+datasummary(Age + 
+              Married + 
+              Union + 
+              Hourly
+            ~sample * (Mean + SD), 
+            data = df_table, 
+            title = "Descriptive Statistics",
+            note = "Include HHs with observations for baseline and endline",
+            output = "Outputs/descriptive-stats.tex"
+)
+
+## Annex -----------------------
+
+# To successfully view the table and reproduce the outputs, open the '.tex' file in any Latex editor, and add the following syntax:  
+
+# \documentclass{article}
+
+# % Required packages
+# \usepackage{booktabs}    % For \toprule, \midrule, \bottomrule
+# \usepackage{array}       % For column types
+# \usepackage{geometry}
+# \usepackage{tabularray}  % For talltblr
+# \UseTblrLibrary{booktabs} % Let talltblr use \toprule etc.
+# \usepackage{siunitx}     % For \num{...}
+
+# % Optional: adjust page margins
+# \geometry{margin=1in}
+
+# \begin{document}
+
+# Also, at the following syntax at the end of the file:
+
+# \end{document}
+```

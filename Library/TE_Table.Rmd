@@ -1,0 +1,86 @@
+---
+title: "TreatmentEffects(TE)_Table"
+author: ""
+date: ""
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+```{r treatment effects table}
+# Load the following packages -------------
+packages <- c("stargazer", 
+              "dplyr", 
+              "haven",
+              "estimatr"  # for robust standard errors
+              )
+if (!requireNamespace("pacman", quietly = TRUE)) install.packages("pacman")
+pacman::p_load(packages, character.only = FALSE) # switch to TRUE to install packages 
+
+# Load the sample data set --------------
+data <- read_dta("/Users/koniks/Downloads/nlsw88.dta")
+dir.create("Outputs", recursive = TRUE, showWarnings = FALSE)
+
+# Create the data frame --------------
+df_treatment <- data %>%
+  select(wage,           # Outcome variable
+         hours,          # Alternative outcome
+         union,          # Treatment variable (replace with your treatment)
+         age,            # Control variables
+         married,
+         ttl_exp,
+         collgrad,
+         south)
+
+# Run the Regressions --------------------
+model1 <- lm(wage ~ union, data = df_treatment)
+model2 <- lm(wage ~ union + age + married + ttl_exp, data = df_treatment)
+model3 <- lm(wage ~ union + age + married + ttl_exp + collgrad + south, data = df_treatment)
+model4 <- lm(hours ~ union + age + married + ttl_exp + collgrad + south, data = df_treatment)
+
+# Create the Table ----------------------
+stargazer(model1,
+          model2, 
+          model3,
+          model4,
+          title = "Treatment Effects: Impact of Union Membership on Labor Outcomes",
+          column.labels = c("Wage", "Wage", "Wage", "Hours"),
+          covariate.labels = c("Union member (Treatment)",
+                              "Age",
+                              "Married", 
+                              "Total experience",
+                              "College graduate",
+                              "Lives in South",
+                              "Constant"),
+          dep.var.labels.include = FALSE,
+          dep.var.caption = "",
+          keep.stat = c("n", "adj.rsq"),
+          header = FALSE,
+          notes = c("Standard errors in parentheses.",
+                   "Treatment variable: Union membership (1=Union, 0=Non-union)"),
+          notes.append = FALSE,
+          out = "Outputs/treatment-effects.tex")
+
+## Annex ---------------------
+
+# To successfully view the table and reproduce the outputs, open the '.tex' file in any Latex editor, and add the following syntax:  
+
+# \documentclass{article}
+
+# % Required packages
+# \usepackage{booktabs}    % For \toprule, \midrule, \bottomrule
+# \usepackage{array}       % For column types
+# \usepackage{geometry}
+
+# % Optional: adjust page margins
+# \geometry{margin=1in}
+
+# \begin{document}
+
+# Also, at the following syntax at the end of the file:
+
+# \end{document}
+
+```
+
