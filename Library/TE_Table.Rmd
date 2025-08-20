@@ -16,7 +16,7 @@ packages <- c("stargazer",
               "estimatr"  # for robust standard errors
               )
 if (!requireNamespace("pacman", quietly = TRUE)) install.packages("pacman")
-pacman::p_load(packages, character.only = FALSE) # switch to TRUE to install packages 
+pacman::p_load(packages, character.only = TRUE)
 
 # Load the sample data set --------------
 data <- read_dta("/Users/koniks/Downloads/nlsw88.dta")
@@ -58,7 +58,8 @@ stargazer(model1,
           keep.stat = c("n", "adj.rsq"),
           header = FALSE,
           notes = c("Standard errors in parentheses.",
-                   "Treatment variable: Union membership (1=Union, 0=Non-union)"),
+                   "Treatment variable: Union membership (1=Union, 0=Non-union)",
+                   "* p < 0.05, ** p < 0.01, *** p < 0.001"),
           notes.append = FALSE,
           out = "Outputs/treatment-effects.tex")
 
@@ -72,6 +73,7 @@ stargazer(model1,
 # \usepackage{booktabs}    % For \toprule, \midrule, \bottomrule
 # \usepackage{array}       % For column types
 # \usepackage{geometry}
+# \usepackage[T1]{fontenc}
 
 # % Optional: adjust page margins
 # \geometry{margin=1in}

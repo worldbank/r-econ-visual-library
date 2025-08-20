@@ -37,7 +37,8 @@ datasummary_balance(
   data = df_balance,
   stars = TRUE, 
   title = "Balance by college graduation status (as treatment)",
-  note = "Comparing college graduates vs non-graduates: Includes HHs with observations for endline and baseline", 
+  note = "Comparing college graduates vs non-graduates: Includes HHs with observations for endline and baseline",
+"* p < 0.05, ** p < 0.01, *** p < 0.001", 
   output = "Outputs/balance.tex"
 )
 
@@ -51,6 +52,7 @@ datasummary_balance(
 # \usepackage{booktabs}    % For \toprule, \midrule, \bottomrule
 # \usepackage{array}       % For column types
 # \usepackage{geometry}
+# \usepackage[T1]{fontenc}
 
 # % Optional: adjust page margins
 # \geometry{margin=1in}

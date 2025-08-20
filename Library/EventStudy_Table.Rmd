@@ -107,7 +107,8 @@ stargazer(model1,
           header = FALSE,
           notes = c("Standard errors in parentheses.",
                    "Event study coefficients show treatment effects relative to baseline.",
-                   "Pre-event coefficients test for parallel trends assumption."),
+                   "Pre-event coefficients test for parallel trends assumption.",
+          "* p < 0.05, ** p < 0.01, *** p < 0.001"),
           notes.append = FALSE,
           out = "Outputs/event-study.tex")
 
@@ -121,6 +122,7 @@ stargazer(model1,
 # \usepackage{booktabs}    % For \toprule, \midrule, \bottomrule
 # \usepackage{array}       % For column types
 # \usepackage{geometry}
+# \usepackage[T1]{fontenc}
 
 # % Optional: adjust page margins
 # \geometry{margin=1in}
