@@ -9,37 +9,70 @@
     </div>
   </div>
 
-  <!-- Navegation bar -->
+  <!-- Navigation bar -->
   <nav class="navbar navbar-expand navbar-custom">
-  <div class="container">
-    <div id="navbar" class="navbar-collapse collapse navbar-custom">
+    <div class="container">
+      <div id="navbar" class="navbar-collapse collapse navbar-custom">
 
-      <!-- Left side navegation: website content -->
-      <ul class="nav navbar-nav">
-        <a class="navbar-brand navbar-link" href="index.html">Home</a>
-        <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-            Summary Statistics
-          </a>
-          <ul class="dropdown-menu" role="menu">
-            <li> <a href="BarPlots.html">Bar Plots</a> </li>
-            <li> <a href="DensityPlots.html">Density Plots</a> </li>
-            <li> <a href="ScatterPlots.html">Scatter Plots</a> </li>
-          </ul>
-        </li>
-        <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-            Impact Evaluation
-          </a>
-          <ul class="dropdown-menu" role="menu">
-            <li> <a href="RegressionCoef.html">Regression Coefficients</a> </li>
-            <li> <a href="DiffinDiff.html">Difference-in-Differences</a> </li>
-            <li> <a href="EventStudy.html">Event Study</a> </li>
-            <li> <a href="RI.html">Randomization Inference</a> </li>
-            <li> <a href="RDD.html">Regression Discontinuity</a> </li>
-          </ul>
-        </li>
-      </ul>
+        <!-- Left side navigation: website content -->
+        <ul class="nav navbar-nav">
+          <a class="navbar-brand navbar-link" href="index.html">Home</a>
+
+          <!-- Summary Statistics dropdown -->
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+              Summary Statistics
+            </a>
+            <ul class="dropdown-menu" role="menu">
+              <li> <a href="BarPlots.html">Bar Plots</a> </li>
+              <li> <a href="DensityPlots.html">Density Plots</a> </li>
+              <li> <a href="ScatterPlots.html">Scatter Plots</a> </li>
+            </ul>
+          </li>
+
+          <!-- Impact Evaluation dropdown -->
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+              Impact Evaluation
+            </a>
+            <ul class="dropdown-menu" role="menu">
+              <li> <a href="RegressionCoef.html">Regression Coefficients</a> </li>
+              <li> <a href="DiffinDiff.html">Difference-in-Differences</a> </li>
+              <li> <a href="EventStudy.html">Event Study</a> </li>
+              <li> <a href="RI.html">Randomization Inference</a> </li>
+              <li> <a href="RDD.html">Regression Discontinuity</a> </li>
+            </ul>
+          </li>
+
+          <!-- Maps dropdown -->
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+              Maps
+            </a>
+            <ul class="dropdown-menu" role="menu">
+              <li> <a href="Heatmap.html">Heatmap</a> </li>
+              <li> <a href="Heatmap_PerChange.html">Heatmap Percent Change</a> </li>
+              <li> <a href="TMap_Chloropleth.html">TMap Choropleth</a> </li>
+              <li> <a href="TMap_PropSymb.html">TMap Proportional Symbols</a> </li>
+              <li> <a href="Leaflet_Interactive_Map.html">Leaflet Interactive Map</a> </li>
+            </ul>
+          </li>
+
+          <!-- Tables dropdown -->
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+              Tables
+            </a>
+            <ul class="dropdown-menu" role="menu">
+              <li> <a href="Balance_Table.html">Balance Table</a> </li>
+              <li> <a href="EventStudy_Table.html">Event Study Table</a> </li>
+              <li> <a href="Regression_Table.html">Regression Table</a> </li>
+              <li> <a href="Summary_Table.html">Summary Table</a> </li>
+              <li> <a href="TE_Table.html">Treatment Effects Table</a> </li>
+            </ul>
+          </li>
+
+        </ul>
 
         <!-- Right side: Meta information -->
         <ul class="nav navbar-nav navbar-right">
@@ -48,6 +81,7 @@
           <li> <a href="https://github.com/worldbank/r-econ-visual-library/blob/master/LICENSE" class="navbar-link">License</a> </li>
           <li> <a href="https://github.com/worldbank/r-econ-visual-library" class="navbar-link">GitHub</a> </li>
         </ul>
-      </div><!--/.navbar-colapse-->
+
+      </div><!--/.navbar-collapse-->
     </div><!--/.container -->
-  </div><!--/.sticky-top -->
+</div><!--/.sticky-top -->
