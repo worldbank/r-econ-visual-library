@@ -6,9 +6,12 @@ date: ""
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+packages <- c("webshot2")
+if (!requireNamespace("pacman", quietly = TRUE)) install.packages("pacman")
+pacman::p_load(packages, character.only = TRUE)
 ```
 
-```{r treatment effects table}
+```{r treatment effects table, include=FALSE}
 # Load the following packages -------------
 packages <- c("stargazer", 
               "dplyr", 
@@ -19,7 +22,7 @@ if (!requireNamespace("pacman", quietly = TRUE)) install.packages("pacman")
 pacman::p_load(packages, character.only = TRUE)
 
 # Load the sample data set --------------
-data <- read_dta("/Users/koniks/Downloads/nlsw88.dta")
+data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/nlsw88.dta")
 dir.create("Outputs", recursive = TRUE, showWarnings = FALSE)
 
 # Create the data frame --------------

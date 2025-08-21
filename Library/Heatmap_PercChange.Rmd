@@ -1,0 +1,95 @@
+---
+title: "Heatmap with Percentage Change"
+author: ''
+date: ''
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+```{r Heatmap, fig.path = '../docs/figure/'}
+# Tested on R Version 4.4.2 
+# ggplot2 Version 3.5.2
+# WDI Version 2.7.9
+# dplyr Version 1.1.4
+# viridis Version 0.6.5
+# forcats Version 1.0.0 
+# stringr Version 1.5.1
+
+# Install and load packages ---------------
+packages <- c("WDI", 
+              "dplyr", 
+              "ggplot2", 
+              "viridis",
+              "tidyr",
+              "forcats",
+              "stringr")
+
+# Change to install = TRUE to install the required packages
+pacman::p_load(packages, character.only = TRUE, install = FALSE)
+
+# Load an example dataset // Query from the World Bank API ---------
+# https://databank.worldbank.org/source/world-development-indicators
+
+indicators <- c(
+  rural = "EG.ELC.ACCS.RU.ZS", # Access to electricity (% of rural population) 
+  urban = "EG.ELC.ACCS.UR.ZS" # Access to electricity (% of urban population)
+)
+
+elec_data <- WDI(
+  country = "all",    # or e.g., c("US", "IN", "CN")
+  indicator = indicators,   
+  start = 2000,
+  end = 2023,
+  extra = TRUE        # adds region, income level, etc.      
+)
+
+# Clean -------------------------
+elec_plot_data <- elec_data %>%
+  filter(region != "Aggregates") %>%
+  select(income, year, rural, urban) %>%
+  filter(!is.na(rural), !is.na(urban)) %>%
+  group_by(income, year) %>%
+  summarise(
+    avg_rural = mean(rural, na.rm = TRUE),
+    avg_urban = mean(urban, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  pivot_longer(cols = c(avg_rural, avg_urban), 
+               names_to = "area", values_to = "access") %>%
+  mutate(area = str_replace(area, "avg_", "")) %>%
+  filter(income != "Not classified") %>%
+  group_by(income, area) %>%
+  arrange(year) %>%
+  mutate(
+    baseline_access = first(access[!is.na(access)]),
+    change_from_baseline = access - baseline_access
+  ) %>%
+  filter(!is.na(change_from_baseline)) %>%
+  ungroup()
+
+income_order <- elec_plot_data %>%
+  group_by(income) %>%
+  summarise(total_change = max(change_from_baseline, na.rm = TRUE)) %>%
+  arrange(desc(total_change)) %>%
+  pull(income)
+
+# Plot ------------------------------
+ggplot(elec_plot_data %>% mutate(income = factor(income, levels = income_order)), 
+       aes(x = income, y = year, fill = change_from_baseline)) +
+  geom_tile(color = "white") +
+  facet_wrap(~area) +
+  scale_fill_gradient2(low = "#000080", mid = "#8B008B", high = "#FFD700", 
+                       midpoint = -15, name = "% Change\nfrom 2000") +
+  labs(
+    title = "Change in Electricity Access by Income Group (2000-2023)",
+    subtitle = "Percentage point change from baseline year",
+    x = "Income Group", y = "Year"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+```
+
+

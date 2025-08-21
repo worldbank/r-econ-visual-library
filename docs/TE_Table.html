@@ -12,7 +12,7 @@
 <meta name="author" content="" />
 
 
-<title>Regression Coefficients: Point Estimates by Rounds</title>
+<title>TreatmentEffects(TE)_Table</title>
 
 <script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -215,77 +215,13 @@ pre code {
 
 
 
+<h1 class="title toc-ignore">TreatmentEffects(TE)_Table</h1>
+<h4 class="author"></h4>
 
 </div>
 
 
-<pre class="r"><code># Install and load packages ---------------
-packages &lt;- c(
-  &quot;tidyverse&quot;,
-  &quot;tidymodels&quot;,
-  &quot;haven&quot;,
-  &quot;forcats&quot;,
-  &quot;caret&quot;,
-  &quot;lfe&quot;
-)
 
-# Change to install = TRUE to install the required packages
-pacman::p_load(packages, character.only = TRUE, install = FALSE)
-
-# Load an example dataset ---------------
-# See https://microdata.worldbank.org/index.php/catalog/2249
-# Only relevant variables are kept in the dataset
-data &lt;- read_dta(&quot;https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/ReplicationDataGhanaJDE_short.dta&quot;)
-
-# Treatment group includes only those who received treatment 
-# between 2nd and 3rd waves, for simplicity
-analysis_data &lt;- data %&gt;%
-  filter(wave &gt;= 2) %&gt;%
-  group_by(sheno) %&gt;%
-  mutate(
-    treatment = max((wave == 3) &amp; (timetreat == 1)),
-    control = all(control == 1),
-    wave = relevel(as.factor(wave), ref = &quot;2&quot;)
-    ) %&gt;%
-  filter(treatment == TRUE | control == TRUE) %&gt;%
-  ungroup()
-
-res &lt;- felm(
-  realfinalprofit ~ (cashtreat + equiptreat) * wave | wave + sheno | 0 | sheno, 
-  data = analysis_data
-  )
-
-var_list &lt;- rownames(summary(res)$coef)
-cash_var_list &lt;- var_list[grepl(&quot;cashtreat:wave?&quot;, var_list)]
-equip_var_list &lt;- var_list[grepl(&quot;equiptreat:wave?&quot;, var_list)]
-
-fig_data &lt;- tibble(
-  group = c(rep(&quot;Cash&quot;, length(cash_var_list)), rep(&quot;Equipment&quot;, length(equip_var_list))),
-  wave = rep(paste0(&quot;Wave &quot;, c(&quot;3&quot;, &quot;4&quot;, &quot;5&quot;, &quot;6&quot;)), 2),
-  coef = summary(res)$coef[c(cash_var_list, equip_var_list), &quot;Estimate&quot;],
-  se = summary(res)$coef[c(cash_var_list, equip_var_list), &quot;Cluster s.e.&quot;]
-  )
-
-ggplot(fig_data, aes(x = wave, y = coef, colour = group)) + 
-  geom_pointrange(
-    aes(ymin = coef - 1.96 * se, ymax = coef + 1.96 * se), 
-    position = position_dodge(width = 0.9),
-    alpha = 0.6, size = 0.5
-    ) +
-  geom_hline(yintercept = 0, size = 0.1, alpha = 0.5) +
-  theme_classic() +
-  ylab(&quot;Point Estimates &amp; 95% CI&quot;) +
-  scale_color_brewer(palette = &quot;Set2&quot;, name = &quot;Treatment Group&quot;) +
-  theme(
-    axis.line = element_blank(),
-    axis.text = element_text(size = 12),
-    axis.title.y = element_text(size = 15),
-    axis.title.x = element_blank(),
-    axis.ticks.y = element_blank(),
-    legend.text = element_text(size = 12),
-    legend.title = element_text(size = 14)
-    )</code></pre>
-<p><img src="../docs/figure/RegCoefRounds-1.png" width="672" /></p>
 
 
 

@@ -16,10 +16,10 @@ packages <- c("modelsummary",
               )
 
 if (!requireNamespace("pacman", quietly = TRUE)) install.packages("pacman")
-pacman::p_load(packages, character.only = TRUE) # switch to TRUE to install packages 
+pacman::p_load(packages, character.only = TRUE)
 
 # Load the sample data set --------------
-data <- read_dta("/Users/koniks/Downloads/nlsw88.dta")
+data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/nlsw88.dta")
 dir.create("Outputs", recursive = TRUE, showWarnings = TRUE)
 
 # Create the data frame --------------
