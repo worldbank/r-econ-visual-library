@@ -5,6 +5,9 @@
 This repository contains graphs created in R to explore impact evaluation data sets and display results. The `Library` folder in the repository contains the `.Rmd` files that can be used to replicate the images in the Library.
 
 ## Contributing
+
+We welcome your contributions to this project! Please read our [Contributing Guide](https://github.com/worldbank/.github/blob/main/CONTRIBUTING.md) for details on our [Code of Conduct](https://github.com/worldbank/.github/blob/main/CODE_OF_CONDUCT.md) and the process for submitting pull requests.
+
 - If you have suggestions of plots you would like to see in this library and are not currently here, you can open an issue describing your suggestion.
 - If you have graphs you would like to add to this library and are comfortable using GitHub, please feel free to make a fork and submit a pull request to the develop branch for any additions you want to make.
 - If you have graphs you would like to add to this library and are new to GitHub, you can send an e-mail to dimeanalytics@worldbank.org with a zipped folder containing (1) the de-identified data used to create the plot and (2) the code that creates the plots from such data.
