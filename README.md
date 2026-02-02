@@ -10,11 +10,16 @@ We welcome your contributions to this project! Please read our [Contributing Gui
 
 - If you have suggestions of plots you would like to see in this library and are not currently here, you can open an issue describing your suggestion.
 - If you have graphs you would like to add to this library and are comfortable using GitHub, please feel free to make a fork and submit a pull request to the develop branch for any additions you want to make.
-- If you have graphs you would like to add to this library and are new to GitHub, you can send an e-mail to dimeanalytics@worldbank.org with a zipped folder containing (1) the de-identified data used to create the plot and (2) the code that creates the plots from such data.
+- If you have graphs you would like to add to this library and are new to GitHub, you can send an e-mail to <dimeanalytics@worldbank.org> with a zipped folder containing (1) the de-identified data used to create the plot and (2) the code that creates the plots from such data.
 
 ## License
+
 This project is licensed under the MIT License together with the [World Bank IGO Rider](https://github.com/worldbank/.github/blob/main/WB-IGO-RIDER.md). The Rider is purely procedural: it reserves all privileges and immunities enjoyed by the World Bank, without adding restrictions to the MIT permissions. Please review both files before using, distributing or contributing.
 
 ## Citation
 
 Please use the citation suggested in [CITATION.cff](CITATION.cff). Find the `APA` and `BIBTeX` formats in the right hand side menu of the [landing page](https://github.com/worldbank/r-econ-visual-library) of this project's repository.
+
+### Contact
+
+DIME Analytics ([dimeanalytics@worldbank.org](mailto:dimeanalytics@worldbank.org))
