@@ -1,7 +1,7 @@
 ---
-pagetitle: "Box Plots"
-author: ""
-date: ""
+pagetitle: Box Plots
+author: ''
+date: ''
 ---
 
 ```{r setup, include=FALSE}
@@ -38,7 +38,7 @@ ggplot(data, aes(x = country, y = competence_mle, fill = provider_cadre)) +
   geom_boxplot(outlier.shape = NA) +
   coord_flip(ylim = c(-2.5, 3.5)) +
   scale_x_discrete(labels = xlab) +
-  geom_hline(yintercept = med_competence_mle, linetype = "dashed", size = 0.3) +
+  geom_hline(yintercept = med_competence_mle, linetype = "dashed", linewidth = 0.3) +
   scale_fill_discrete(name = 'Provider Cadre', breaks = rev(levels(data$provider_cadre))) +
   scale_y_continuous(breaks = c(-2, -1, 0, 1, 2, 3),
                      labels = c("-2 SD", "-1 SD", "Mean", "1 SD", "2 SD", "3 SD")) +
