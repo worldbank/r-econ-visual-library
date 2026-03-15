@@ -1,0 +1,66 @@
+---
+title: "Chloropleth Map"
+author: ''
+date: ''
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+```{r Geospatial_Inequality_Clustering}
+# Tested on R Version 4.2.2 
+# spData Version 2.3.4
+# spdep Version 1.3.10
+# tmap Version 4.1
+# sf Version 1.0.21 
+# dplyr Version 1.1.4
+
+# Install and load packages ---------------
+packages <- c("spData", 
+              "spdep", 
+              "tmap", 
+              "sf", 
+              "dplyr")
+
+# Change to install = TRUE to install the required packages
+pacman::p_load(packages, character.only = TRUE, install = TRUE)
+
+# Load and prepare example dataset with spatial data ---------------------
+data(world)
+
+# Filter
+world_dev <- world %>%
+  filter(!is.na(gdpPercap)) %>%
+  st_as_sf()
+
+# Add neighbours and weights 
+nb <- poly2nb(world_dev)
+lw <- nb2listw(nb, style = "W", zero.policy = TRUE)
+
+moran_result <- moran.test(world_dev$gdpPercap, lw)
+print(moran_result)
+
+local_moran <- localmoran(world_dev$gdpPercap, lw)
+
+world_dev <- world_dev %>%
+  mutate(
+    localI = local_moran[, "Ii"],
+    pval = local_moran[, "Pr(z != E(Ii))"],
+    significant = pval < 0.05
+  )
+
+# Plot 1: Choropleth of GDP per Capita -------------------
+tmap_mode("plot")
+tm_shape(world_dev) +
+  tm_polygons("gdpPercap", palette = "Oranges", style = "quantile",
+              title = "GDP per Capita")
+
+# Plot 2: Local Moran's I Clustering -----------------
+tm_shape(world_dev) +
+  tm_polygons("localI", palette = "RdBu", style = "pretty",
+              title = "Local Moran's I") +
+  tm_shape(world_dev %>% filter(significant)) +
+  tm_borders(col = "black", lwd = 2)
+```
+

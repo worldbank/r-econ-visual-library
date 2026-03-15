@@ -1,0 +1,246 @@
+---
+title: "Proportional Symbol Map"
+author: ''
+date: ''
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+
+```{r India_Energy_Analysis_Map, fig.path = '../docs/figure/'}
+# Tested on R Version 4.2.2
+# sf Version 1.0.21
+# dplyr Version 1.1.4
+# tmap Version 4.1
+# pacman Version 0.5.1
+# readr Version 2.1.5
+# rnaturalearth Version 1.0.1
+# rnaturalearthdata Version 1.0.0
+# tidyr Version 1.3.1
+
+# Install and load packages -------------
+packages <- c("sf", 
+              "dplyr", 
+              "tmap", 
+              "pacman", 
+              "readr", 
+              "rnaturalearth",
+              "rnaturalearthdata", 
+              "tidyr")
+
+# Change to install = TRUE to install the required packages
+pacman::p_load(packages, character.only = TRUE, install = TRUE)
+
+# Load the Ember Energy dataset -------------------
+ember_data_raw <- read_csv("/Users/koniks/Downloads/india_yearly_full_release_long_format.csv") #replace path with url to .csv from GitHub
+india_states <- ne_states(country = "India", returnclass = "sf")
+
+energy_data_2022 <- ember_data_raw %>%
+  filter(Year == 2022) %>%
+  filter(
+    (Category == "Electricity generation" & Subcategory == "Aggregate fuel" & Variable %in% c("Clean", "Fossil", "Renewables") & Unit == "%") |
+    (Category == "Electricity generation" & Subcategory == "Total" & Variable == "Total Generation" & Unit == "GWh") |
+    (Category == "Capacity" & Subcategory == "Aggregate fuel" & Variable %in% c("Clean", "Fossil", "Renewables") & Unit == "MW") |
+    (Category == "Power sector emissions" & Subcategory == "CO2 intensity" & Variable == "CO2 intensity" & Unit == "gCO2/kWh")
+  ) %>%
+  mutate(
+    metric_name = case_when(
+      Category == "Electricity generation" & Variable == "Clean" ~ "clean_generation_pct",
+      Category == "Electricity generation" & Variable == "Fossil" ~ "fossil_generation_pct", 
+      Category == "Electricity generation" & Variable == "Renewables" ~ "renewable_generation_pct",
+      Category == "Electricity generation" & Variable == "Total Generation" ~ "total_generation_gwh",
+      Category == "Capacity" & Variable == "Clean" ~ "clean_capacity_mw",
+      Category == "Capacity" & Variable == "Fossil" ~ "fossil_capacity_mw",
+      Category == "Capacity" & Variable == "Renewables" ~ "renewable_capacity_mw",
+      Category == "Power sector emissions" & Variable == "CO2 intensity" ~ "co2_intensity_gco2_kwh",
+      TRUE ~ paste(Category, Variable, sep = "_")
+    )
+  ) %>%
+  select(State, metric_name, Value) %>%
+  pivot_wider(names_from = metric_name, values_from = Value) %>%
+  filter(!if_all(-State, is.na))
+
+# Create categories for proportional symbol representation ---------------
+energy_analysis <- energy_data_2022 %>%
+  mutate(
+    # Clean energy performance categories
+    clean_performance = case_when(
+      clean_generation_pct >= 80 ~ "Excellent Clean Energy (80%+)",
+      clean_generation_pct >= 60 ~ "Good Clean Energy (60-79%)",
+      clean_generation_pct >= 40 ~ "Moderate Clean Energy (40-59%)",
+      clean_generation_pct >= 20 ~ "Low Clean Energy (20-39%)",
+      TRUE ~ "Minimal Clean Energy (<20%)"
+    ),
+    # Total generation size categories  
+    generation_size = case_when(
+      total_generation_gwh >= 50000 ~ "Very Large (50+ TWh)",
+      total_generation_gwh >= 20000 ~ "Large (20-50 TWh)",
+      total_generation_gwh >= 5000 ~ "Medium (5-20 TWh)",
+      total_generation_gwh >= 1000 ~ "Small (1-5 TWh)",
+      TRUE ~ "Very Small (<1 TWh)"
+    ),
+    # CO2 intensity categories
+    co2_category = case_when(
+      co2_intensity_gco2_kwh <= 300 ~ "Low Carbon (≤300g)",
+      co2_intensity_gco2_kwh <= 600 ~ "Medium Carbon (300-600g)",
+      co2_intensity_gco2_kwh <= 900 ~ "High Carbon (600-900g)",
+      TRUE ~ "Very High Carbon (>900g)"
+    ),
+    # Overall energy score (weighted combination)
+    energy_score = (clean_generation_pct * 0.5) + 
+                   (pmax(0, 100 - (co2_intensity_gco2_kwh/10)) * 0.3) +
+                   (pmin(100, (total_generation_gwh/1000)) * 0.2),
+    
+    energy_grade = case_when(
+      energy_score >= 80 ~ "A+ Excellent",
+      energy_score >= 70 ~ "A Good", 
+      energy_score >= 60 ~ "B+ Above Average",
+      energy_score >= 50 ~ "B Average",
+      energy_score >= 40 ~ "C Below Average",
+      TRUE ~ "D Poor"
+    )
+  ) %>%
+  mutate(
+    # Create factors for proper ordering
+    clean_performance = factor(clean_performance, 
+                             levels = c("Minimal Clean Energy (<20%)", "Low Clean Energy (20-39%)",
+                                      "Moderate Clean Energy (40-59%)", "Good Clean Energy (60-79%)",
+                                      "Excellent Clean Energy (80%+)")),
+    generation_size = factor(generation_size,
+                           levels = c("Very Small (<1 TWh)", "Small (1-5 TWh)", "Medium (5-20 TWh)",
+                                    "Large (20-50 TWh)", "Very Large (50+ TWh)")),
+    energy_grade = factor(energy_grade,
+                        levels = c("D Poor", "C Below Average", "B Average", "B+ Above Average", "A Good", "A+ Excellent"))
+  )
+
+# Clean state names for joining ---------------------
+india_states_clean <- india_states %>%
+  mutate(
+    state_clean = case_when(
+      name == "Dadra and Nagar Haveli and Daman and Diu" ~ "Dadra and Nagar Haveli",
+      name == "Jammu and Kashmir" ~ "Jammu and Kashmir",
+      name == "Telangana" ~ "Telangana", 
+      name == "Chhattisgarh" ~ "Chhattisgarh",
+      TRUE ~ name
+    )
+  )
+
+# Join energy data to spatial data ---------------------
+india_energy_map <- india_states_clean %>%
+  left_join(energy_analysis, by = c("state_clean" = "State")) %>%
+  filter(!is.na(clean_generation_pct))
+
+# Create color palettes -------------------------
+clean_colors <- c(
+  "Minimal Clean Energy (<20%)" = "#d73027",     # Red
+  "Low Clean Energy (20-39%)" = "#fc8d59",       # Orange
+  "Moderate Clean Energy (40-59%)" = "#fee08b",  # Yellow
+  "Good Clean Energy (60-79%)" = "#91bfdb",      # Light blue  
+  "Excellent Clean Energy (80%+)" = "#4575b4"    # Dark blue
+)
+
+grade_colors <- c(
+  "D Poor" = "#d73027",
+  "C Below Average" = "#f46d43", 
+  "B Average" = "#fdae61",
+  "B+ Above Average" = "#abd9e9",
+  "A Good" = "#74add1",
+  "A+ Excellent" = "#313695"
+)
+```
+
+
+```{r plotting}
+# Create multiple visualizations ------------------------------------
+tmap_mode("plot")
+
+# Map 1: Clean Energy Performance with Generation Size symbols
+map1 <- tm_shape(india_energy_map) +
+  tm_polygons(
+    col = "clean_performance",
+    palette = clean_colors,
+    border.col = "black",
+    border.lwd = 0.5,
+    title = "Clean Energy Performance",
+    legend.show = TRUE
+  ) +
+  tm_symbols(
+    size = "total_generation_gwh",
+    scale = 2,
+    col = "generation_size",
+    palette = c("#ffffcc", "#c7e9b4", "#7fcdbb", "#41b6c4", "#225ea8"),
+    border.col = "white",
+    border.lwd = 1,
+    title.size = "Total Generation (GWh)",
+    title.col = "Generation Scale",
+    alpha = 0.8,
+    shape = 21
+  ) +
+  tm_credits("Source: Ember Energy India Data 2022", 
+             position = c("right", "bottom"), size = 0.6)
+
+# Map 2: Overall Energy Grade with CO2 Intensity
+map2 <- tm_shape(india_energy_map) +
+  tm_polygons(
+    col = "energy_grade",
+    palette = "white",
+    border.col = "#91bfdb",
+    border.lwd = 0.5,
+    title = "Overall Energy Grade",
+    legend.show = TRUE
+  ) +
+  tm_symbols(
+    size = "co2_intensity_gco2_kwh",
+    scale = 1.5,
+    col = "co2_category", 
+    palette = c("#1a9850", "#91bfdb", "#fc8d59", "#d73027"),
+    border.col = "white",
+    border.lwd = 1,
+    title.size = "CO2 Intensity (g/kWh)",
+    title.col = "Carbon Intensity",
+    alpha = 0.8,
+    shape = 21
+  ) +
+  tm_credits("Source: Ember Energy India Data 2022", 
+             position = c("right", "bottom"), size = 0.6)
+
+# Display both maps
+print("=== CLEAN ENERGY PERFORMANCE MAP ===")
+map1
+
+print("=== OVERALL ENERGY GRADE MAP ===") 
+map2
+```
+
+## Instructions for Using Real Data
+
+To use real electricity access data instead of the sample data above:
+
+### Option 1: Ember Energy Data
+```r
+# Download data from: https://ember-energy.org/data/india-electricity-data/
+# Load the CSV file and process it
+real_data <- read_csv("path/to/ember_india_data.csv") %>%
+  filter(year == 2022) %>%  # or latest available year
+  select(state = State, electricity_access = AccessRate)
+```
+
+### Option 2: Central Electricity Authority
+```r
+# Download from: https://cea.nic.in/dashboard/
+# Process the Excel/CSV files they provide
+```
+
+### Option 3: Data For India
+```r
+# Use their API or download CSV from: 
+# https://www.dataforindia.com/access-to-electricity/
+```
+
+### Alternative Shapefile Sources
+If you want more detailed/accurate boundaries:
+- **GADM**: Uncomment the GADM section in the code above
+- **Survey of India**: Official boundaries (requires registration)
+- **GitHub repositories**: Several open-source options available

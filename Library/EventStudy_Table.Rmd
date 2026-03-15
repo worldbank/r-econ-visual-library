@@ -1,0 +1,135 @@
+---
+title: "ES_Table"
+author: ""
+date: ""
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r example event study}
+# Load the following packages -------------
+packages <- c("stargazer", 
+              "dplyr", 
+              "haven",
+              "fixest",    
+              "plm",         
+              "lubridate",   
+              "broom"        
+              )
+if (!requireNamespace("pacman", quietly = TRUE)) install.packages("pacman")
+pacman::p_load(packages, character.only = TRUE)
+
+# Load the sample data set --------------
+data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/nlsw88.dta")
+dir.create("Outputs", recursive = TRUE, showWarnings = FALSE)  # to create a new folder
+
+# Create the data frame --------------
+df_event <- data %>%
+  select(idcode,
+         wage,           # Outcome variable
+         hours,          # Alternative outcome  
+         union,          # Treatment/event variable
+         age,            # Control variables
+         married,
+         ttl_exp,
+         collgrad,
+         south,
+         industry) %>%
+  filter(!is.na(wage), !is.na(union)) %>%
+
+  # remove the following simulation of a time variable when you have an actual time variable
+  mutate(
+    time_period = case_when(
+      age <= 30 ~ "Pre-event (-2)",
+      age > 30 & age <= 35 ~ "Pre-event (-1)", 
+      age > 35 & age <= 40 ~ "Event (0)",
+      age > 40 & age <= 45 ~ "Post-event (+1)",
+      age > 45 ~ "Post-event (+2)"
+    ),
+    pre_2 = ifelse(time_period == "Pre-event (-2)", 1, 0),
+    pre_1 = ifelse(time_period == "Pre-event (-1)", 1, 0),
+    event_0 = ifelse(time_period == "Event (0)", 1, 0),
+    post_1 = ifelse(time_period == "Post-event (+1)", 1, 0),
+    post_2 = ifelse(time_period == "Post-event (+2)", 1, 0),
+    treat_pre_2 = union * pre_2,
+    treat_pre_1 = union * pre_1,
+    treat_event = union * event_0,
+    treat_post_1 = union * post_1,
+    treat_post_2 = union * post_2
+  )
+
+# Run the Event Study Models ------------------------------
+# Model 1: Basic event study (no controls)
+model1 <- lm(wage ~ treat_pre_2 + treat_pre_1 + treat_event + treat_post_1 + treat_post_2 + 
+             pre_2 + pre_1 + event_0 + post_1 + post_2 + union, 
+             data = df_event)
+
+# Model 2: With individual controls
+model2 <- lm(wage ~ treat_pre_2 + treat_pre_1 + treat_event + treat_post_1 + treat_post_2 + 
+             pre_2 + pre_1 + event_0 + post_1 + post_2 + union +
+             age + married + ttl_exp + collgrad + south, 
+             data = df_event)
+
+# Model 3: Alternative outcome (hours)
+model3 <- lm(hours ~ treat_pre_2 + treat_pre_1 + treat_event + treat_post_1 + treat_post_2 + 
+             pre_2 + pre_1 + event_0 + post_1 + post_2 + union +
+             age + married + ttl_exp + collgrad + south, 
+             data = df_event)
+
+stargazer(model1,
+          model2,
+          model3,
+          title = "Event Study: Dynamic Effects of Union Membership",
+          column.labels = c("Wage", "Wage", "Hours"),
+          covariate.labels = c("Treatment × Pre-event (-2)",
+                              "Treatment × Pre-event (-1)", 
+                              "Treatment × Event (0)",
+                              "Treatment × Post-event (+1)",
+                              "Treatment × Post-event (+2)",
+                              "Pre-event (-2)",
+                              "Pre-event (-1)",
+                              "Event (0)", 
+                              "Post-event (+1)",
+                              "Post-event (+2)",
+                              "Treatment (Union)",
+                              "Age",
+                              "Married",
+                              "Total experience", 
+                              "College graduate",
+                              "Lives in South",
+                              "Constant"),
+          keep = c("treat_", "pre_", "event_", "post_", "union"),  # Keep only event study coefficients
+          dep.var.labels.include = FALSE,
+          dep.var.caption = "",
+          keep.stat = c("n", "adj.rsq"),
+          header = FALSE,
+          notes = c("Standard errors in parentheses.",
+                   "Event study coefficients show treatment effects relative to baseline.",
+                   "Pre-event coefficients test for parallel trends assumption.",
+          "* p < 0.05, ** p < 0.01, *** p < 0.001"),
+          notes.append = FALSE,
+          out = "Outputs/event-study.tex")
+
+## Annex -------------------------------
+
+# To successfully view the table and reproduce the outputs, open the '.tex' file in any Latex editor, and add the following syntax:  
+
+# \documentclass{article}
+
+# % Required packages
+# \usepackage{booktabs}    % For \toprule, \midrule, \bottomrule
+# \usepackage{array}       % For column types
+# \usepackage{geometry}
+# \usepackage[T1]{fontenc}
+
+# % Optional: adjust page margins
+# \geometry{margin=1in}
+
+# \begin{document}
+
+# Also, at the following syntax at the end of the file:
+
+# \end{document}
+```

@@ -1,0 +1,108 @@
+---
+pagetitle: 'Heat Map: Urban vs Rural Access to Electricity by Country Income Groups'
+author: ''
+date: ''
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+```{r Heatmap, fig.path = '../docs/figure/'}
+# Tested on R Version 4.4.2 
+# ggplot2 Version 3.5.2
+# WDI Version 2.7.9
+# dplyr Version 1.1.4
+# viridis Version 0.6.5
+# forcats Version 1.0.0 
+# tidyr Version 1.3.1
+
+# Install and load packages ---------------
+packages <- c("WDI", 
+              "dplyr", 
+              "ggplot2", 
+              "viridis",
+              "tidyr",
+              "forcats")
+
+# Change to install = TRUE to install the required packages
+pacman::p_load(packages, character.only = TRUE, install = FALSE)
+
+# Load an example dataset // Query from the World Bank API ---------
+# https://databank.worldbank.org/source/world-development-indicators
+
+indicators <- c(
+  rural = "EG.ELC.ACCS.RU.ZS", # Access to electricity (% of rural population) 
+  urban = "EG.ELC.ACCS.UR.ZS" # Access to electricity (% of urban population)
+)
+
+elec_data <- WDI(
+  country = "all",    # or e.g., c("US", "IN", "CN")
+  indicator = indicators,   
+  start = 2000,
+  end = 2023,
+  extra = TRUE        # adds region, income level, etc.      
+)
+
+# Clean -------------------------
+elec_clean <- elec_data %>%
+  filter(region != "Aggregates") %>%
+  select(income, year, rural, urban) %>%
+  filter(!is.na(rural), !is.na(urban))
+
+elec_grouped <- elec_clean %>%
+  group_by(income, year) %>%
+  summarise(
+    avg_rural = mean(rural, na.rm = TRUE),
+    avg_urban = mean(urban, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+elec_long <- elec_grouped %>%
+  pivot_longer(cols = starts_with("avg"), names_to = "area", values_to = "access") %>%
+  mutate(area = recode(area, avg_rural = "Rural", avg_urban = "Urban"))
+
+# Plot ------------------------------
+ggplot(elec_long %>% filter(income != "Not classified"), aes(x = year, y = fct_rev(income), fill = access)) +
+ geom_tile(color = "white") +
+ facet_wrap(~area) +
+ scale_fill_gradient2(low = "white", mid = "darkorange", high = "darkred", 
+                      midpoint = 35, name = "% Access", limits = c(0, 100), na.value = "grey90") +
+ labs(
+   title = "Access to Electricity by Income Group (World Bank)",
+   subtitle = "Average % access to electricity in rural and urban areas, 2000–2023",
+   x = "Year", y = "Income Group"
+ ) +
+ theme_minimal(base_size = 12)
+
+## Annex
+
+# For more use cases, authors can swap `EG.ELC.ACCS.ZS` with any other WDI indicator for new visualizations
+# Authors can also adapt the `select` logic for **low-access**, **specific regions**, or **bottom 10 / top 10** as needed 
+# Example: choose bottom 10 countries by recent electricity access 
+# But note that using too many variables creates an incomprehensible heatmap
+
+## Alternative color scale options for authors:
+  # Option 1: Original viridis scale
+  # scale_fill_viridis_c(name = "% Access", option = "C", limits = c(0, 100), na.value = "grey90")
+  
+  # Option 2: Invert viridis scale
+  # scale_fill_viridis_c(direction = -1, name = "% Access", option = "C", limits = c(0, 100), na.value = "grey90")
+  
+  # Option 3: White to dark blue gradient
+  # scale_fill_gradient(low = "white", high = "darkblue", name = "% Access", 
+  #                     limits = c(0, 100), na.value = "grey90")
+  
+  # Option 4: Diverging scale (white-orange-red)
+  # scale_fill_gradient2(low = "white", mid = "orange", high = "darkred", 
+  #                      midpoint = 50, name = "% Access", limits = c(0, 100), na.value = "grey90")
+  
+  # Option 5: Custom blue-green gradient
+  # scale_fill_gradient(low = "#f7f7f7", high = "#2b83ba", name = "% Access", 
+  #                     limits = c(0, 100), na.value = "grey90")
+  
+  # Option 6: Plasma color scale (inverted)
+  # scale_fill_viridis_c(option = "plasma", direction = -1, name = "% Access", 
+  #                      limits = c(0, 100), na.value = "grey90")
+```
+

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+
+<!--HEAD -->
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>R Econ Visual Library - Tables</title>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+    crossorigin="anonymous"></script>
+  <link rel="stylesheet"
+    href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    crossorigin="anonymous">
+  <link rel="stylesheet" href="site_libs/bootstrap-3.3.5/css/cerulean.min.css">
+  <link rel="stylesheet" href="site_libs/custom-css.css">
+
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"
+    crossorigin="anonymous"></script>
+
+  <script type="text/javascript">
+    jQuery(document).ready(function(){
+        jQuery("#contain").load("https://raw.githubusercontent.com/worldbank/r-econ-visual-library/master/docs/header.html");
+    });
+  </script>
+</head>
+
+<!-- BODY -->
+<body>
+
+  <!-- Navbar -->
+  <div id="contain"></div>
+
+  <!-- Content -->
+  <div class="container-fluid main-container">
+    <div class="row">
+      <script type="text/javascript">
+        var plots = [
+          "balance_table",
+          "eventstudy_table",
+          "regression_table",
+          "summary_table",
+          "TE_table"
+        ];
+
+        for (var i = 0; i < plots.length; i++) {
+          document.write('<div class="col-sm-6 mb-4">');
+          document.write('<div class="card" data-toggle="tooltip" title="Click to view table">');
+          document.write('<a href="' + plots[i] + '.html" class="stretched-link"></a>');
+          document.write('<div class="card-body">');
+          document.write('<img class="card-img" src="figure/' + plots[i] + '-1.png">');
+          document.write('</div></div></div>');
+        }
+      </script>
+    </div>
+  </div>
+
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+    crossorigin="anonymous"></script>
+</body>
+</html>

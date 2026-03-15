@@ -1,0 +1,75 @@
+---
+title: "Leaflet Interactive Map"
+author: "Kanika"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r leaflet_example_ny, fig.path = '../docs/figure/'}
+# Tested on R Version 4.4.2 
+# leaflet Version 2.2.2
+# dplyr Version 1.1.4
+
+# Install and load packages ---------------
+packages <- c("leaflet", 
+              "dplyr")
+
+# Change to install = TRUE to install the required packages
+pacman::p_load(packages, character.only = TRUE, install = FALSE)
+
+# Load an example dataset // Built-in R dataset ---------
+# Earthquakes off Fiji
+# ?quakes for documentation
+data("quakes")
+
+# Clean -------------------------
+# Select key variables and sample if desired
+quakes_clean <- quakes %>%
+  select(lat, long, depth, mag, stations) %>%
+  filter(mag >= 4.5)   # focus on larger quakes (more relevant for econ risk)
+
+# Plot Interactive Map ------------------------------
+leaflet(quakes_clean) %>%
+  addTiles() %>%  # OpenStreetMap base
+  addCircleMarkers(
+    lng = ~long,
+    lat = ~lat,
+    radius = ~mag,    # circle size reflects magnitude
+    color = "red",
+    fillOpacity = 0.5,
+    popup = ~paste0(
+      "<b>Magnitude:</b> ", mag, "<br>",
+      "<b>Depth (km):</b> ", depth, "<br>",
+      "<b>Stations:</b> ", stations
+    )
+  )
+```
+
+```{r annex, include=TRUE}
+## Annex
+
+# Notes for applied researchers / development economists:
+# - This interactive map highlights exposure to natural disasters, which can
+#   inform work on vulnerability, resilience, infrastructure risk, and 
+#   insurance markets.
+# - Authors can adapt filtering logic for:
+#   (1) High-risk zones (e.g., mag >= 6 or depth < 100 km)
+#   (2) Time windows (if combined with temporal datasets)
+#   (3) Spatial joins with population / GDP data
+# - The quakes dataset is limited to a single region (Fiji), but this code 
+#   generalizes to any point dataset with lat/long coordinates.
+
+## Alternative visualization options for authors:
+# - Use color to encode depth:
+#   addCircleMarkers(color = ~colorNumeric("viridis", depth)(depth))
+#
+# - Cluster nearby events for a cleaner view:
+#   addCircleMarkers(clusterOptions = markerClusterOptions())
+#
+# - Add multiple base maps:
+#   addProviderTiles("CartoDB.Positron") or addProviderTiles("Esri.WorldImagery")
+```

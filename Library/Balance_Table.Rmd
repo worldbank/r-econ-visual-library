@@ -1,0 +1,64 @@
+---
+title: "Balance Table"
+author: ''
+date: ''
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+```{r balance table}
+# Load the following packages -------------
+packages <- c("modelsummary", 
+              "dplyr", 
+              "haven")
+
+if (!requireNamespace("pacman", quietly = TRUE)) install.packages("pacman") 
+pacman::p_load(packages, character.only = TRUE) 
+
+# Load the sample data set --------------
+data <- read_dta("https://github.com/worldbank/r-econ-visual-library/raw/master/Library/Data/nlsw88.dta")
+dir.create("Outputs", recursive = TRUE, showWarnings = TRUE) # to create a new folder 
+
+# Create the data frame --------------
+df_balance <- data %>% 
+  select('Age in current year' = age, # replace the following with variable names 
+         'Married' = married,
+         'Union worker' = union, 
+         'Hourly wage' = wage,
+         'South' = south,
+         collgrad # replace with variable indicating treatment status
+         )
+
+# Run the balance test and produce the table --------------
+datasummary_balance(
+  ~collgrad,
+  data = df_balance,
+  stars = c('*' = .05, '**' = .01, '***' = .001),
+  title = "Balance by college graduation status (as treatment)",
+  note = "Comparing college graduates vs non-graduates: Includes HHs with observations for endline and baseline,
+* p < 0.05, ** p < 0.01, *** p < 0.001", 
+  output = "Outputs/balance.tex"
+)
+
+## Annex --------------
+
+# To successfully view the table and reproduce the outputs, open the '.tex' file in any Latex editor, and add the following syntax:  
+
+# \documentclass{article}
+
+# % Required packages
+# \usepackage{booktabs}    % For \toprule, \midrule, \bottomrule
+# \usepackage{array}       % For column types
+# \usepackage{geometry}
+# \usepackage[T1]{fontenc}
+
+# % Optional: adjust page margins
+# \geometry{margin=1in}
+
+# \begin{document}
+
+# Also, at the following syntax at the end of the file: 
+# \end{document}
+```
